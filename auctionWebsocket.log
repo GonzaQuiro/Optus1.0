@@ -1,0 +1,8 @@
+nohup: no se tendrá en cuenta la entrada
+Command not foundPHP Fatal error:  Uncaught RuntimeException: Failed to listen on "tcp://0.0.0.0:8084": Address already in use (EADDRINUSE) in /var/www/html/portal/vendor/react/socket/src/TcpServer.php:184
+Stack trace:
+#0 /var/www/html/portal/vendor/react/socket/src/Server.php(77): React\Socket\TcpServer->__construct()
+#1 /var/www/html/portal/vendor/cboden/ratchet/src/Ratchet/Server/IoServer.php(59): React\Socket\Server->__construct()
+#2 /var/www/html/portal/app/Websocket/AuctionWebsocket.php(21): Ratchet\Server\IoServer::factory()
+#3 {main}
+  thrown in /var/www/html/portal/vendor/react/socket/src/TcpServer.php on line 184

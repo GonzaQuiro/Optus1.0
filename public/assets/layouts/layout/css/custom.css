@@ -1,0 +1,83 @@
+/* here you can put your own css to customize and override the theme */
+
+.valign-middle {
+	vertical-align: middle!important;
+}
+
+.nav-tabs > li.active > a, 
+.nav-tabs > li.active > a:hover, 
+.nav-tabs > li.active > a:focus {
+	font-weight: bold;
+}
+
+.fa-clock-o:before {
+	vertical-align: baseline;
+}
+
+.select2-container .select2-selection--multiple {
+	overflow: hidden!important;
+	max-height: 500px !important;
+	display: block!important;
+	height: auto!important;
+}
+
+.invitacion-color {
+	color: #D91E18!important;
+	background-color: #D91E18;
+}
+.tecnica-color {
+	color: #e87e03!important;
+	background-color: #e87e03;
+}
+.economica-color {
+	color: #f7ca17!important;
+	background-color: #f7ca17;
+}
+.adjudicacion-color {
+	color: #2cc281!important;
+	background-color: #2cc281;
+}
+.muro-color {
+	color: #80319b!important;
+background-color: #80319b;
+}
+
+.vertical-align-middle {
+	vertical-align: middle!important;
+}
+
+.row.no-gutters > [class*='col-'] {
+	padding-left: 0!important;
+	padding-right: 0!important;
+}
+
+.row.equal {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.row.equal > [class*='col-'] {
+	display: flex;
+	flex-direction: column;
+}
+
+a {
+	text-decoration: none!important;
+}
+
+.w-100 {
+	width: 100%!important;
+}
+
+.text-bold {
+	font-weight: bold;
+}
+
+.table .wrapper-expectativa {
+	padding: 0;
+	vertical-align: middle;
+	text-align: center;
+}

@@ -1,0 +1,40 @@
+{
+    "require": {
+        "slim/slim": "^3.0",
+        "vlucas/phpdotenv": "^3.3",
+        "illuminate/support": "~5.4",
+        "illuminate/database": "~5.4",
+        "illuminate/events": "~5.0",
+        "illuminate/pagination": "~5.0",
+        "illuminate/filesystem": "^5.0",
+        "illuminate/translation": "^5.0",
+        "illuminate/validation": "^5.0",
+        "cboden/ratchet": "^0.4.1",
+        "guzzlehttp/guzzle": "^6.5",
+        "nesbot/carbon": "^2.0.0",
+        "smarty/smarty": "^3.1.36",
+        "mercadopago/dx-php": "^2.0",
+        "symfony/var-dumper": "^5.0",
+        "phpmailer/phpmailer": "^6.1",
+        "adrianfalleiro/slim-cli-runner": "~2.6",
+        "monolog/monolog": "^2.1",
+        "phpoffice/phpspreadsheet": "^1.19"
+    },
+    "autoload": {
+        "files": [
+            "app/Kernel/Helper.php"
+        ],
+        "psr-4": {
+            "App\\": "app"
+        }
+    },
+    "config": {
+        "process-timeout": 0
+    },
+    "scripts": {
+        "cli": "php public/index.php",
+        "div": "php public/crons/divisas.php",
+        "rpass": "php public/crons/resetpass.php",
+        "exl": "php public/crons/roles.php"
+    }
+}

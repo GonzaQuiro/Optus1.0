@@ -1,0 +1,424 @@
+<?php
+
+namespace App\Http\Controllers\AD;
+
+use App\Http\Controllers\BaseController;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Carbon\Carbon;
+use App\Models\User;
+use App\Models\CustomerCompany;
+use App\Models\OffererCompany;
+use App\Services\EmailService;
+
+class ADController extends BaseController
+{
+    private function generateToken() 
+    {
+        return substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 20);
+    }
+
+    private function setUsuario($user) 
+    {
+        $token = $this->generateToken();
+
+        try {
+            $user->update([
+                'token'         => $token,
+                'validity_date' => Carbon::now()->addMinutes(60)->format('Y-m-d H:i:s')
+            ]);
+        } catch (\Exception $e) {
+            return null;
+        }
+        
+        $_SESSION['user_id'] = $user->id;
+        $_SESSION['type_id'] = $user->type_id;
+        $_SESSION['customer_company_id'] = $user->customer_company_id;
+        $_SESSION['pass_change'] = $user->pass_change;
+        $_SESSION['token'] = $token;
+        $_SESSION['type'] = $user->type->code;
+        $_SESSION['permissions'] = $user->permissions->pluck('code')->toArray();
+
+        return [
+            'Token' => $token,
+            'Id' => $user->id,
+            'Nombre' => ucfirst(strtolower($user->first_name)),
+            'Apellido' => ucfirst(strtolower($user->last_name)),
+            'FullName' => ucfirst(strtolower($user->full_name)),
+            'Image' => $user->image,
+            'Email' => $user->email,
+            'Tipo' => (int) $user->type->id,
+            'PassChange' => $user->pass_change,
+            'Permissions' => $user->permissions->pluck('code'),
+            'isAdmin' => isAdmin(),
+            'isCustomer' => isCustomer(),
+            'isOfferer' => isOfferer()
+        ];
+    }
+
+    public function login(Request $request, Response $response)
+    {
+        $client_id = env('CLIENT_ID');
+        $adTenant = env('TENANT_ID');
+        $redirect_uri = env('CALLBACK_AD');
+
+        if (!isset($_GET["code"]) && !isset($_GET["error"])) {
+            
+            // Generar code_verifier y code_challenge
+            $code_verifier = bin2hex(random_bytes(32));
+            $code_challenge = rtrim(strtr(base64_encode(hash('sha256', $code_verifier, true)), '+/', '-_'), '=');
+
+            // Guardar el code_verifier en la sesión
+            $_SESSION['code_verifier'] = $code_verifier;
+            
+            // Redirigir al usuario para la autenticación
+            $url = "https://login.microsoftonline.com/" . $adTenant . "/oauth2/v2.0/authorize?";
+            $url .= "state=" . session_id();
+            $url .= "&scope=User.Read";
+            $url .= "&response_type=code";
+            $url .= "&approval_prompt=auto";
+            $url .= "&client_id=" . $client_id;
+            $url .= "&redirect_uri=" . urlencode($redirect_uri);
+            $url .= "&code_challenge=" . $code_challenge;
+            $url .= "&code_challenge_method=S256";
+
+            header("Location: " . $url);
+            exit();
+        }
+    }
+
+    public function callback(Request $request, Response $response)
+    {
+        // TOMAR VARIABLES DE ENTORNO ENV
+        $clientId = env('CLIENT_ID');
+        $adTenant = env('TENANT_ID');
+        $clientSecret = env('CLIENT_SECRET');
+        $redirectUri = env('CALLBACK_AD');
+        $token_url = "https://login.microsoftonline.com/" . $adTenant . "/oauth2/v2.0/token";
+
+        // Obtener el código de autorización de la URL
+        $code = $request->getQueryParams()['code'];
+        // Verificar el código de autorización y el estado
+        if (isset($request->getQueryParams()['code']) && isset($request->getQueryParams()['state'])) {
+            $code = $request->getQueryParams()['code'];
+            $state = $request->getQueryParams()['state'];
+
+            // Verificar el estado de la sesión
+            if ($state !== session_id()) {
+                echo "Error: estado inválido";
+                return;
+            }
+
+            // Verificar el código de verificación
+            if (!isset($_SESSION['code_verifier'])) {
+                echo "Error: código de verificación no encontrado";
+                return;
+            }
+
+            $code_verifier = $_SESSION['code_verifier'];
+
+            // Datos para la solicitud del token
+            $post_data = [
+            "grant_type" => "authorization_code",
+            "client_id" => $clientId,
+            "client_secret" => $clientSecret,
+            "code" => $code,
+            "redirect_uri" => $redirectUri,
+            "code_verifier" => $code_verifier
+            ];
+
+            // Realizar la solicitud para obtener el token de acceso
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $token_url);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_data));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            curl_close($ch);
+
+            // Verificar y decodificar la respuesta
+            $json = json_decode($response, true);
+            if (isset($json['access_token'])) {
+                $access_token = $json['access_token'];
+            } else {
+                // Manejar error: no se recibió el token de acceso
+                echo "Error al obtener el token de acceso: " . json_encode($json);
+                return;
+            }
+
+            // Usar el token de acceso para obtener información del usuario desde Microsoft Graph
+            $graph_url = "https://graph.microsoft.com/v1.0/me?\$select=mail,givenName,surname,mobilePhone";
+            $headers = [
+                "Authorization: Bearer " . $access_token
+            ];
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $graph_url);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            curl_close($ch);
+
+            // Verificar y decodificar la respuesta
+            $userMicrosoft = json_decode($response, true); // User microsoft
+            $user_email = $userMicrosoft['mail'];
+
+            $user = User::where( // User SQL
+                function ($query) use ($user_email) {
+                    $query
+                        ->where('email', '=', $user_email);
+                }
+            )
+            ->get()
+            ->first();
+    
+            if ($user) {
+                $user = $this->setUsuario($user, $password = '');
+
+                // Almacena los datos del usuario en localStorage o en una cookie
+                echo "
+                    <script>
+                        localStorage.setItem('userdata', '" . json_encode($user) . "');
+                        document.cookie = 'customer_company_id=" . $_SESSION['customer_company_id'] . "; path=/';
+                        window.location.href = '/login';
+                    </script>
+                ";
+                exit();
+            } else {
+                $user = $this->nuevoUsuario($userMicrosoft);
+
+                $user = $this->setUsuario($user, $password = '');
+
+                // Almacena los datos del usuario en localStorage o en una cookie
+                echo "
+                    <script>
+                        localStorage.setItem('userdata', '" . json_encode($user) . "');
+                        document.cookie = 'customer_company_id=" . $_SESSION['customer_company_id'] . "; path=/';
+                        window.location.href = '/login';
+                    </script>
+                ";
+                exit();
+            }
+
+        } else {
+            // Manejar error: código de autorización o estado no encontrados
+            echo "Error: código de autorización o estado no encontrados";
+            return;
+        }
+    }
+
+    private function nuevoUsuario($userMicrosoft) 
+    {
+        $user_email = $userMicrosoft['mail'];
+        $user_tel = $userMicrosoft['mobilePhone'];
+        $user_tel = preg_replace('/\D/', '', $user_tel);
+        $user_name = $userMicrosoft['givenName'];
+        $user_surname = $userMicrosoft['surname'];
+        $user_username = strtolower(substr($user_name, 0, 1) . explode(' ', $user_surname)[0]);
+        $user_type = 3;
+        // $user_type = strtolower(str_replace(' ', '', iconv('UTF-8', 'ASCII//TRANSLIT', $user_type)));
+
+        // switch ($user_type) {
+        //     case 'cliente':
+        //         $user_type = 3;
+        //         break;
+        //     case 'tecnico':
+        //         $user_type = 4;
+        //         break;
+        //     case 'visor':
+        //         $user_type = 5;
+        //         break;
+        //     case 'proveedor':
+        //         $user_type = 6;
+        //         break;
+        //     case 'evaluador':
+        //         $user_type = 7;
+        //         break;
+        //     default:
+        //         $user_type = 0;
+        //         break;
+        // }
+
+        // $user_cuit = $userMicrosoft['companyName'];
+        // $user_cuit = preg_replace('/\D/', '', $user_cuit);
+
+        // $company = OffererCompany::where(
+        //     function ($query) use ($user_cuit) {
+        //         $query
+        //             ->where('cuit', '=', $user_cuit);
+        //     }
+        // )
+        // ->get()
+        // ->first();
+        
+
+        // if ($company == null) {
+        //     $company = CustomerCompany::where(
+        //         function ($query) use ($user_cuit) {
+        //             $query
+        //                 ->where('cuit', '=', $user_cuit);
+        //         }
+        //     )
+        //     ->get()
+        //     ->first();
+        //     $customer_company_id = $company->id;
+        //     $offerer_company_id = null;
+        // } else {
+        //     $offerer_company_id = $company->id;
+        //     $customer_company_id = null;
+        // }
+
+        $domain_with_at = strstr($user_email, '@');
+        $domain = substr($domain_with_at, 1);
+
+        if ($domain == 'losgrobo.com') {
+            $customer_company_id = 13;
+            $offerer_company_id = null;
+        } else if ($domain == 'agrofina.com.ar') {
+            $customer_company_id = 14;
+            $offerer_company_id = null;
+        }
+
+        $length = 8;
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomPassword = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomPassword .= $characters[rand(0, $charactersLength - 1)];
+        }
+        $md5 = md5($randomPassword);
+
+        $userData = [
+            'type_id' => $user_type,
+            'status_id' => 1,
+            'username' => $user_username,
+            'password' => $md5,
+            'first_name' => $user_name,
+            'last_name' => $user_surname,
+            'phone' => $user_tel,
+            'cellphone' => $user_tel,
+            'area' => 'Compras',
+            'rol' => 'Comprador',
+            'email' => $user_email,
+            'ad' => 'S'
+        ];
+
+        if ($offerer_company_id !== null) {
+            $userData['offerer_company_id'] = $offerer_company_id;
+        }
+        
+        if ($customer_company_id !== null) {
+            $userData['customer_company_id'] = $customer_company_id;
+        }
+        
+        $user = new User($userData);
+        $user->save();
+        $this->permisionClient($user->id);
+
+        $user = User::where(
+            function ($query) use ($user_email) {
+                $query
+                    ->where('email', '=', $user_email);
+            }
+        )
+        ->get()
+        ->first();
+
+        return $user;
+    }
+
+    private function permisionClient($user_id)
+    {
+        $user = User::find($user_id);
+        $permisions = [
+            [
+                "id" => "2",
+                "description" => "Concursos",
+                "permissions" => [
+                    [
+                        "id" => 2,
+                        "description" => "Subasta",
+                        "active" => false
+                    ],
+                    [
+                        "id" => 3,
+                        "description" => "Licitación",
+                        "active" => true
+                    ],
+                    [
+                        "id" => 4,
+                        "description" => "Go",
+                        "active" => false
+                    ],
+                    [
+                        "id" => 5,
+                        "description" => "Por+Etapas",
+                        "active" => true
+                    ]
+                ],
+                "active" => false
+            ],
+            [
+                "id" => "3",
+                "description" => "Usuarios",
+                "permissions" => [
+                    [
+                        "id" => 6,
+                        "description" => "Edición+de+Usuarios",
+                        "active" => false
+                    ]
+                ],
+                "active" => false
+            ],
+            [
+                "id" => "5",
+                "description" => "Empresas",
+                "permissions" => [
+                    [
+                        "id" => 15,
+                        "description" => "Proveedores",
+                        "active" => true
+                    ],
+                    [
+                        "id" => 16,
+                        "description" => "Clientes",
+                        "active" => false
+                    ],
+                    [
+                        "id" => 18,
+                        "description" => "Materiales+del+Clientes",
+                        "active" => true
+                    ]
+                ],
+                "active" => false
+            ],
+            [
+                "id" => "7",
+                "description" => "Muro+de+Consultas",
+                "permissions" => [
+                    [
+                        "id" => 13,
+                        "description" => "Ver+Chat",
+                        "active" => true
+                    ],
+                    [
+                        "id" => 14,
+                        "description" => "Botones+de+Moderación",
+                        "active" => true
+                    ]
+                ],
+                "active" => true
+            ]
+        ];
+        $permission_ids = [];
+        foreach ($permisions as $group) {
+            foreach ($group["permissions"] as $permission) {
+                if ($permission["active"]) {
+                    $permission_ids[] = (int) $permission["id"];
+                }
+            }
+        }
+        $user->permissions()->sync($permission_ids);
+    }
+}
+?>
