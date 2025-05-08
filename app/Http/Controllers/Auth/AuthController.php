@@ -51,6 +51,16 @@ class AuthController extends BaseController
                 ->orWhere('email', '=', $username);
         })->first();
         if ($user) {
+
+             // Validar IP
+             $ip = $_SERVER['REMOTE_ADDR'] ?? 'Unknown';
+             $isTrusted = $this->isTrustedIp($user->id, $ip);
+ 
+             if (!$isTrusted) {
+                 // Marcar que requiere 2FA
+                 $user->update(['pass_change' => 'S']);
+             }
+             
             // Obtener el MD5 del nombre de usuario
             $username_md5 = md5($user->username);
             // Dividir el MD5 en dos partes
@@ -59,6 +69,8 @@ class AuthController extends BaseController
 
             // Generar el hash con sha256 usando la fórmula proporcionada
             $passwordHash = hash("sha256", $part2 . $password . $part1);
+
+            
 
             if ($user->password === $passwordHash) {
                 // Se encontró usuario y la contraseña coincide
