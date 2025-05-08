@@ -45,6 +45,32 @@
                             <td data-bind="text: ZonaHoraria" class="text-center vertical-align-middle col-md-3"></td>
                         </tr>
                         <!-- /ko -->
+                        <!-- ko if: IncluyeEconomicaTerceraRonda -->
+                        <tr>
+                            <td data-bind="text: 'Presentación tercera oferta económica'" class="vertical-align-middle col-md-3"></td>
+                            <td data-bind="text: PresentacionEconomicasTerceraRonda" class="text-center vertical-align-middle col-md-2"></td>
+                            <td data-bind="text: PresentacionEconomicasTerceraRondaHora" class="text-center vertical-align-middle col-md-1"></td>
+                            <td data-bind="text: ZonaHoraria" class="text-center vertical-align-middle col-md-3"></td>
+                        </tr>
+                        <!-- /ko -->
+                        <!-- ko if: IncluyeEconomicaCuartaRonda -->
+                        <tr>
+                            <td data-bind="text: 'Presentación cuarta oferta económica'" class="vertical-align-middle col-md-3"></td>
+                            <td data-bind="text: PresentacionEconomicasCuartaRonda" class="text-center vertical-align-middle col-md-2"></td>
+                            <td data-bind="text: PresentacionEconomicasCuartaRondaHora" class="text-center vertical-align-middle col-md-1"></td>
+                            <td data-bind="text: ZonaHoraria" class="text-center vertical-align-middle col-md-3"></td>
+                        </tr>
+                        <!-- /ko -->
+
+                        <!-- ko if: IncluyeEconomicaQuintaRonda -->
+                        <tr>
+                            <td data-bind="text: 'Presentación quinta oferta económica'" class="vertical-align-middle col-md-3"></td>
+                            <td data-bind="text: PresentacionEconomicasQuintaRonda" class="text-center vertical-align-middle col-md-2"></td>
+                            <td data-bind="text: PresentacionEconomicasQuintaRondaHora" class="text-center vertical-align-middle col-md-1"></td>
+                            <td data-bind="text: ZonaHoraria" class="text-center vertical-align-middle col-md-3"></td>
+                        </tr>
+                        <!-- /ko -->
+
 
                     <!-- /ko -->
                     <!-- ko if: IsOnline() -->
