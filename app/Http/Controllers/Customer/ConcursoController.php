@@ -937,6 +937,37 @@ class ConcursoController extends BaseController
                     $concurso->segunda_ronda_fecha_limite ?
                     $concurso->segunda_ronda_fecha_limite->format('H:i:s') :
                     null,
+                    
+                'IncluyeEconomicaTerceraRonda' => $concurso->tercera_ronda_fecha_limite !== null,
+                'PresentacionEconomicasTerceraRonda' =>
+                    $concurso->tercera_ronda_fecha_limite ?
+                    $concurso->tercera_ronda_fecha_limite->format('d-m-Y') :
+                    null,   
+                'PresentacionEconomicasTerceraRondaHora' =>
+                    $concurso->tercera_ronda_fecha_limite ?
+                    $concurso->tercera_ronda_fecha_limite->format('H:i:s') :
+                    null,
+
+                'IncluyeEconomicaCuartaRonda' => $concurso->cuarta_ronda_fecha_limite !== null,
+                'PresentacionEconomicasCuartaRonda' =>
+                    $concurso->cuarta_ronda_fecha_limite ?
+                    $concurso->cuarta_ronda_fecha_limite->format('d-m-Y') :
+                    null,
+                'PresentacionEconomicasCuartaRondaHora' =>
+                    $concurso->cuarta_ronda_fecha_limite ?
+                    $concurso->cuarta_ronda_fecha_limite->format('H:i:s') :
+                    null,
+                
+                'IncluyeEconomicaQuintaRonda' => $concurso->quita_ronda_fecha_limite !== null,
+                'PresentacionEconomicasQuintaRonda' =>
+                    $concurso->quita_ronda_fecha_limite ?
+                    $concurso->quita_ronda_fecha_limite->format('d-m-Y') :
+                    null,
+                'PresentacionEconomicasQuintaRondaHora' =>
+                    $concurso->quita_ronda_fecha_limite ?
+                    $concurso->quita_ronda_fecha_limite->format('H:i:s') :
+                    null,
+
                 'InicioSubasta' =>
                     $concurso->inicio_subasta ?
                     $concurso->inicio_subasta->format('d-m-Y') :

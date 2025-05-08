@@ -433,6 +433,17 @@
             this.IncluyeEconomicaSegundaRonda = ko.observable(data.list.IncluyeEconomicaSegundaRonda);
             this.PresentacionEconomicasSegundaRonda = ko.observable(data.list.PresentacionEconomicasSegundaRonda);
             this.PresentacionEconomicasSegundaRondaHora = ko.observable(data.list.PresentacionEconomicasSegundaRondaHora);
+
+            this.IncluyeEconomicaTerceraRonda = ko.observable(data.list.IncluyeEconomicaTerceraRonda);
+            this.PresentacionEconomicasTerceraRonda = ko.observable(data.list.PresentacionEconomicasTerceraRonda);
+            this.PresentacionEconomicasTerceraRondaHora = ko.observable(data.list.PresentacionEconomicasTerceraRondaHora);
+            this.IncluyeEconomicaCuartaRonda = ko.observable(data.list.IncluyeEconomicaCuartaRonda);
+            this.PresentacionEconomicasCuartaRonda = ko.observable(data.list.PresentacionEconomicasCuartaRonda);
+            this.PresentacionEconomicasCuartaRondaHora = ko.observable(data.list.PresentacionEconomicasCuartaRondaHora);
+            this.IncluyeEconomicaQuintaRonda = ko.observable(data.list.IncluyeEconomicaQuintaRonda);
+            this.PresentacionEconomicasQuintaRonda = ko.observable(data.list.PresentacionEconomicasQuintaRonda);
+            this.PresentacionEconomicasQuintaRondaHora = ko.observable(data.list.PresentacionEconomicasQuintaRondaHora);
+
             this.InicioSubasta = ko.observable(data.list.InicioSubasta);
             this.InicioSubastaHora = ko.observable(data.list.InicioSubastaHora);
 
