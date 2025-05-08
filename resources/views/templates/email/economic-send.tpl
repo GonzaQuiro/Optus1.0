@@ -1,13 +1,13 @@
 {extends 'email/base.tpl'}
 
 {block 'content'}
-    Estimado <strong> {$cliente} </strong>
+    Estimado <strong>{$cliente}</strong>,
     <br><br>
-    El proveedor invitado, <strong>{$proveedor}</strong><br>
-    Ha enviado su propuesta económica para el <b>Nº Concurso</b>: {$concurso->id}, {$concurso->nombre} y está lista para su
-    revisión
+    El proveedor invitado, <strong>{$proveedor}</strong>, ha enviado su propuesta económica correspondiente al <b>Nº Concurso</b>: {$concurso->id}, {$concurso->nombre}, la cual se encuentra disponible para su revisión.
     <br><br>
-    Le agradeceremos la revisión del mismo, ingresando a www.optus.com.ar.
+    Puede acceder al sistema ingresando en www.optus.com.ar para proceder con la evaluación.
     <br><br>
-    Contamos con su colaboración.
+    <strong>Notificación generada el día {$hora}, hora local del proveedor que envió la propuesta.</strong>
+    <br><br>
+    Agradecemos su colaboración.
 {/block}

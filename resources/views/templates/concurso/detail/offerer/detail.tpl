@@ -479,6 +479,22 @@
             this.IsClient = ko.observable(false);
             this.IsProv = ko.observable(true);
 
+            var ahora = new Date();
+
+            // Formatear HoraHoy en formato hh:mm:ss
+            this.HoraHoy = ko.observable(
+                ahora.getHours().toString().padStart(2, '0') + ':' +
+                ahora.getMinutes().toString().padStart(2, '0') + ':' +
+                ahora.getSeconds().toString().padStart(2, '0')
+            );
+
+            // Formatear FechaHoy en formato dd-mm-yyyy
+            this.FechaHoy = ko.observable(
+                ahora.getDate().toString().padStart(2, '0') + '-' +  // dd
+                (ahora.getMonth() + 1).toString().padStart(2, '0') + '-' +  // mm
+                ahora.getFullYear()  // yyyy
+            );
+
 
 
             switch (params[3]) {

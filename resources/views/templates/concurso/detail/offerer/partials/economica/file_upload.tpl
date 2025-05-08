@@ -66,7 +66,7 @@
                         caracteres</label>
                     <textarea class="form-control placeholder-no-fix" maxlength="5000" rows="3" id="maxlength_textarea"
                         name="comentario_economica"
-                        data-bind="value: EconomicProposal().comment, disable: !EnableEconomic()">
+                        data-bind="value: EconomicProposal().comment, disable: !EnableEconomic() || $root.PresentacionEconomicas() > $root.FechaHoy() ||$root.PresentacionEconomicas() == $root.FechaHoy() && $root.PresentacionEconomicasHora > $root.HoraHoy()">
                     </textarea>
                     <td class="col-md-3 text-center vertical-align-middle">           
                     </td>
@@ -165,7 +165,7 @@
                             <td class="text-center vertical-align-middle col-md-1">
                                 <div class="onoffswitch">
                                     <input type="checkbox" class="onoffswitch-checkbox"
-                                        data-bind="attr: { id: product_id }, checked: ProductSelected, disable: !$root.EnableEconomic()" />
+                                        data-bind="attr: { id: product_id }, checked: ProductSelected, disable: !$root.EnableEconomic() || $root.PresentacionEconomicas() > $root.FechaHoy() ||$root.PresentacionEconomicas() == $root.FechaHoy() && $root.PresentacionEconomicasHora > $root.HoraHoy()" />
                                     <label class="onoffswitch-label" data-bind="attr: { for: product_id }">
                                         <span class="onoffswitch-inner"></span>
                                         <span class="onoffswitch-switch"></span>
@@ -195,14 +195,14 @@
                                         value: cotizacion,
                                         alias: 'monto',
                                     }, 
-                                    disable:!$root.EnableEconomic() || !ProductSelected()" />
+                                    disable:!$root.EnableEconomic() || !ProductSelected() || $root.PresentacionEconomicas() > $root.FechaHoy() ||$root.PresentacionEconomicas() == $root.FechaHoy() && $root.PresentacionEconomicasHora > $root.HoraHoy()"/>
                             </td>
                             <td class="text-center vertical-align-middle col-md-1">
                                 <input id="cantidad" class="cantidad form-control placeholder-no-fix" data-bind="inputmask: {
                                         alias: 'monto',
                                     }, 
                                     textInput: cantidad,
-                                    disable:!$root.EnableEconomic() || !ProductSelected()" />
+                                    disable:!$root.EnableEconomic() || !ProductSelected() || $root.PresentacionEconomicas() > $root.FechaHoy() ||$root.PresentacionEconomicas() == $root.FechaHoy() && $root.PresentacionEconomicasHora > $root.HoraHoy()" />
                             </td>
                             <!-- ko if: $root.IsSobrecerrado() -->
                             <td class="text-center vertical-align-middle col-md-1">
@@ -212,7 +212,7 @@
                                         min: 1,
                                     },
                                     textInput: fecha,
-                                    disable:!$root.EnableEconomic() || !ProductSelected()" />
+                                    disable:!$root.EnableEconomic() || !ProductSelected() || $root.PresentacionEconomicas() > $root.FechaHoy()  ||$root.PresentacionEconomicas() == $root.FechaHoy() && $root.PresentacionEconomicasHora > $root.HoraHoy()"  />
                             </td>
                             <td class="text-center vertical-align-middle col-md-2">
                                 <input class="form-control" 
@@ -243,7 +243,7 @@
                             options: EconomicProposal().CondicionesPago, 
                             optionsText: 'text', 
                             optionsValue: 'id', 
-                            disable: !$root.EnableEconomic() || $root.CondicionPago() === 'no',
+                            disable: !$root.EnableEconomic() || $root.CondicionPago() === 'no' || $root.PresentacionEconomicas() > $root.FechaHoy() ||$root.PresentacionEconomicas() == $root.FechaHoy() && $root.PresentacionEconomicasHora > $root.HoraHoy(),
                             select2: { placeholder: 'Seleccionar...' }">
                         </select>
                     </div>

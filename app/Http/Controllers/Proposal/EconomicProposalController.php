@@ -118,6 +118,8 @@ class EconomicProposalController extends BaseController
                         'ano' => Carbon::now()->format('Y'),
                         'cliente' => $concurso->cliente->customer_company->business_name,
                         'proveedor' => $user->offerer_company->business_name,
+                        'hora' => Carbon::now()->subHours(3)->format('d/m/Y H:i:s'),
+
                     ]);
                 
                     $template2 = rootPath(config('app.templates_path')) . '/email/economic-confirmation.tpl';
@@ -127,6 +129,7 @@ class EconomicProposalController extends BaseController
                         'ano' => Carbon::now()->format('Y'),
                         'cliente' => $concurso->cliente->customer_company->business_name,
                         'proveedor' => $user->offerer_company->business_name,
+
                     ]);
                 
                     // Prepara los correos
@@ -848,6 +851,11 @@ class EconomicProposalController extends BaseController
                         } else {
                             if ((int) $value['cantidad'] < (int) $product->oferta_minima || $value['cantidad'] > (int) $product->cantidad) {
                                 $fail('La Cantidad Cotizada debe ser mayor a "' . $product->nombre . '" y menor que ' . $product->cantidad . '.');
+                            } else {
+                                // Validación extra si está dentro del rango
+                                if (Carbon::now()->gt(Carbon::parse($concurso->fecha_limite_economicas))) {
+                                    $fail('La Fecha de envio de Propuesta ya ha terminado.');
+                                } 
                             }
                         }
                     }
