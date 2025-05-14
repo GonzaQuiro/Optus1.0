@@ -63,9 +63,6 @@ class DashboardController extends BaseController
                                 ['etapa_actual', '=', Participante::ETAPAS['invitacion-pendiente']],
                             ]);
                     })->get();
-
-                    $txt = fopen('xd.txt','w');
-                    fwrite($txt, json_encode($list));
                     
                     foreach ($concursosInvitacionPendiente as $concurso) {
 
@@ -79,8 +76,6 @@ class DashboardController extends BaseController
                         ];
                     }
                     
-                    $txt = fopen('xd.txt','w');
-                    fwrite($txt, json_encode($list));
                     //FINALIZA MURO CONSULTA
                     $concursosMuroDeConsultas = Concurso::where([
                         ['id_cliente', '=', $id],
