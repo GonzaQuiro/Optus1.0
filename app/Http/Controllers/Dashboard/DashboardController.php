@@ -61,8 +61,6 @@ class DashboardController extends BaseController
                         $oferentes
                             ->where([
                                 ['etapa_actual', '=', Participante::ETAPAS['invitacion-pendiente']],
-                            ])->orWhere([
-                                ['etapa_actual', '=', Participante::ETAPAS['seleccionado']]
                             ]);
                     })->get();
 
