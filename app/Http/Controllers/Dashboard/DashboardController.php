@@ -211,17 +211,17 @@ class DashboardController extends BaseController
                     ];
                 }
 
-
-                //FINALIZA MURO CONSULTA
+                // FINALIZA MURO CONSULTA
                 $concursosMuroDeConsultas = Concurso::where([
                     ['deleted_at', '=', null]
                 ])
-                ->whereHas('oferentes', function ($oferentes) use ($offererCompanyID){
-                    $oferentes->whereNotIn('etapa_actual', Participante::ETAPAS_RECHAZADAS)
-                              ->where([
-                                ['id_offerer', '=', $offererCompanyID],
-                                ['rechazado', '=', '0']
-                              ]);
+                ->whereHas('oferentes', function ($oferentes) use ($offererCompanyID) {
+                    $oferentes->where('id_offerer', '=', $offererCompanyID)
+                            ->where('rechazado', '=', '0')
+                            ->whereNotIn('etapa_actual', array_merge(
+                                Participante::ETAPAS_RECHAZADAS,
+                                [Participante::ETAPAS['seleccionado']]
+                            ));
                 })
                 ->get();
                 
