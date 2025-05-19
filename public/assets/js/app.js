@@ -34,13 +34,14 @@ var UserLogin = function() {
         Services.Post('/login/send', data,
             (response) => {
                 if (response.success) {
-                    if (response.data.user.PassChange == 'N') {
+                    if (response.data.user.RequiresIpVerification == 'S') {
+                        window.location.href = '/verify-code-advice';
+                    } else if (response.data.user.PassChange == 'S') {
+                        window.location.href = '/verify-code-advice';
+                    } else {
                         User.SetValues(response.data.user);
                         setCookie('customer_company_id', response.data.user.customer_company_id, 7);
                         window.location.href = '/dashboard';
-                    }
-                    else {
-                        window.location.href = '/verify-code-advice';
                     }
                 } else {
                     swal('Error', response.message, 'error');

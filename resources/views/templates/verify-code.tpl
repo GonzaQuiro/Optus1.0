@@ -12,6 +12,29 @@
     <link href="{asset('/global/plugins/bootstrap/css/bootstrap.min.css')}" rel="stylesheet" type="text/css" />
     <link href="{asset('/pages/css/login-3.min.css')}" rel="stylesheet" type="text/css" />
     <link rel="shortcut icon" href="{asset('/favicon.ico')}" />
+    <style>
+        .input-icon {
+            position: relative;
+        }
+
+        .input-icon > i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+            z-index: 2;
+        }
+
+        .input-icon > input {
+            padding-left: 35px !important;
+        }
+
+        /* Si llegás a usar SweetAlert aquí también */
+        .swal2-popup, .sweet-alert {
+            font-size: 14px !important;
+        }
+    </style>
 </head>
 <body class="login" style="background-color: #6C338C !important;">
     <div class="logo">

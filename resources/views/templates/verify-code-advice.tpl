@@ -14,6 +14,29 @@
     <link href="{asset('/global/plugins/bootstrap-sweetalert/sweetalert.css')}" rel="stylesheet" type="text/css" />
     <link href="{asset('/pages/css/login-3.min.css')}" rel="stylesheet" type="text/css" />
     <link rel="shortcut icon" href="{asset('/favicon.ico')}" />
+    <style>
+        .input-icon {
+            position: relative;
+        }
+
+        .input-icon > i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+            z-index: 2;
+        }
+
+        .input-icon > input {
+            padding-left: 35px !important;
+        }
+
+        .swal2-popup, .sweet-alert {
+            font-size: 14px !important; /* Para que los mensajes no se vean gigantes */
+        }
+    </style>
+
 </head>
 <body class="login" style="background-color: #6C338C !important;">
     <div class="logo">
@@ -59,16 +82,13 @@
     function sendVerifyCode(){
                 var email = $('#email').val();
                 swal({
-                    title: '¿Desea recuperar la contraseña del usuario '+ email +' ? ',
-                    text: 'Se enviará un correo electrónico con el link para recuperar su contraseña.',
+                    title: '¿Recuperar contraseña?',
+                    text: 'Se enviará un código de verificación al correo:\n' + email,
                     type: 'info',
-                    closeOnClickOutside: false,
                     showCancelButton: true,
-                    closeOnConfirm: true,
-                    confirmButtonText: 'Aceptar',
-                    confirmButtonClass: 'btn btn-success',
+                    confirmButtonText: 'Sí, enviar',
                     cancelButtonText: 'Cancelar',
-                    cancelButtonClass: 'btn btn-default'
+                    customClass: 'swal-optus',
                 }, function(result) {
                     if (result) {
                         $.blockUI();

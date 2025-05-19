@@ -58,7 +58,8 @@ class AuthController extends BaseController
  
              if (!$isTrusted) {
                  // Marcar que requiere 2FA
-                 $user->update(['pass_change' => 'S']);
+                 
+                 $user->update(['requires_ip_verification' => 'S']);
              }
              
             // Obtener el MD5 del nombre de usuario
@@ -173,6 +174,7 @@ class AuthController extends BaseController
         $_SESSION['token'] = $token;
         $_SESSION['type'] = $user->type->code;
         $_SESSION['permissions'] = $user->permissions->pluck('code')->toArray();
+        $_SESSION['requires_ip_verification'] = $user->requires_ip_verification;
        
 
         return [
@@ -186,6 +188,7 @@ class AuthController extends BaseController
             'Email' => $user->email,
             'Tipo' => (int) $user->type->id,
             'PassChange' => $user->pass_change,
+            'RequiresIpVerification' =>  $user->requires_ip_verification,
             'Permissions' => $user->permissions->pluck('code'),
             'isAdmin' => isAdmin(),
             'isCustomer' => isCustomer(),
@@ -460,6 +463,13 @@ class AuthController extends BaseController
             ->where('ip_address', $ip)
             ->where('expires_at', '>', Carbon::now())
             ->first();
+        
+        // Logging simple
+        $mensaje = "Verificando IP: $ip | User ID: $user_id | Resultado: " . ($result ? "CONFIABLE" : "NO CONFIABLE") . "\n";
+
+        $txt = fopen("ip_debug.txt", "a"); // crea o abre el archivo en modo append
+        fwrite($txt, $mensaje);
+        fclose($txt);
 
         return $result !== null;
     }
@@ -522,18 +532,24 @@ class AuthController extends BaseController
             $ip = $_SERVER['REMOTE_ADDR'] ?? 'Unknown';
             $this->guardarIpUsuario($usuario->id, $ip);
 
-            // Resetear código 2FA para evitar reutilización
+            // Resetear código 2FA y marca la IP como verificada
             $usuario->update([
                 'two_factor_code' => null,
+                'requires_ip_verification' => 'N',
             ]);
 
-            // Redirigir a cambio de contraseña o dashboard
-            return $response->withRedirect('/change-password');
+            // Redirigir según si debe cambiar contraseña o no
+            if ($usuario->pass_change === 'S') {
+                return $response->withRedirect('/change-password');
+            } else {
+                return $response->withRedirect('/login');
+            }
         } else {
             // Código incorrecto
             return $response->withRedirect('/verify-code?error=1');
         }
     }
+
 
     public function generateTwoFactorCode()
     {

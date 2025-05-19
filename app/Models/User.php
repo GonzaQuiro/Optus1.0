@@ -46,7 +46,8 @@ class User extends Model
         'area',
         'rol',
         'pass_date',
-        'two_factor_code'
+        'two_factor_code',
+        'requires_ip_verification'
     ];
 
     protected $appends = [
