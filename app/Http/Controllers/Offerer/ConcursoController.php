@@ -238,7 +238,7 @@ class ConcursoController extends BaseController
                             ($concurso->countdown || $concurso->timeleft) &&
                             $concurso->fin_subasta > Carbon::now();
                     } else {
-                        return $concurso->fecha_limite_economicas > Carbon::now() || $concurso->segunda_ronda_fecha_limite > Carbon::now();
+                        return $concurso->fecha_limite_economicas > Carbon::now() || $concurso->segunda_ronda_fecha_limite > Carbon::now() || $concurso->fecha_limite_economicas > Carbon::now()->subDays(15) ;
                     }
                 })
                 ->sortBy('id');

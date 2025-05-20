@@ -13,6 +13,7 @@ use App\Models\CustomerCompany;
 use App\Models\Permission;
 use App\Services\EmailService;
 use Carbon\Carbon;
+use Illuminate\Validation\Rule;
 
 class UserController extends BaseController
 {
@@ -582,7 +583,14 @@ class UserController extends BaseController
             'last_name' => 'required|string|max:50',
             'phone' => 'nullable|numeric',
             'cellphone' => 'nullable|numeric',
-            'email' => 'required|email|unique:users,email,' . $body->Id . ',id',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users', 'email')
+                    ->ignore($body->Id, 'id')
+                    ->whereNull('deleted_at')
+            ],
+            //'email' => 'required|email|unique:users,email,' . $body->Id . ',id', // modificar aqui la validacion del mail para usuarios eliminados
             'area' => 'nullable|string|max:45',
             'rol' => 'nullable|string|max:45',
         ];

@@ -574,7 +574,8 @@ class Participante extends Model
         }
 
         if ($nuevasRondas == 'si') {
-            $plazo_nueva = Carbon::now() > $this->concurso->segunda_ronda_fecha_limite;
+            //$plazo_nueva = Carbon::now() > $this->concurso->segunda_ronda_fecha_limite; 
+            $plazo_nueva = Carbon::now() > $this->concurso->fecha_limite_economicas; //Ahora para saber si esta expirado solo verifica que el campo en BD fecha_limite_economicas este bien
             return
                 $economic_proposal ?
                 $economic_proposal->is_expired || ($economic_proposal->is_pending && $plazo_nueva) : ($plazo_nueva ? true : false);
