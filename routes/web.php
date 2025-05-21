@@ -156,6 +156,11 @@ app()->group('/concursos', function () {
 // USUARIOS Y PERMISOS
 app()->group('/usuarios', function () {
     // USUARIOS
+
+    $this->post('/guardar-id-edicion', 'App\Http\Controllers\User\UserController:guardarIdEdicion')
+     ->add(new AuthMiddleware())
+     ->setName('usuarios.guardarIdEdicion');
+     
     // Listado
     $this->get('/tipo/{type}', 'App\Http\Controllers\User\UserController:serveList')->add(new AuthMiddleware())->setName('usuarios.serveList');
     $this->get('/list/{type}', 'App\Http\Controllers\User\UserController:list')->add(new AuthMiddleware())->setName('usuarios.list');

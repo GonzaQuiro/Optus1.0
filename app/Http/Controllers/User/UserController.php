@@ -46,10 +46,27 @@ class UserController extends BaseController
 
     public function serveEdit(Request $request, Response $response, $params)
     {
-        $user = User::find((int) $params['id']);
+        $id = (int) $params['id'];
+        $user = User::find($id);
         abort_if($request, $response, !$user, true, 404);
-        $data = $user->is_admin ? ['type' => 'admin'] : ($user->is_customer ? ['type' => 'client'] : ['type' => 'offerer']);
 
+        $storedToken = $_SESSION['edit_token'][$id] ?? null;
+
+        if (!$storedToken) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'Acceso no autorizado. No se generó el token correctamente.'
+            ], 403);
+        }
+
+        // Token válido, se consume (uso único)
+        unset($_SESSION['edit_token'][$id]);
+
+        $data = $user->is_admin
+            ? ['type' => 'admin']
+            : ($user->is_customer
+                ? ['type' => 'client']
+                : ['type' => 'offerer']);
 
         return $this->render($response, 'usuarios/edit.tpl', [
             'page' => 'usuarios',
@@ -57,7 +74,27 @@ class UserController extends BaseController
             'id' => $params['id'],
             'title' => 'Edición Usuario',
             'urlBack' => route('usuarios.serveList', $data),
-            'type' => $user->is_admin ? 'admin' : ($user->is_customer ? 'client' : 'offerer')
+            'type' => $data['type']
+        ]);
+    }
+
+    public function guardarIdEdicion(Request $request, Response $response)
+    {
+        $id = $request->getParsedBody()['id'] ?? null;
+
+        if (!$id || !is_numeric($id)) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'ID inválido.'
+            ], 400);
+        }
+
+        
+        // ✅ Guardar token como un uso único por ID
+        $_SESSION['edit_token'][$id] = true;
+
+        return $this->json($response, [
+            'success' => true
         ]);
     }
 

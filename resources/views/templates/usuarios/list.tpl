@@ -123,11 +123,12 @@
                         {/if}
                         <td style="text-align: center;">
 
-                            <a data-bind="attr: {literal}{href: '/usuarios/edicion/' + Id}{/literal}"
-                                class="btn btn-xs green" title="Editar">
+                            <a href="javascript:void(0);" class="btn btn-xs green"
+                                data-bind="click: function() { $root.Editar(Id) }">
                                 Editar
                                 <i class="fa fa-pencil"></i>
                             </a>
+                     
                             <a data-bind="attr: {literal}{ href: '/usuarios/edicion/' + Id + '/permisos' }{/literal}"
                                 class="btn btn-xs green" title="Permisos">
                                 Permisos
@@ -159,6 +160,18 @@
 
             this.List = ko.observableArray(data.list);
             this.Breadcrumbs = ko.observableArray(data.breadcrumbs);
+
+            self.Editar = function (id) {
+                $.post('/usuarios/guardar-id-edicion', { id: id }, function(response) {
+                    if (response.success) {
+                        window.location.href = '/usuarios/edicion/' + id;
+                    } else {
+                        swal('Error', response.message, 'error');
+                    }
+                }).fail(function () {
+                    swal('Error', 'No se pudo iniciar la edición.', 'error');
+                });
+            };
 
             this.Eliminar = function(id) {
                 swal({
