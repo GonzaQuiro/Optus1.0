@@ -129,21 +129,22 @@
                                 <i class="fa fa-pencil"></i>
                             </a>
                      
-                            <a data-bind="attr: {literal}{ href: '/usuarios/edicion/' + Id + '/permisos' }{/literal}"
-                                class="btn btn-xs green" title="Permisos">
+                            <a href="javascript:void(0);" class="btn btn-xs green"
+                                data-bind="click: function() { $root.Permisos(Id) }">
                                 Permisos
                                 <i class="fa fa-lock"></i>
                             </a>
+
                             <a data-bind="click: $root.Eliminar.bind($data, Id)" class="btn btn-xs btn-danger"
                                 title="Eliminar">
                                 Eliminar
                                 <i class="fa fa-trash-o"></i>
                             </a>
-                            <a data-bind="attr: {literal}{href: '/usuarios/detalle/' + Id}{/literal}"
-                                class="btn btn-xs green" title="Detalle">
-                                Detalle
-                                <i class="fa fa-show"></i>
+                            <a href="javascript:void(0);" class="btn btn-xs green"
+                                data-bind="click: function() { $root.Detalle(Id) }">
+                                Detalle <i class="fa fa-show"></i>
                             </a>
+
                         </td>
                     </tr>
                 </tbody>
@@ -172,6 +173,31 @@
                     swal('Error', 'No se pudo iniciar la edición.', 'error');
                 });
             };
+
+            self.Permisos = function (id) {
+                $.post('/usuarios/guardar-id-permisos', { id: id }, function(response) {
+                    if (response.success) {
+                        window.location.href = '/usuarios/edicion/' + id + '/permisos';
+                    } else {
+                        swal('Error', response.message, 'error');
+                    }
+                }).fail(function () {
+                    swal('Error', 'No se pudo iniciar la edición de permisos.', 'error');
+                });
+            };
+
+            self.Detalle = function (id) {
+                $.post('/usuarios/guardar-id-detalle', { id: id }, function(response) {
+                    if (response.success) {
+                        window.location.href = '/usuarios/detalle/' + id;
+                    } else {
+                        swal('Error', response.message, 'error');
+                    }
+                }).fail(function () {
+                    swal('Error', 'No se pudo acceder al detalle del usuario.', 'error');
+                });
+            };
+
 
             this.Eliminar = function(id) {
                 swal({

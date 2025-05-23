@@ -92,20 +92,23 @@
                                         </a>
                                         <!-- /ko -->
                                     {/if}
-                                    <a data-bind="attr: {literal}{ href: '/empresas/{/literal}{$tipo}{literal}/detalle/' + Id()}{/literal}"
-                                        class="btn btn-xs green" title="Ver Detalle">
+
+                                    <a href="javascript:void(0);" class="btn btn-xs green"
+                                        data-bind="click: function() { $root.VerDetalleEmpresa(Id()) }" title="Ver Detalle">
                                         Ver Detalle
                                         <i class="fa fa-eye"></i>
                                     </a>
-                                    <a data-bind="attr: {literal}{ href: '/empresas/{/literal}{$tipo}{literal}/edicion/' + Id()}{/literal}"
-                                        class="btn btn-xs green" title="Editar">
+
+                                    <a href="javascript:void(0);" class="btn btn-xs green"
+                                        data-bind="click: function() { $root.EditarEmpresa(Id()) }" title="Editar">
                                         Editar
                                         <i class="fa fa-pencil"></i>
                                     </a>
-                                    <!-- <a data-bind="attr: {literal}{ href: '/empresas/{/literal}{$tipo}{literal}/usuarios/' + Id()}{/literal}" class="btn btn-xs btn-warning" title="Usuarios">
+
+                                    <!--<a data-bind="attr: {literal}{ href: '/empresas/{/literal}{$tipo}{literal}/usuarios/' + Id()}{/literal}" class="btn btn-xs btn-warning" title="Usuarios">
                                         Ver Usuarios 
                                         <i class="fa fa-user"></i>
-                                </a> -->
+                                     </a> -->
                                     {if isAdmin()}
                                         <a data-bind="click: $root.Delete.bind($data, Id())" class="btn btn-xs btn-danger"
                                             title="Eliminar">
@@ -206,6 +209,31 @@
 
         var EmpresasListado = function(data) {
             var self = this;
+
+            self.EditarEmpresa = function(id) {
+                $.post('/empresas/guardar-id-edicion', { id: id }, function(response) {
+                    if (response.success) {
+                        window.location.href = '/empresas/' + params[1] + '/edicion/' + id;
+                    } else {
+                        swal('Error', response.message, 'error');
+                    }
+                }).fail(function () {
+                    swal('Error', 'No se pudo iniciar la edición.', 'error');
+                });
+            };
+
+            self.VerDetalleEmpresa = function(id) {
+                $.post('/empresas/guardar-id-detalle', { id: id }, function(response) {
+                    if (response.success) {
+                        window.location.href = '/empresas/' + params[1] + '/detalle/' + id;
+                    } else {
+                        swal('Error', response.message, 'error');
+                    }
+                }).fail(function () {
+                    swal('Error', 'No se pudo abrir el detalle.', 'error');
+                });
+            };
+
 
             this.Filters = ko.observable();
             this.ListaEmpresas = ko.observableArray();

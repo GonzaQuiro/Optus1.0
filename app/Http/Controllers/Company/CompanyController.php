@@ -39,28 +39,69 @@ class CompanyController extends BaseController
 
     public function serveEdit(Request $request, Response $response, $params)
     {
-        $company = null;
+        define('TOKEN_SECRET_KEY', 'Optus1.0');
+
+        $id = (int) $params['id'];
+        $sessionId = session_id();
+        $expectedToken = hash_hmac('sha256', $id . $sessionId, TOKEN_SECRET_KEY);
+        $storedToken = $_SESSION['edit_company_token'][$id] ?? null;
+
+        if (!$storedToken || $storedToken !== $expectedToken) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'Acceso no autorizado. Token inválido.'
+            ], 403);
+        }
+
+        // Consumir el token (uso único)
+        unset($_SESSION['edit_company_token'][$id]);
+
         switch ($params['role']) {
             case 'client':
-                $company = CustomerCompany::find($params['id']);
+                $company = CustomerCompany::find($id);
                 $title = 'Edición Cliente';
                 break;
             default:
-                $company = OffererCompany::find($params['id']);
+                $company = OffererCompany::find($id);
                 $title = 'Edición Proveedor';
                 break;
         }
+
         abort_if($request, $response, !$company, true, 404);
 
         return $this->render($response, 'empresas/edit.tpl', [
             'page' => 'empresas',
             'accion' => 'edicion-' . $params['role'],
             'tipo' => $params['role'],
-            'id' => $params['id'],
+            'id' => $id,
             'title' => $title,
             'userType' => user()->type->code
         ]);
     }
+
+
+    public function guardarIdEdicion(Request $request, Response $response)
+    {
+        define('TOKEN_SECRET_KEY', 'Optus1.0');
+
+        $id = $request->getParsedBody()['id'] ?? null;
+
+        if (!$id || !is_numeric($id)) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'ID inválido.'
+            ], 400);
+        }
+
+        $sessionId = session_id();
+        $token = hash_hmac('sha256', $id . $sessionId, TOKEN_SECRET_KEY);
+        $_SESSION['edit_company_token'][$id] = $token;
+
+        return $this->json($response, [
+            'success' => true
+        ]);
+    }
+
 
     public function serveProfileEdit(Request $request, Response $response, $params)
     {
@@ -83,18 +124,33 @@ class CompanyController extends BaseController
 
     public function serveDetail(Request $request, Response $response, $params)
     {
-        $company = null;
+        define('TOKEN_SECRET_KEY', 'Optus1.0');
+        $id = (int) $params['id'];
+
         switch ($params['role']) {
             case 'client':
-                $company = CustomerCompany::find($params['id']);
+                $company = CustomerCompany::find($id);
                 $title = 'Detalle Cliente';
                 break;
             default:
-                $company = OffererCompany::find($params['id']);
+                $company = OffererCompany::find($id);
                 $title = 'Detalle Proveedor';
                 break;
         }
+
         abort_if($request, $response, !$company, true, 404);
+
+        $expectedToken = hash_hmac('sha256', $id . session_id(), TOKEN_SECRET_KEY);
+        $storedToken = $_SESSION['detalle_token'][$id] ?? null;
+
+        if (!$storedToken || $storedToken !== $expectedToken) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'Acceso no autorizado. Token inválido.'
+            ], 403);
+        }
+
+        unset($_SESSION['detalle_token'][$id]);
 
         return $this->render($response, 'empresas/detail.tpl', [
             'page' => 'empresas',
@@ -104,6 +160,28 @@ class CompanyController extends BaseController
             'title' => $title
         ]);
     }
+
+
+    public function guardarIdDetalle(Request $request, Response $response)
+    {
+        define('TOKEN_SECRET_KEY', 'Optus1.0');
+        $id = $request->getParsedBody()['id'] ?? null;
+
+        if (!$id || !is_numeric($id)) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'ID inválido.'
+            ], 400);
+        }
+
+        $token = hash_hmac('sha256', $id . session_id(), TOKEN_SECRET_KEY);
+        $_SESSION['detalle_token'][$id] = $token;
+
+        return $this->json($response, [
+            'success' => true
+        ]);
+    }
+
 
     public function serveCreate(Request $request, Response $response, $params)
     {

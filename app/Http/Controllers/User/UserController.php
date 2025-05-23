@@ -46,27 +46,28 @@ class UserController extends BaseController
 
     public function serveEdit(Request $request, Response $response, $params)
     {
+        define('TOKEN_SECRET_KEY', 'Optus1.0');
+
         $id = (int) $params['id'];
         $user = User::find($id);
         abort_if($request, $response, !$user, true, 404);
 
+        // Recalcular token esperado
+        $expectedToken = hash_hmac('sha256', $id . session_id(), TOKEN_SECRET_KEY);
         $storedToken = $_SESSION['edit_token'][$id] ?? null;
 
-        if (!$storedToken) {
+        if (!$storedToken || $storedToken !== $expectedToken) {
             return $this->json($response, [
                 'success' => false,
-                'message' => 'Acceso no autorizado. No se generó el token correctamente.'
+                'message' => 'Acceso no autorizado. Token inválido.'
             ], 403);
         }
 
-        // Token válido, se consume (uso único)
         unset($_SESSION['edit_token'][$id]);
 
         $data = $user->is_admin
             ? ['type' => 'admin']
-            : ($user->is_customer
-                ? ['type' => 'client']
-                : ['type' => 'offerer']);
+            : ($user->is_customer ? ['type' => 'client'] : ['type' => 'offerer']);
 
         return $this->render($response, 'usuarios/edit.tpl', [
             'page' => 'usuarios',
@@ -78,8 +79,11 @@ class UserController extends BaseController
         ]);
     }
 
+
     public function guardarIdEdicion(Request $request, Response $response)
     {
+        define('TOKEN_SECRET_KEY', 'Optus1.0');
+
         $id = $request->getParsedBody()['id'] ?? null;
 
         if (!$id || !is_numeric($id)) {
@@ -89,43 +93,83 @@ class UserController extends BaseController
             ], 400);
         }
 
-        
-        // ✅ Guardar token como un uso único por ID
-        $_SESSION['edit_token'][$id] = true;
+        // ✅ Generar token HMAC con ID + sesión
+        $token = hash_hmac('sha256', $id . session_id(), TOKEN_SECRET_KEY);
+
+        $_SESSION['edit_token'][$id] = $token;
 
         return $this->json($response, [
             'success' => true
         ]);
     }
 
+
     public function serveDetail(Request $request, Response $response, $params)
-        {
-            $user = null;
-            $type = $params['type'] ?? null;
+    {   
+        define('TOKEN_SECRET_KEY', 'Optus1.0');
 
-            if (isAdmin()) {
-                $user = User::find((int) $params['id']);
-            } else if (isCustomer()) {
-                $user = user()->getRelatedByRoleSlug()->where('id', (int) $params['id'])->first();
-            }
-
-            abort_if($request, $response, !$user, true, 404);
-
-            if (!$type) {
-                $type = $user->is_admin ? 'admin' : ($user->is_customer ? 'client' : 'offerer');
-            }
-
-            $data = ['type' => $type];
-
-            return $this->render($response, 'usuarios/detail.tpl', [
-                'page' => 'usuarios',
-                'accion' => 'detalle-usuario',
-                'id' => $params['id'],
-                'title' => 'Detalle Usuario',
-                'urlBack' => route('usuarios.serveList', $data),
-                'type' => $type
-            ]);
+        $id = (int) $params['id'];
+        $storedToken = $_SESSION['detalle_token'][$id] ?? null;
+        $expectedToken = hash_hmac('sha256', $id . session_id(), TOKEN_SECRET_KEY);
+    
+        if (!$storedToken || $storedToken !== $expectedToken) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'Acceso no autorizado. Token inválido.'
+            ], 403);
         }
+    
+        unset($_SESSION['detalle_token'][$id]); // uso único
+        
+        $user = null;
+        $type = $params['type'] ?? null;
+
+        if (isAdmin()) {
+            $user = User::find((int) $params['id']);
+        } else if (isCustomer()) {
+            $user = user()->getRelatedByRoleSlug()->where('id', (int) $params['id'])->first();
+        }
+
+        abort_if($request, $response, !$user, true, 404);
+
+        if (!$type) {
+            $type = $user->is_admin ? 'admin' : ($user->is_customer ? 'client' : 'offerer');
+        }
+
+        $data = ['type' => $type];
+
+        return $this->render($response, 'usuarios/detail.tpl', [
+            'page' => 'usuarios',
+            'accion' => 'detalle-usuario',
+            'id' => $params['id'],
+            'title' => 'Detalle Usuario',
+            'urlBack' => route('usuarios.serveList', $data),
+            'type' => $type
+        ]);
+    }
+
+    public function guardarIdDetalle(Request $request, Response $response)
+    {
+        define('TOKEN_SECRET_KEY', 'Optus1.0');
+    
+        $id = $request->getParsedBody()['id'] ?? null;
+    
+        if (!$id || !is_numeric($id)) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'ID inválido.'
+            ], 400);
+        }
+    
+        $sessionId = session_id();
+        $token = hash_hmac('sha256', $id . $sessionId, TOKEN_SECRET_KEY);
+        $_SESSION['detalle_token'][$id] = $token;
+    
+        return $this->json($response, [
+            'success' => true
+        ]);
+    }
+        
 
     public function serveCreate(Request $request, Response $response, $params)
     {
@@ -154,10 +198,14 @@ class UserController extends BaseController
             if ($type == 'admin') {
                 $users = User::where('type_id', 1)->OrWhere('type_id', 2)->get();
             } else if ($type == 'client') {
-                $users = User::whereIn('type_id', [3, 4, 5, 7, 8])->get(); //id de tipo de usuario
+                $users = User::whereIn('type_id', [3, 4, 5, 7, 8])->get();
+            
                 if (user()->is_customer) {
-                    $companyId = user()->customer_company->id; // Obtener el ID de la compañía del cliente
-                    $users = User::where('customer_company_id', $companyId)->get(); // Obtener solo los usuarios de la misma compañía
+                    $companyId = user()->customer_company->id;
+                    $users = User::where('customer_company_id', $companyId)
+                                 ->whereIn('type_id', [3, 4, 5, 7, 8])
+                                 ->where('id', '!=', user()->id)
+                                 ->get();
                 }
             } else if ($type == 'offerer') {
                 if (user()->is_admin) {

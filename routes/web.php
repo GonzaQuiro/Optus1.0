@@ -157,9 +157,18 @@ app()->group('/concursos', function () {
 app()->group('/usuarios', function () {
     // USUARIOS
 
+    //Control vertical
     $this->post('/guardar-id-edicion', 'App\Http\Controllers\User\UserController:guardarIdEdicion')
      ->add(new AuthMiddleware())
      ->setName('usuarios.guardarIdEdicion');
+
+     $this->post('/guardar-id-permisos', 'App\Http\Controllers\User\PermissionController:guardarIdPermisos')
+     ->add(new AuthMiddleware())
+     ->setName('usuarios.guardarIdPermisos');
+
+     $this->post('/guardar-id-detalle', 'App\Http\Controllers\User\UserController:guardarIdDetalle')
+     ->add(new AuthMiddleware())
+     ->setName('usuarios.guardarIdDetalle');
      
     // Listado
     $this->get('/tipo/{type}', 'App\Http\Controllers\User\UserController:serveList')->add(new AuthMiddleware())->setName('usuarios.serveList');
@@ -187,6 +196,21 @@ app()->group('/usuarios', function () {
 
 // EMPRESAS
 app()->group('/empresas', function () {
+
+    //Control vertical
+
+    $this->post('/guardar-id-edicion', 'App\Http\Controllers\Company\CompanyController:guardarIdEdicion')
+     ->add(new AuthMiddleware())
+     ->setName('empresas.guardarIdEdicion');
+
+     $this->post('/guardar-id-detalle', 'App\Http\Controllers\Company\CompanyController:guardarIdDetalle')
+     ->add(new AuthMiddleware())
+     ->setName('empresas.guardarIdDetalle');
+
+     $this->post('/guardar-id-usuarios', 'App\Http\Controllers\Company\CompanyController:guardarIdUsuarios')
+     ->add(new AuthMiddleware())
+     ->setName('empresas.guardarIdUsuarios');
+
     // Listado
     $this->get('/{role}', 'App\Http\Controllers\Company\CompanyController:serveList')->add(new AuthMiddleware())->setName('empresas.serveList');
     $this->get('/{role}/list', 'App\Http\Controllers\Company\CompanyController:list')->add(new AuthMiddleware())->setName('empresas.list');

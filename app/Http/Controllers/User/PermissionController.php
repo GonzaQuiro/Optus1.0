@@ -13,18 +13,62 @@ class PermissionController extends BaseController
 {
     public function serveEdit(Request $request, Response $response, $params)
     {
-        $user = User::find((int) $params['id']);
+        define('TOKEN_SECRET_KEY', 'Optus1.0');
+
+        $id = (int) $params['id'];
+        $user = User::find($id);
         abort_if($request, $response, !$user, true, 404);
-        $data = $user->is_admin ? ['type' => 'admin'] : ($user->is_customer ? ['type' => 'client'] : ['type' => 'offerer']);
+
+        $expectedToken = hash_hmac('sha256', $id . session_id(), TOKEN_SECRET_KEY);
+        $storedToken = $_SESSION['perm_token'][$id] ?? null;
+
+        if (!$storedToken || $storedToken !== $expectedToken) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'Acceso no autorizado. Token inválido.'
+            ], 403);
+        }
+
+        unset($_SESSION['perm_token'][$id]);
+
+        $data = $user->is_admin
+            ? ['type' => 'admin']
+            : ($user->is_customer
+                ? ['type' => 'client']
+                : ['type' => 'offerer']);
 
         return $this->render($response, 'usuarios/permissions.tpl', [
             'page' => 'usuarios',
             'accion' => 'permisos',
-            'id' => $params['id'],
+            'id' => $id,
             'title' => 'Permisos',
             'urlBack' => route('usuarios.serveList', $data)
         ]);
     }
+
+    public function guardarIdPermisos(Request $request, Response $response)
+    {
+        define('TOKEN_SECRET_KEY', 'Optus1.0');
+
+        $id = $request->getParsedBody()['id'] ?? null;
+
+        if (!$id || !is_numeric($id)) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'ID inválido.'
+            ], 400);
+        }
+
+        $sessionId = session_id();
+        $token = hash_hmac('sha256', $id . $sessionId, TOKEN_SECRET_KEY);
+        $_SESSION['perm_token'][$id] = $token;
+
+        return $this->json($response, [
+            'success' => true
+        ]);
+    }
+
+
 
     public function edit(Request $request, Response $response, $params)
     {
