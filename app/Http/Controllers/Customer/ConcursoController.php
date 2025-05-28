@@ -417,23 +417,66 @@ class ConcursoController extends BaseController
         try {
             
             $user = user();
-            $created =
-                isAdmin() ?
-                Concurso::all() :
-                $user->customer_company->getAllConcursosByCompany()->get();
-            $evaluating =
-                isAdmin() ?
-                collect() :
-                $user->concursos_evalua;
-            $created_with_trashed =
-                isAdmin() ?
-                Concurso::withTrashed()->get() :
-                $user->customer_company->getAllConcursosByCompany()->withTrashed()->get();
-            $deleted_with_trashed =
-                isAdmin() ?
-                Concurso::where([
-                ['deleted_at', '!=', null]])->get():
-                $user->customer_company->getAllConcursosByCompany()->withTrashed()->get();
+            // CREATED
+            if (isAdmin()) {
+                $created = Concurso::all();
+            } else if ($user->type_id != 7 && $user->type_id != 3) {
+                $created = $user->customer_company->getAllConcursosByCompany()->get();
+            } else if ($user->type_id == 3) {
+                $created = $user->customer_company->getAllConcursosByCompany()
+                    ->where('id_cliente', $user->id)
+                    ->get();
+            } else {
+                $created = Concurso::where([
+                    ['ficha_tecnica_usuario_evalua', '=', $user->id]
+                ])->get();
+            }
+
+            // EVALUATING
+            if (isAdmin()) {
+                $evaluating = collect();
+            } else {
+                $evaluating = $user->concursos_evalua;
+            }
+
+            // CREATED WITH TRASHED
+            if (isAdmin()) {
+                $created_with_trashed = Concurso::withTrashed()->get();
+            } else if ($user->type_id != 7 && $user->type_id != 3) {
+                $created_with_trashed = $user->customer_company->getAllConcursosByCompany()->withTrashed()->get();
+            } else if ($user->type_id == 3) {
+                $created_with_trashed = $user->customer_company->getAllConcursosByCompany()
+                    ->where('id_cliente', $user->id)
+                    ->withTrashed()
+                    ->get();
+            } else {
+                $created_with_trashed = Concurso::where([
+                    ['ficha_tecnica_usuario_evalua', '=', $user->id],
+                    ['deleted_at', '!=', null]
+                ])->get();
+            }
+
+            // DELETED WITH TRASHED
+            if (isAdmin()) {
+                $deleted_with_trashed = Concurso::where([
+                    ['deleted_at', '!=', null]
+                ])->get();
+            } else if ($user->type_id != 7 && $user->type_id != 3) {
+                $deleted_with_trashed = $user->customer_company->getAllConcursosByCompany()->withTrashed()->get();
+            } else if ($user->type_id == 3) {
+                $deleted_with_trashed = $user->customer_company->getAllConcursosByCompany()
+                    ->where('id_cliente', $user->id)
+                    ->withTrashed()
+                    ->get();
+            } else {
+                $deleted_with_trashed = Concurso::where([
+                    ['ficha_tecnica_usuario_evalua', '=', $user->id],
+                    ['deleted_at', '!=', null]
+                ])->get();
+            }
+
+
+
             
                 //Check if Knockout has passed filters
                 if ($filters) {
@@ -443,7 +486,7 @@ class ConcursoController extends BaseController
                     if ($searchTerm) {
                         //Checks if search is numeric, (ID search)
                         if (is_numeric($searchTerm)) {
-                            
+
                             //Exact ID match
                             $created = $created->filter(function ($item) use ($searchTerm) {
                                 return $item->id == $searchTerm || $item->solicitud_compra == $searchTerm;
@@ -454,13 +497,13 @@ class ConcursoController extends BaseController
                             });
                             
                             $created_with_trashed = $created_with_trashed->filter(function ($item) use ($searchTerm) {
-                                return $item->id == $searchTerm || $item->solicitud_compra == $searchTerm;
-                            });
+                                 return $item->id == $searchTerm || $item->solicitud_compra == $searchTerm;
+                             });
+                            
 
                         } else {
                             //Plain text search in name and business_name
                             $created = $created->filter(function ($item) use ($searchTerm) {
-
                                 
                                 return 
                                     !!stristr($item->nombre, trim($searchTerm)) ||
@@ -501,7 +544,7 @@ class ConcursoController extends BaseController
                     }
                 }
 
-            // EN PREPARACI脫N
+            // EN PREPARACIóN
             $concursos = collect();
 
             $concursos = $concursos->merge(
@@ -552,7 +595,7 @@ class ConcursoController extends BaseController
                 );
             }
 
-            // PROPUESTAS T脡CNICAS
+            // PROPUESTAS TéCNICAS
 
             $etapas_tecnica = array_merge(
                 [
@@ -602,7 +645,7 @@ class ConcursoController extends BaseController
                 );
             }
 
-            // PROPUESTAS ECON脫MICAS
+            // PROPUESTAS ECONóMICAS
             $concursos = collect();
             $concursos = $concursos->merge(
                 $created
@@ -617,12 +660,12 @@ class ConcursoController extends BaseController
                     $fecha = $concurso->fecha_limite_economicas->format('d-m-Y');
                     $hora = $concurso->fecha_limite_economicas->format('H:i:s');
 
-                    // Fecha presentaci贸n en curso o todav铆a hay oferentes sin presentar oferta.
+                    // Fecha presentación en curso o todavía hay oferentes sin presentar oferta.
                     if ($concurso->fecha_limite_economicas > Carbon::now()) {
                         $status_text = 'Licitando';
                     } elseif ($concurso->adjudicacion_anticipada && $oferentes->where('has_economica_presentada', false)->count() > 0) {
                         $status_text = 'Fin parcial';
-                        // Fecha presentaci贸n vencida o todos presentaron oferta.
+                        // Fecha presentación vencida o todos presentaron oferta.
                     } else {
                         $status_text = 'Finalizado';
                     }
@@ -633,15 +676,15 @@ class ConcursoController extends BaseController
                     $fecha = $concurso->inicio_subasta->format('d-m-Y');
                     $hora = $concurso->inicio_subasta->format('H:i:s');
 
-                    // La subasta no inici贸.
+                    // La subasta no inició.
                     if ($concurso->timeleft) {
                         $status_text = 'No iniciado';
                         $cantidad = 0;
-                        // La subasta est谩 en curso.
+                        // La subasta está en curso.
                     } elseif ($concurso->countdown) {
                         $status_text = 'Licitando';
                         $cantidad = 0;
-                        // La subasta termin贸.
+                        // La subasta terminó.
                     } else {
                         $status_text = 'Finalizado';
                         $cantidad = $concurso->oferentes
@@ -695,7 +738,7 @@ class ConcursoController extends BaseController
                 );
             }
 
-            // EVALUACI脫N
+            // EVALUACIóN
             $concursos = collect();
             $concursos = $concursos
                 ->merge(
@@ -745,7 +788,21 @@ class ConcursoController extends BaseController
 
             // CANCELADOS
                 $concursos = collect();
-                $concursos = $user->customer_company->getAllConcursosByCompany()->onlyTrashed()->get();
+               if ($user->type_id == 7) {
+                    $concursos = Concurso::where([
+                        ['deleted_at', '!=', null],
+                        ['ficha_tecnica_usuario_evalua', '=', $user->id]
+                    ])->get();
+                } else if ($user->type_id == 3) {
+                    $concursos = $user->customer_company->getAllConcursosByCompany()
+                        ->where('id_cliente', $user->id)
+                        ->onlyTrashed()
+                        ->get();
+                } else {
+                    $concursos = $user->customer_company->getAllConcursosByCompany()
+                        ->onlyTrashed()
+                        ->get();
+                }
 
                 // Aplico los mismos filtros que al principio
                 if ($filters) {
