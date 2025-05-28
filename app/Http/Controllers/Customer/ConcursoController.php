@@ -117,7 +117,22 @@ class ConcursoController extends BaseController
 
     public function serveEdit(Request $request, Response $response, $params)
     {
-        $concurso = user()->customer_company->getAllConcursosByCompany()->find($params['id']);
+        define('TOKEN_SECRET_KEY', 'Optus1.0');
+
+        $id = (int) $params['id'];
+        $expectedToken = hash_hmac('sha256', $id . session_id(), TOKEN_SECRET_KEY);
+        $storedToken = $_SESSION['edit_token'][$id] ?? null;
+
+        if (!$storedToken || $storedToken !== $expectedToken) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'Acceso no autorizado. Token inválido.'
+            ], 403);
+        }
+
+        unset($_SESSION['edit_token'][$id]);
+
+        $concurso = user()->customer_company->getAllConcursosByCompany()->find($id);
         abort_if($request, $response, !$concurso, true, 404);
 
         $title = null;
@@ -141,7 +156,7 @@ class ConcursoController extends BaseController
             'page' => 'concursos',
             'accion' => 'edicion-' . $params['type'],
             'tipo' => $params['type'],
-            'id' => $params['id'],
+            'id' => $id,
             'title' => $title,
             'description' => $description,
             'concurso_id' => null,
@@ -149,11 +164,50 @@ class ConcursoController extends BaseController
         ]);
     }
 
+    public function guardarIdEdicion(Request $request, Response $response)
+    {
+        define('TOKEN_SECRET_KEY', 'Optus1.0');
+
+        $id = $request->getParsedBody()['id'] ?? null;
+
+        if (!$id || !is_numeric($id)) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'ID inválido.'
+            ], 400);
+        }
+
+        $sessionId = session_id();
+        $token = hash_hmac('sha256', $id . $sessionId, TOKEN_SECRET_KEY);
+        $_SESSION['edit_token'][$id] = $token;
+
+        return $this->json($response, [
+            'success' => true
+        ]);
+    }
+
+
     public function serveCreate(Request $request, Response $response, $params)
     {
         $title = null;
         $description = null;
         $concurso_id = $request->getQueryParam('concurso');
+
+        // Si viene con ID de concurso, validamos el token
+        if ($concurso_id) {
+            define('TOKEN_SECRET_KEY', 'Optus1.0');
+            $expectedToken = hash_hmac('sha256', $concurso_id . session_id(), TOKEN_SECRET_KEY);
+            $storedToken = $_SESSION['edit_token'][$concurso_id] ?? null;
+
+            if (!$storedToken || $storedToken !== $expectedToken) {
+                return $this->json($response, [
+                    'success' => false,
+                    'message' => 'Acceso no autorizado. Token inválido para copiar concurso.'
+                ], 403);
+            }
+
+            unset($_SESSION['edit_token'][$concurso_id]); // Consumimos el token una sola vez
+        }
 
         switch ($params['type']) {
             case Concurso::TYPES['online']:

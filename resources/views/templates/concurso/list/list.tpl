@@ -29,11 +29,9 @@
             {if isCustomer() || isAdmin()}
                 <div class="portlet-title">
                     <div class="btn-group">
-                    <!-- ko if: User.Tipo !== 5 -->
                         <a href="/concursos/{if $tipo eq 'online'}online{elseif $tipo eq 'sobrecerrado'}sobrecerrado{elseif $tipo eq 'go'}go{/if}/nuevo" id="sample_editable_1_new" class="btn sbold green"> Agregar Nueva {if $tipo eq 'online'}Subasta{elseif $tipo eq 'sobrecerrado'}Licitación{elseif $tipo eq 'go'}Go{/if}
                             <i class="fa fa-plus"></i>
                         </a>
-                    <!-- /ko -->
                     </div>
                 </div>
             {/if}
@@ -87,14 +85,19 @@
                             </td>
                             <td class="text-center vertical-align-middle">
                                 {if isAdmin() || isCustomer()}
-                                    <a data-bind="attr: {literal}{href: '/concursos/{/literal}{if $tipo eq 'online'}online{elseif $tipo eq 'sobrecerrado'}sobrecerrado{elseif $tipo eq 'go'}go{/if}{literal}/edicion/' + Id}{/literal}, visible: User.Tipo !== 5" class="btn btn-xs green" title="Editar">
+                                    <a href="javascript:void(0);"
+                                        data-bind="click: function() { $root.EditarConcurso(Id, '{$tipo}') }, visible: User.Tipo !== 5"
+                                        class="btn btn-xs green" title="Editar">
                                         Editar 
                                         <i class="fa fa-pencil"></i>
                                     </a>
-                                    <a data-bind="attr: {literal}{href: '/concursos/{/literal}{if $tipo eq 'online'}online{elseif $tipo eq 'sobrecerrado'}sobrecerrado{elseif $tipo eq 'go'}go{/if}{literal}/nuevo?concurso=' + Id}{/literal}" class="btn btn-xs purple" title="Copiar">
+
+                                    <a href="javascript:void(0);" class="btn btn-xs purple" title="Copiar"
+                                        data-bind="click: function() { $root.CopiarConcurso(Id, '{$tipo}') }">
                                         Copiar 
                                         <i class="fa fa-copy"></i>
                                     </a>
+
                                     <a data-bind="click: function () {literal}{ $root.Eliminar(Id) }{/literal}, visible: User.Tipo !== 5" class="btn btn-xs btn-danger" title="Eliminar">
                                         Eliminar
                                         <i class="fa fa-trash-o"></i>
@@ -116,6 +119,31 @@
 var ConcursosListado = function (data) {
     var self = this;
     console.log("Usuario", User)
+
+    this.EditarConcurso = function(id, tipo) {
+        $.post('/concursos/guardar-id-edicion', { id: id }, function(response) {
+            if (response.success) {
+                window.location.href = '/concursos/' + tipo + '/edicion/' + id;
+            } else {
+                swal('Error', response.message, 'error');
+            }
+        }).fail(function () {
+            swal('Error', 'No se pudo iniciar la edición.', 'error');
+        });
+    };
+
+    this.CopiarConcurso = function(id, tipo) {
+        $.post('/concursos/guardar-id-edicion', { id: id }, function(response) {
+            if (response.success) {
+                window.location.href = '/concursos/' + tipo + '/nuevo?concurso=' + id;
+            } else {
+                swal('Error', response.message, 'error');
+            }
+        }).fail(function () {
+            swal('Error', 'No se pudo iniciar la copia del concurso.', 'error');
+        });
+    };
+
 
     this.Eliminar = function (id) {
         swal({
