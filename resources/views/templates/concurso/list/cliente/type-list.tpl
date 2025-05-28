@@ -103,11 +103,13 @@
                                 <td data-bind="text: TipoConcurso()" class="vertical-align-middle"></td>
 
                                 <td class="text-center vertical-align-middle">
-                                    <a data-bind="attr: {literal}{ href: '/concursos/' + TipoConcursoPath() + '/edicion/' + Id() }{/literal}"
+                                    <a href="javascript:void(0);"
+                                        data-bind="click: function() { $root.goToEdition(Id(), TipoConcursoPath()) }"
                                         class="btn btn-xs purple" title="Editar">
                                         Editar
                                         <i class="fa fa-edit"></i>
                                     </a>
+
                                     <a data-bind="click: $root.sendInvitations.bind($data, Id()), attr: {literal}{ data: Id(), 'disabled': !HabilitaEnvioInvitaciones() }{/literal}"
                                         class="btn btn-xs purple" title="Enviar invitaciones">
                                         Enviar invitaciones
@@ -188,6 +190,7 @@
                 </div>
             </div>
         </div>
+        
         <!-- /ko -->
         <div class="col-md-12">
             <div class="portlet box yellow-gold">
@@ -314,66 +317,7 @@
                     </table>
                 </div>
             </div>
-        </div>
-
-        <!--<div class="col-md-12">
-            <div class="portlet box yellow-gold">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class="fa fa-cogs"></i>
-                        <span class="caption-subject bold">Estrategia de liberación</span>
-                        <span class="caption-helper font-white" data-bind="text: Lists().ListaConcursosAdjudicados().length">
-                        </span>
-                    </div>
-                    <div class="tools">
-                        <a href="javascript:;" data-original-title="" data-bind="css: { 
-                            'collapse': Lists().ListaConcursosAdjudicados().length > 0,
-                            'expand': Lists().ListaConcursosAdjudicados().length == 0 
-                        }" title="">
-                        </a>
-                    </div>
-                </div>
-                <div class="portlet-body" data-bind="style: { 
-                    'display': Lists().ListaConcursosAdjudicados().length > 0 ? 'block' : 'none'
-                }">
-                    <table class="table table-striped table-bordered ListaConcursos" id="ListaConcursosAdjudicados">
-                        <thead>
-                            <tr>
-                                <th> Nº Concurso </th>
-                                <th> Nombre del concurso </th>
-                                <th> Solicitante </th>
-                                
-                                <th class="text-center"> Acciones </th>
-                            </tr>
-                        </thead>
-                        <tbody data-bind="dataTablesForEach : { data: Lists().ListaConcursosAdjudicados, options: { paging: false }}">
-                            <tr>
-                                <td data-bind="text: Id()" class="vertical-align-middle"></td>
-                                <td data-bind="text: Nombre()" class="vertical-align-middle"></td>
-                                <td data-bind="text: Solicitante()" class="vertical-align-middle"></td>
-                                <td data-bind="text: TipoOperacion()" class="vertical-align-middle"></td>
-                                <td class="text-center vertical-align-center">
-                                    <a data-bind="attr: { href: '/concursos/cliente/sobrecerrado/analisis-ofertas/' + Id() }" class="btn btn-xs blue" title="Ver">
-                                        Ver
-                                        <i class="fa fa-play"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-xs green" title="Aceptar" data-bind="click: function() { confirmAccept(Id()) }">
-                                        Aceptar
-                                        <i class="fa fa-check"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-xs red" title="Rechazar">
-                                        Rechazar
-                                        <i class="fa fa-times"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>v-->
-                          
-
+        </div>                          
 
         <div class="col-md-12">
             <div class="portlet box green">
@@ -680,6 +624,26 @@
                 }
             };
             this.Filters = ko.observable(new Filters(self));
+
+            this.goToEdition = function(idConcurso, tipoConcursoPath) {
+            $.blockUI();
+            Services.Post('/concursos/guardar-id-edicion', {
+                UserToken: User.Token,
+                id: idConcurso
+            },
+            (response) => {
+                $.unblockUI();
+                if (response.success) {
+                    window.location.href = '/concursos/' + tipoConcursoPath + '/edicion/' + idConcurso;
+                } else {
+                    swal('Error', response.message, 'error');
+                }
+            },
+            (error) => {
+                $.unblockUI();
+                swal('Error', error.message, 'error');
+            });
+        };
 
             // Conectar a la subasta online si esta ha iniciado.
             var query = '?id_cliente=' + User.Id + '&listado=true';
