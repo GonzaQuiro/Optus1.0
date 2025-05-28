@@ -85,25 +85,41 @@ class ConcursoController extends BaseController
     }
 
     public function serveDetail(Request $request, Response $response, $params)
-    {
+    {   
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        define('TOKEN_SECRET_KEY', 'Optus1.0');
+
+        $id = (int) $params['id'];
+
+        // VALIDAR TOKEN
+        $sessionId = session_id();
+        $expectedToken = hash_hmac('sha256', $id . $sessionId, TOKEN_SECRET_KEY);
+        $sessionToken = $_SESSION['edit_token'][$id] ?? null;
+
+        if ($expectedToken !== $sessionToken) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'Acceso no autorizado. Token inválido para acceder al detalle del concurso.'
+            ], 403);
+        }
+
+        // 🔥 Invalida el token después de usarlo
+        unset($_SESSION['edit_token'][$id]);
+
         if (isAdmin()) {
-            $concurso = Concurso::find((int) $params['id']);
+            $concurso = Concurso::find($id);
         } else {
             $user = user();
-            $concurso = $user->customer_company->getAllConcursosByCompany()->find($params['id']);
-            $concurso = $concurso ?? $user->concursos_evalua->find($params['id']);
+            $concurso = $user->customer_company->getAllConcursosByCompany()->find($id);
+            $concurso = $concurso ?? $user->concursos_evalua->find($id);
         }
+
         abort_if($request, $response, !$concurso, true, 404);
 
-        $title = null;
-        switch ($params['type']) {
-            case Concurso::TYPES['go']:
-                $title = getStepName($params['step'], true);
-                break;
-            default:
-                $title = getStepName($params['step'], false);
-                break;
-        }
+        $title = getStepName($params['step'], $params['type'] === Concurso::TYPES['go']);
 
         return $this->render($response, 'concurso/detail/customer/detail.tpl', [
             'page' => 'concursos',
@@ -116,17 +132,24 @@ class ConcursoController extends BaseController
     }
 
     public function serveEdit(Request $request, Response $response, $params)
-    {
+    {   
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
         define('TOKEN_SECRET_KEY', 'Optus1.0');
 
         $id = (int) $params['id'];
-        $expectedToken = hash_hmac('sha256', $id . session_id(), TOKEN_SECRET_KEY);
-        $storedToken = $_SESSION['edit_token'][$id] ?? null;
 
-        if (!$storedToken || $storedToken !== $expectedToken) {
+        // VALIDAR TOKEN
+        $sessionId = session_id();
+        $expectedToken = hash_hmac('sha256', $id . $sessionId, TOKEN_SECRET_KEY);
+        $sessionToken = $_SESSION['edit_token'][$id] ?? null;
+
+        if ($expectedToken !== $sessionToken) {
             return $this->json($response, [
                 'success' => false,
-                'message' => 'Acceso no autorizado. Token inválido.'
+                'message' => 'Acceso no autorizado. Token inválido para editar el concurso.'
             ], 403);
         }
 
@@ -164,8 +187,9 @@ class ConcursoController extends BaseController
         ]);
     }
 
-    public function guardarIdEdicion(Request $request, Response $response)
-    {
+    public function guardarTokenAcceso(Request $request, Response $response)
+    {   
+
         define('TOKEN_SECRET_KEY', 'Optus1.0');
 
         $id = $request->getParsedBody()['id'] ?? null;
@@ -179,6 +203,7 @@ class ConcursoController extends BaseController
 
         $sessionId = session_id();
         $token = hash_hmac('sha256', $id . $sessionId, TOKEN_SECRET_KEY);
+
         $_SESSION['edit_token'][$id] = $token;
 
         return $this->json($response, [

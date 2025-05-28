@@ -139,10 +139,11 @@ app()->group('/concursos', function () {
     $this->post('/invitations/acceptorreject', 'App\Http\Controllers\Offerer\InvitationController:acceptOrReject')->add(new AuthMiddleware())->setName('concursos.invitations.acceptOrReject');
 
     // CRUD
+    
     //Control vertical
-    $this->post('/guardar-id-edicion', 'App\Http\Controllers\Customer\ConcursoController:guardarIdEdicion')
+    $this->post('/guardar-token-acceso', 'App\Http\Controllers\Customer\ConcursoController:guardarTokenAcceso')
     ->add(new AuthMiddleware())
-    ->setName('concursos.guardarIdEdicion');
+    ->setName('concursos.guardarTokenAcceso');
 
     // Creación
     $this->get('/{type}/nuevo', 'App\Http\Controllers\Customer\ConcursoController:serveCreate')->add(new AuthMiddleware())->setName('concursos.cliente.serveCreate');

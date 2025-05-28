@@ -121,7 +121,7 @@ var ConcursosListado = function (data) {
     console.log("Usuario", User)
 
     this.EditarConcurso = function(id, tipo) {
-        $.post('/concursos/guardar-id-edicion', { id: id }, function(response) {
+        $.post('/concursos/guardar-token-acceso', { id: id }, function(response) {
             if (response.success) {
                 window.location.href = '/concursos/' + tipo + '/edicion/' + id;
             } else {
@@ -133,7 +133,7 @@ var ConcursosListado = function (data) {
     };
 
     this.CopiarConcurso = function(id, tipo) {
-        $.post('/concursos/guardar-id-edicion', { id: id }, function(response) {
+        $.post('/concursos/guardar-token-acceso', { id: id }, function(response) {
             if (response.success) {
                 window.location.href = '/concursos/' + tipo + '/nuevo?concurso=' + id;
             } else {

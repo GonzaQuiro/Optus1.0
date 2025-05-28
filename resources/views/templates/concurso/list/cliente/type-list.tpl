@@ -180,11 +180,13 @@
                                             <i class="fa fa-edit"></i>
                                         </a>
 
-                                        <a data-bind="attr: {literal}{ href: '/concursos/cliente/' + TipoConcursoPath() + '/convocatoria-oferentes/' + Id()}{/literal}"
+                                        <a href="javascript:void(0);"
+                                            data-bind="click: function() { $root.goToAcceso(Id(), TipoConcursoPath(), 'convocatoria-oferentes') }"
                                             class="btn btn-xs red-thunderbird" title="Acceder">
                                             Acceder
                                             <i class="fa fa-play"></i>
                                         </a>
+
                                     </td>
                                 </tr>
                             </tbody>
@@ -628,24 +630,48 @@
                 this.Filters = ko.observable(new Filters(self));
 
                 this.goToEdition = function(idConcurso, tipoConcursoPath) {
-                $.blockUI();
-                Services.Post('/concursos/guardar-id-edicion', {
-                    UserToken: User.Token,
-                    id: idConcurso
-                },
-                (response) => {
-                    $.unblockUI();
-                    if (response.success) {
-                        window.location.href = '/concursos/' + tipoConcursoPath + '/edicion/' + idConcurso;
-                    } else {
-                        swal('Error', response.message, 'error');
-                    }
-                },
-                (error) => {
-                    $.unblockUI();
-                    swal('Error', error.message, 'error');
-                });
-            };
+                    $.blockUI();
+                    Services.Post('/concursos/guardar-token-acceso', {
+                        UserToken: User.Token,
+                        id: idConcurso
+                    },
+                    (response) => {
+                        $.unblockUI();
+                        if (response.success) {
+                            window.location.href = '/concursos/' + tipoConcursoPath + '/edicion/' + idConcurso;
+                        } else {
+                            swal('Error', response.message, 'error');
+                        }
+                    },
+                    (error) => {
+                        $.unblockUI();
+                        swal('Error', error.message, 'error');
+                    });
+                };
+
+                this.goToAcceso = function(idConcurso, tipoConcursoPath, etapa) {
+                    $.blockUI();
+                    Services.Post('/concursos/guardar-token-acceso', {
+                        UserToken: User.Token,
+                        id: idConcurso
+                    },
+                    (response) => {
+                        $.unblockUI();
+                        if (response.success) {
+                            window.location.href = '/concursos/cliente/' + tipoConcursoPath + '/' + etapa + '/' + idConcurso;
+                        } else {
+                            swal('Error', response.message, 'error');
+                        }
+                    },
+                    (error) => {
+                        $.unblockUI();
+                        swal('Error', error.message, 'error');
+                    });
+                };
+
+
+
+
 
                 // Conectar a la subasta online si esta ha iniciado.
                 var query = '?id_cliente=' + User.Id + '&listado=true';
