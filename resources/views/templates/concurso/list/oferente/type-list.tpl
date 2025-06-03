@@ -38,6 +38,7 @@
 <!-- VISTA -->
 {block 'concurso-list-offerer'}
     <div class="row">
+
         <div class="col-md-12 margin-bottom-20">
             <label class="control-label text-center" style="display: block;">
                 Buscar
@@ -101,11 +102,13 @@
                             <td data-bind="text: FechaLimite()" class="vertical-align-middle"></td>
                             <td data-bind="text: TipoConcurso()" class="vertical-align-middle"></td>
                                 <td class="vertical-align-middle text-center">
-                                    <a data-bind="attr: {literal}{href: '/concursos/oferente/' + TipoConcursoPath() + '/invitacion/' + Id()}{/literal}"
+                                    <a href="javascript:void(0);"
+                                        data-bind="click: function() { $root.goToAcceso(Id(), TipoConcursoPath(), 'invitacion') }"
                                         class="btn btn-xs red-thunderbird" title="Acceder">
                                         Acceder
                                         <i class="fa fa-play"></i>
                                     </a>
+                             
                                 </td>
                             </tr>
                         </tbody>
@@ -158,8 +161,9 @@
                                 <td data-bind="text: FechaLimite()" class="vertical-align-middle"></td>
                                 <td data-bind="text: TipoConcurso()" class="vertical-align-middle"></td>
                                 <td class="vertical-align-middle text-center">
-                                    <a data-bind="attr: {literal}{href: '/concursos/oferente/' + TipoConcursoPath() + '/tecnica/' + Id()}{/literal}"
-                                        class="btn btn-xs yellow-gold" title="Editar">
+                                    <a href="javascript:void(0);"
+                                        data-bind="click: function() { $root.goToAcceso(Id(), TipoConcursoPath(), 'tecnica') }"
+                                        class="btn btn-xs yellow-gold" title="Acceder">
                                         Acceder
                                         <i class="fa fa-play"></i>
                                     </a>
@@ -215,8 +219,9 @@
                                 <td data-bind="text: FechaLimite()" class="vertical-align-middle"></td>
                                 <td data-bind="text: TipoConcurso()" class="vertical-align-middle"></td>
                                 <td class="vertical-align-middle text-center">
-                                    <a data-bind="attr: {literal}{href: '/concursos/oferente/' + TipoConcursoPath() + '/economica/' + Id()}{/literal}"
-                                        class="btn btn-xs yellow-lemon" title="Editar">
+                                    <a href="javascript:void(0);"
+                                        data-bind="click: function() { $root.goToAcceso(Id(), TipoConcursoPath(), 'economica') }"
+                                        class="btn btn-xs yellow-lemon" title="Acceder">
                                         Acceder
                                         <i class="fa fa-play"></i>
                                     </a>
@@ -272,8 +277,9 @@
                                 <td data-bind="text: FechaLimite()" class="vertical-align-middle"></td>
                                 <td data-bind="text: TipoConcurso()" class="vertical-align-middle"></td>
                                 <td class="vertical-align-middle text-center">
-                                    <a data-bind="attr: {literal}{href: '/concursos/oferente/' + TipoConcursoPath() + '/analisis/' + Id()}{/literal}"
-                                        class="btn btn-xs green" title="Editar">
+                                    <a href="javascript:void(0);"
+                                        data-bind="click: function() { $root.goToAcceso(Id(), TipoConcursoPath(), 'analisis') }"
+                                        class="btn btn-xs box green" title="Acceder">
                                         Acceder
                                         <i class="fa fa-play"></i>
                                     </a>
@@ -332,8 +338,9 @@
                                 <td data-bind="text: TipoConcurso()" class="vertical-align-middle"></td>
                                 <td data-bind="text: EstadoAdjudicacion()" class="vertical-align-middle"></td>
                                 <td class="vertical-align-middle text-center">
-                                    <a data-bind="attr: {literal}{href: '/concursos/oferente/' + TipoConcursoPath() + '/adjudicado/' + Id()}{/literal}"
-                                        class="btn btn-xs green-jungle" title="Editar">
+                                    <a href="javascript:void(0);"
+                                        data-bind="click: function() { $root.goToAcceso(Id(), TipoConcursoPath(), 'adjudicado') }"
+                                        class="btn btn-xs green-jungle" title="Acceder">
                                         Acceder
                                         <i class="fa fa-play"></i>
                                     </a>
@@ -344,6 +351,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 {/block}
 
@@ -423,6 +431,26 @@
 
             this.Breadcrumbs = ko.observableArray(data.breadcrumbs);
             this.Lists = ko.observable(new List(data.list));
+
+            this.goToAcceso = function(idConcurso, tipoConcursoPath, etapa) {
+                $.blockUI();
+                Services.Post('/concursos/oferente/guardar-token-acceso', {
+                    UserToken: User.Token,
+                    id: idConcurso
+                },
+                (response) => {
+                    $.unblockUI();
+                    if (response.success) {
+                        window.location.href = '/concursos/oferente/' + tipoConcursoPath + '/' + etapa + '/' + idConcurso;
+                    } else {
+                        swal('Error', response.message, 'error');
+                    }
+                },
+                (error) => {
+                    $.unblockUI();
+                    swal('Error', error.message, 'error');
+                });
+            };
 
             this.filter = function(filters) {
                 if (filters) {
