@@ -56,7 +56,21 @@ var UserLogin = function() {
     };
     
     this.LoginAD = async function() {
-        window.location.href = '/ad/login';        
+        swal({
+            title: "Seleccione una opción",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonText: "AD TLC",
+            cancelButtonText: "AD LG",
+            closeOnConfirm: true,
+            closeOnCancel: true
+        }, function(isConfirm) {
+            if (isConfirm) {
+                window.location.href = '/ad/login/TLC';
+            } else {
+                window.location.href = '/ad/login/LG';
+            }
+        });
     };
     
     function setCookie(name, value, days) {

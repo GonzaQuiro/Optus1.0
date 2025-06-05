@@ -16,7 +16,8 @@ class BaseController
     protected const EXCLUDED_ROUTES = [
         'login',
         'login.send',
-        'login.ad',
+        'login.lg',
+        'login.tlc',
         'login.callback',
         'sendRecover',
         'serverReset'

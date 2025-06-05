@@ -207,17 +207,41 @@
                 <td data-bind="text: $parent.ConcursoEconomicasPrimeraRonda()[0]['oferenteItems'][0]['items'][$index()].targetcost"
                     class="text-center vertical-align-middle"></td>
                 <!-- ko foreach: $parent.ConcursoEconomicasPrimeraRonda()[0]['oferenteItems'] -->
-                <td data-bind="text: $data.items[$parentContext.$index()].cotizacion, style: { background: $data.items[$parentContext.$index()].isMejorCotizacion ? '#c6e0b4' : '#ffffff' }"
-                    class="text-center vertical-align-middle"></td>
-                <!-- /ko -->
+    <!-- ko if: $data.items && $data.items.length > $parentContext.$index() -->
+        <td class="text-center vertical-align-middle"
+            data-bind="text: $data.items[$parentContext.$index()].cotizacion,
+                       style: { background: $data.items[$parentContext.$index()].isMejorCotizacion ? '#c6e0b4' : '#ffffff' }">
+        </td>
+    <!-- /ko -->
+    <!-- ko ifnot: $data.items && $data.items.length > $parentContext.$index() -->
+        <td class="text-center vertical-align-middle">—</td>
+    <!-- /ko -->
+<!-- /ko -->
+
+<!-- ko foreach: $parent.ConcursoEconomicasPrimeraRonda()[0]['oferenteItems'] -->
+    <!-- ko if: $data.items && $data.items.length > $parentContext.$index() -->
+        <td class="text-center vertical-align-middle"
+            data-bind="number: $data.items[$parentContext.$index()].cantidad, precision: 0,
+                       style: { background: $data.items[$parentContext.$index()].isMenorCantidad ? '#c6e0b4' : '#ffffff' }">
+        </td>
+    <!-- /ko -->
+    <!-- ko ifnot: $data.items && $data.items.length > $parentContext.$index() -->
+        <td class="text-center vertical-align-middle">—</td>
+    <!-- /ko -->
+<!-- /ko -->
+
                 <!-- ko foreach: $parent.ConcursoEconomicasPrimeraRonda()[0]['oferenteItems'] -->
-                <td data-bind="number: $data.items[$parentContext.$index()].cantidad, precision: 0, style: { background: $data.items[$parentContext.$index()].isMenorCantidad ? '#c6e0b4' : '#ffffff' }"
-                    class="text-center vertical-align-middle"></td>
-                <!-- /ko -->
-                <!-- ko foreach: $parent.ConcursoEconomicasPrimeraRonda()[0]['oferenteItems'] -->
-                <td data-bind="text: $data.items[$parentContext.$index()].fecha, style: { background: $data.items[$parentContext.$index()].isMenorPlazo ? '#c6e0b4' : '#ffffff' }"
-                    class="text-center vertical-align-middle"></td>
-                <!-- /ko -->
+    <!-- ko if: $data.items && $data.items.length > $parentContext.$index() -->
+    <td class="text-center vertical-align-middle"
+        data-bind="text: $data.items[$parentContext.$index()].fecha == 0 ? '—' : $data.items[$parentContext.$index()].fecha,
+                   style: { background: $data.items[$parentContext.$index()].isMenorPlazo ? '#c6e0b4' : '#ffffff' }">
+    </td>
+    <!-- /ko -->
+    <!-- ko ifnot: $data.items && $data.items.length > $parentContext.$index() -->
+    <td class="text-center vertical-align-middle">—</td>
+    <!-- /ko -->
+<!-- /ko -->
+
             </tr>
         </thead>
         <!-- /ko -->
@@ -362,17 +386,41 @@
                 <td data-bind="text: $parent.ConcursoEconomicasSegundaRonda()[0]['oferenteItems'][0]['items'][$index()].targetcost"
                     class="text-center vertical-align-middle"></td>
                 <!-- ko foreach: $parent.ConcursoEconomicasSegundaRonda()[0]['oferenteItems'] -->
-                <td data-bind="text: $data.items[$parentContext.$index()].cotizacion, style: { background: $data.items[$parentContext.$index()].isMejorCotizacion ? '#c6e0b4' : '#ffffff' }"
-                    class="text-center vertical-align-middle"></td>
-                <!-- /ko -->
+    <!-- ko if: $data.items && $data.items.length > $parentContext.$index() -->
+        <td class="text-center vertical-align-middle"
+            data-bind="text: $data.items[$parentContext.$index()].cotizacion,
+                       style: { background: $data.items[$parentContext.$index()].isMejorCotizacion ? '#c6e0b4' : '#ffffff' }">
+        </td>
+    <!-- /ko -->
+    <!-- ko ifnot: $data.items && $data.items.length > $parentContext.$index() -->
+        <td class="text-center vertical-align-middle">—</td>
+    <!-- /ko -->
+<!-- /ko -->
+
+<!-- ko foreach: $parent.ConcursoEconomicasSegundaRonda()[0]['oferenteItems'] -->
+    <!-- ko if: $data.items && $data.items.length > $parentContext.$index() -->
+        <td class="text-center vertical-align-middle"
+            data-bind="number: $data.items[$parentContext.$index()].cantidad, precision: 0,
+                       style: { background: $data.items[$parentContext.$index()].isMenorCantidad ? '#c6e0b4' : '#ffffff' }">
+        </td>
+    <!-- /ko -->
+    <!-- ko ifnot: $data.items && $data.items.length > $parentContext.$index() -->
+        <td class="text-center vertical-align-middle">—</td>
+    <!-- /ko -->
+<!-- /ko -->
+
                 <!-- ko foreach: $parent.ConcursoEconomicasSegundaRonda()[0]['oferenteItems'] -->
-                <td data-bind="number: $data.items[$parentContext.$index()].cantidad, precision: 0, style: { background: $data.items[$parentContext.$index()].isMenorCantidad ? '#c6e0b4' : '#ffffff' }"
-                    class="text-center vertical-align-middle"></td>
-                <!-- /ko -->
-                <!-- ko foreach: $parent.ConcursoEconomicasSegundaRonda()[0]['oferenteItems'] -->
-                <td data-bind="text: $data.items[$parentContext.$index()].fecha, style: { background: $data.items[$parentContext.$index()].isMenorPlazo ? '#c6e0b4' : '#ffffff' }"
-                    class="text-center vertical-align-middle"></td>
-                <!-- /ko -->
+    <!-- ko if: $data.items && $data.items.length > $parentContext.$index() -->
+    <td class="text-center vertical-align-middle"
+        data-bind="text: $data.items[$parentContext.$index()].fecha == 0 ? '—' : $data.items[$parentContext.$index()].fecha,
+                   style: { background: $data.items[$parentContext.$index()].isMenorPlazo ? '#c6e0b4' : '#ffffff' }">
+    </td>
+    <!-- /ko -->
+    <!-- ko ifnot: $data.items && $data.items.length > $parentContext.$index() -->
+    <td class="text-center vertical-align-middle">—</td>
+    <!-- /ko -->
+<!-- /ko -->
+
             </tr>
         </thead>
         <!-- /ko -->

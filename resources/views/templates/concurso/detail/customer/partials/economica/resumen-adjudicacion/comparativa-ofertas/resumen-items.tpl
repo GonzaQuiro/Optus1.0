@@ -43,21 +43,40 @@
                 <td data-bind="number: targetcost, precision: 2"
                     class="text-center vertical-align-middle dt-head-center"></td>
                 <!-- ko foreach: $parent.ConcursoEconomicas.proveedores -->
-                <!-- ko ifnot: isRechazado || isVencido -->
-                <td class="text-center vertical-align-middle texto dt-head-center" data-bind="text: $data.items[$parentContext.$index()].fecha, style: { background: $data.items[$parentContext.$index()].isMenorPlazo ? '#c6e0b4' : '#ffffff' }"
-                    class="text-center vertical-align-middle dt-head-center"></td>
-                <td data-bind="number: $data.items[$parentContext.$index()].cantidad, precision: 0, style: { background: $data.items[$parentContext.$index()].isMenorCantidad ? '#c6e0b4' : '#ffffff' }"
-                    class="text-center vertical-align-middle dt-head-center"></td>
-                <td data-bind="number: $data.items[$parentContext.$index()].cotizacion, precision: 2, style: { background: $data.items[$parentContext.$index()].isMejorCotizacion ? '#c6e0b4' : '#ffffff' }"
-                    class="text-center vertical-align-middle dt-head-center"></td>
-                <td data-bind="number: $data.items[$parentContext.$index()].subtotal, precision: 2"
-                    class="text-center vertical-align-middle dt-head-center"></td>
-                <td data-bind="number: $data.items[$parentContext.$index()].ahorro_abs, precision: 2"
-                    class="text-center vertical-align-middle dt-head-center"></td>
-                <td data-bind="number: $data.items[$parentContext.$index()].ahorro_porc, precision: 2"
-                    class="text-center vertical-align-middle dt-head-center"></td>
-                <!-- /ko -->
-                <!-- /ko -->
+<!-- ko ifnot: isRechazado || isVencido -->
+    <!-- ko if: $data.items && $data.items.length > $parentContext.$index() -->
+        <td class="text-center vertical-align-middle texto dt-head-center"
+            data-bind="text: $data.items[$parentContext.$index()].fecha == 0 ? '—' : $data.items[$parentContext.$index()].fecha,
+                       style: { background: $data.items[$parentContext.$index()].isMenorPlazo ? '#c6e0b4' : '#ffffff' }">
+        </td>
+        <td class="text-center vertical-align-middle dt-head-center"
+            data-bind="number: $data.items[$parentContext.$index()].cantidad, precision: 0,
+                       style: { background: $data.items[$parentContext.$index()].isMenorCantidad ? '#c6e0b4' : '#ffffff' }">
+        </td>
+        <td class="text-center vertical-align-middle dt-head-center"
+            data-bind="number: $data.items[$parentContext.$index()].cotizacion, precision: 2,
+                       style: { background: $data.items[$parentContext.$index()].isMejorCotizacion ? '#c6e0b4' : '#ffffff' }">
+        </td>
+        <td class="text-center vertical-align-middle dt-head-center"
+            data-bind="number: $data.items[$parentContext.$index()].subtotal, precision: 2">
+        </td>
+        <td class="text-center vertical-align-middle dt-head-center"
+            data-bind="number: $data.items[$parentContext.$index()].ahorro_abs, precision: 2">
+        </td>
+        <td class="text-center vertical-align-middle dt-head-center"
+            data-bind="number: $data.items[$parentContext.$index()].ahorro_porc, precision: 2">
+        </td>
+    <!-- /ko -->
+    <!-- ko ifnot: $data.items && $data.items.length > $parentContext.$index() -->
+        <td class="text-center vertical-align-middle texto dt-head-center">—</td>
+        <td class="text-center vertical-align-middle dt-head-center">—</td>
+        <td class="text-center vertical-align-middle dt-head-center">—</td>
+        <td class="text-center vertical-align-middle dt-head-center">—</td>
+        <td class="text-center vertical-align-middle dt-head-center">—</td>
+        <td class="text-center vertical-align-middle dt-head-center">—</td>
+    <!-- /ko -->
+<!-- /ko -->
+<!-- /ko -->
             </tr>
             <!-- /ko -->
         </tbody>

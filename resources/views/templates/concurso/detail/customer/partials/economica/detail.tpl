@@ -89,8 +89,17 @@
                 <td data-bind="text: 'Precio unitario'" class="vertical-align-middle"></td>
                 <td data-bind="number: $data.total, precision: 0, style: { background: $data.mejorOfertaIntegral ?  '#c6e0b4' : '#ffffff' }" class="text-center vertical-align-middle"></td>
                 <!-- ko foreach: $data.items -->
-                <td data-bind="number: $data.cotizacion, precision: 0, style: { background: $data.isMejorCotizacion ? '#c6e0b4' : '#ffffff' }" class="text-center vertical-align-middle"></td>
-                <!-- /ko -->
+    <!-- ko if: typeof $data.cotizacion !== 'undefined' && $data.cotizacion !== null -->
+        <td class="text-center vertical-align-middle"
+            data-bind="number: $data.cotizacion, precision: 0,
+                       style: { background: $data.isMejorCotizacion ? '#c6e0b4' : '#ffffff' }">
+        </td>
+    <!-- /ko -->
+    <!-- ko ifnot: typeof $data.cotizacion !== 'undefined' && $data.cotizacion !== null -->
+        <td class="text-center vertical-align-middle">—</td>
+    <!-- /ko -->
+<!-- /ko -->
+
             </tr>
             <!-- /ko -->
             <!-- /ko -->
@@ -102,8 +111,17 @@
                 <td data-bind="text: 'Cantidad cotizada'" class="vertical-align-middle"></td>
                 <td data-bind="text: ''" class="text-center vertical-align-middle"></td>
                 <!-- ko foreach: $data.items -->
-                <td data-bind="text: $data.cantidad, style: { background: $data.isMenorCantidad ? '#c6e0b4' : '#ffffff' }" class="text-center vertical-align-middle"></td>
-                <!-- /ko -->
+    <!-- ko if: typeof $data.cantidad !== 'undefined' && $data.cantidad !== null -->
+        <td class="text-center vertical-align-middle"
+            data-bind="text: $data.cantidad,
+                       style: { background: $data.isMenorCantidad ? '#c6e0b4' : '#ffffff' }">
+        </td>
+    <!-- /ko -->
+    <!-- ko ifnot: typeof $data.cantidad !== 'undefined' && $data.cantidad !== null -->
+        <td class="text-center vertical-align-middle">—</td>
+    <!-- /ko -->
+<!-- /ko -->
+
             </tr>
             <!-- /ko -->
             <!-- /ko -->
@@ -116,8 +134,15 @@
                 <td data-bind="text: 'Plazo de entrega (días)'" class="vertical-align-middle"></td>
                 <td data-bind="text: ''" class="text-center vertical-align-middle"></td>
                 <!-- ko foreach: $data.items -->
-                <td data-bind="text: $data.fecha, style: { background: $data.isMenorPlazo ? '#c6e0b4' : '#ffffff' }" class="text-center vertical-align-middle"></td>
-                <!-- /ko -->
+    <!-- ko if: $data && $data.fecha !== undefined -->
+    <td data-bind="text: fecha == 0 ? '—' : fecha, style: { background: isMenorPlazo ? '#c6e0b4' : '#ffffff' }"
+        class="text-center vertical-align-middle"></td>
+    <!-- /ko -->
+    <!-- ko ifnot: $data && $data.fecha !== undefined -->
+    <td class="text-center vertical-align-middle">—</td>
+    <!-- /ko -->
+<!-- /ko -->
+
             </tr>
             <!-- /ko -->
             <!-- /ko -->
@@ -179,8 +204,17 @@
             <td data-bind="text: 'Cotización'" class="vertical-align-middle"></td>
             <td data-bind="text: $data.total, style: { background: $data.mejorOfertaIntegral ?  '#ffffff' : '#ffffff' }" class="text-center vertical-align-middle"></td>
             <!-- ko foreach: $data.items -->
-            <td data-bind="number: $data.cotizacion, precision: 0, style: { background: $data.isMejorCotizacion ? '#ffffff' : '#ffffff' }" class="text-center vertical-align-middle"></td>
-            <!-- /ko -->
+    <!-- ko if: typeof $data.cotizacion !== 'undefined' && $data.cotizacion !== null -->
+        <td class="text-center vertical-align-middle"
+            data-bind="number: $data.cotizacion, precision: 0,
+                       style: { background: $data.isMejorCotizacion ? '#ffffff' : '#ffffff' }">
+        </td>
+    <!-- /ko -->
+    <!-- ko ifnot: typeof $data.cotizacion !== 'undefined' && $data.cotizacion !== null -->
+        <td class="text-center vertical-align-middle">—</td>
+    <!-- /ko -->
+<!-- /ko -->
+
         </tr>
         <!-- /ko -->
         <!-- /ko -->

@@ -177,8 +177,24 @@
                             };
 
                             var step = etapaToStep[calEvent.content] || 'convocatoria-oferentes';
-                            var url = '/concursos/cliente/' + tipo + '/' + step + '/' + realId;
-                            window.open(url, '_blank');
+                            $.blockUI();
+                            Services.Post('/concursos/guardar-token-acceso', {
+                                UserToken: User.Token,
+                                id: realId
+                            },
+                            (response) => {
+                                $.unblockUI();
+                                if (response.success) {
+                                    var url = '/concursos/cliente/' + tipo + '/' + step + '/' + realId;
+                                    window.open(url, '_blank');
+                                } else {
+                                    swal('Error', response.message, 'error');
+                                }
+                            },
+                            (error) => {
+                                $.unblockUI();
+                                swal('Error', error.message, 'error');
+                            });
                         }
                         });
                     }

@@ -245,11 +245,12 @@
                                         class="vertical-align-middle"></td>
 
                                     <td class="text-center vertical-align-center">
-                                        <a data-bind="attr: {literal}{ href: '/concursos/cliente/' + TipoConcursoPath() + '/analisis-tecnicas/' + Id() }{/literal}"
-                                            class="btn btn-xs yellow-gold" title="Editar">
-                                            Acceder
-                                            <i class="fa fa-play"></i>
+
+                                        <a href="javascript:;" data-bind="click: function() { $root.goToAcceso(Id(), TipoConcursoPath(), 'analisis-tecnicas') }"
+                                            class="btn btn-xs yellow-gold" title="Acceder">
+                                            Acceder <i class="fa fa-play"></i>
                                         </a>
+
                                     </td>
                                 </tr>
                             </tbody>
@@ -308,13 +309,12 @@
                                         class="vertical-align-middle"></td>
                                     <td data-bind="text: Estado()" class="vertical-align-middle"></td>
                                     <td class="text-center vertical-align-center">
-                                        <a data-bind="attr: 
-                                        {literal}
-                                            { href: '/concursos/cliente/' + TipoConcursoPath() + '/analisis-ofertas/' + Id() }
-                                        {/literal}" class="btn btn-xs yellow-lemon" title="Editar">
-                                            Acceder
-                                            <i class="fa fa-play"></i>
+                                        
+                                        <a href="javascript:;" data-bind="click: function() { $root.goToAcceso(Id(), TipoConcursoPath(), 'analisis-ofertas') }"
+                                            class="btn btn-xs yellow-lemon" title="Acceder">
+                                            Acceder <i class="fa fa-play"></i>
                                         </a>
+
                                     </td>
                                 </tr>
                             </tbody>
@@ -369,11 +369,12 @@
                                     <td data-bind="text: FechaLimite()" class="vertical-align-middle"></td>
                                     <td data-bind="text: TipoConcurso()" class="vertical-align-middle"></td>
                                     <td class="text-center vertical-align-center">
-                                        <a data-bind="attr: {literal}{ href: '/concursos/cliente/' + TipoConcursoPath() + '/evaluacion-reputacion/' + Id() }{/literal}"
-                                            class="btn btn-xs green" title="Editar">
-                                            Acceder
-                                            <i class="fa fa-play"></i>
+
+                                        <a href="javascript:;" data-bind="click: function() { $root.goToAcceso(Id(), TipoConcursoPath(), 'evaluacion-reputacion') }"
+                                            class="btn btn-xs green" title="Acceder">
+                                            Acceder <i class="fa fa-play"></i>
                                         </a>
+
                                     </td>
                                 </tr>
                             </tbody>
@@ -420,11 +421,12 @@
                                     <td data-bind="text: FechaLimite()" class="vertical-align-middle"></td>
                                     <td data-bind="text: TipoConcurso()" class="vertical-align-middle"></td>
                                     <td class="text-center vertical-align-center">
-                                        <a data-bind="attr: {literal}{ href: '/concursos/cliente/' + TipoConcursoPath() + '/informes/' + Id() }{/literal}"
-                                            class="btn btn-xs green-jungle" title="Editar">
-                                            Acceder
-                                            <i class="fa fa-play"></i>
+                                        
+                                        <a href="javascript:;" data-bind="click: function() { $root.goToAcceso(Id(), TipoConcursoPath(), 'informes') }"
+                                            class="btn btn-xs green-jungle" title="Acceder">
+                                            Acceder <i class="fa fa-play"></i>
                                         </a>
+
                                     </td>
                                 </tr>
                             </tbody>

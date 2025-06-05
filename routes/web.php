@@ -145,6 +145,11 @@ app()->group('/concursos', function () {
     ->add(new AuthMiddleware())
     ->setName('concursos.guardarTokenAcceso');
 
+    //Control vertical oferente
+    $this->post('/oferente/guardar-token-acceso', 'App\Http\Controllers\Offerer\ConcursoController:guardarTokenAcceso')
+    ->add(new AuthMiddleware())
+    ->setName('concursos.oferente.guardarTokenAcceso');
+    
     // Creación
     $this->get('/{type}/nuevo', 'App\Http\Controllers\Customer\ConcursoController:serveCreate')->add(new AuthMiddleware())->setName('concursos.cliente.serveCreate');
     // Edición
