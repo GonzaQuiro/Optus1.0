@@ -4,7 +4,7 @@
             <h4 class="block bold" style="margin-top: 0; padding-top: 0;">Muro de consultas</h4>
             <div class="portlet light bordered bg-inverse">
                 <div class="col-md-10 text-left">
-                    <h5 class="block bold" data-bind="text: MessageSelected().mensaje()"></h5>
+                    <h5 class="block bold" data-bind="html: MessageSelectedFormatted()"></h5>
                     <!-- ko if: User.cannot('chat-admin') -->
                     <!-- ko if: MessageSelected().estado() == 2 -->
                     <span class="badge badge-warning">Comentario pendiente de
@@ -63,7 +63,9 @@
                                             <span class="badge badge-info" data-bind="text: tipo_name()"></span>
 
                                             <span class="body text-left"
-                                                data-bind="text: estado() === 0 || estado() === 1 || estado() === 2 || User.can('chat-admin') ? mensaje() : '&nbsp;'"></span>
+                                                data-bind="html: estado() === 0 || estado() === 1 || estado() === 2 || User.can('chat-admin') 
+                                                            ? $parent.formatMessageWithLineBreaks(mensaje()) : '&nbsp;'">
+                                            </span>
 
                                             <!-- ko if: User.cannot('chat-admin') -->
                                             <!-- ko if: estado() == 2 -->
@@ -108,7 +110,7 @@
                     <div class="col-md-12">
                         <div class="chat-form">
                             <textarea class="form-control msjText" placeholder="Escriba su mensaje aquí..."
-                                data-bind="textInput: NewResp().message" rows="3" style="resize: none;">
+                                data-bind="textInput: NewResp().message" rows="15" style="resize: none;">
                             </textarea>
 
                             <div style="display:flex; margin-top: 1em; justify-content: end">

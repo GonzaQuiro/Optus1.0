@@ -56,7 +56,7 @@
                     <div class="col-md-12">
                         <div class="chat-form">
                             <textarea class="form-control msjText" placeholder="Escriba su mensaje aquí..."
-                                data-bind="textInput: NewMessage().message" rows="3" style="resize: none;">
+                                data-bind="textInput: NewMessage().message" rows="15" style="resize: none;">
                                 </textarea>
 
                             <div style="display:flex; margin-top: 1em; justify-content: end">

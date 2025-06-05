@@ -1065,6 +1065,19 @@
 
             }
 
+            this.ModificarFechasSobres = function () {
+               let tipoLicitacion = '';
+               if (self.IsSobrecerrado()) {
+                   tipoLicitacion = 'sobrecerrado';
+               } else if (self.IsGo()) {
+                   tipoLicitacion = 'go';
+               } else if (self.IsOnline()) {
+                   tipoLicitacion = 'online';
+               }
+               const url = '/concursos/' + tipoLicitacion + '/edicion/' + self.IdConcurso();
+               window.location.href = url;
+            }
+
             this.CalificacionOferentes = ko.observableArray();
             this.CalcularTecnica = function(UserId) {
                 var valor = 0;

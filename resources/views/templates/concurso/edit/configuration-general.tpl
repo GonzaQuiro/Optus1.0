@@ -4,6 +4,7 @@
             <label for="oferentes_a_invitar" class="control-label">
                 Oferentes a Invitar
             </label>
+            <label> (Los Proveedores Invitados <strong>NO</strong> podrán ser excluidos de la Licitación) </label>
             <div class="selectRequerido">
                 <select id="oferentes_a_invitar"
                     data-bind="selectedOptions: 

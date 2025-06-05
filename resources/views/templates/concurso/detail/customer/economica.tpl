@@ -45,14 +45,19 @@
                 <span style="text-aling: right; float: right;" data-bind="text:Ronda()"></span>
             </h4>
 
+            
+            <!-- Botones alineados horizontalmente y a la derecha -->
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
+                <!-- Botón "Modificar fechas" -->
+                <button class="btn btn-xl green"
+                    data-bind="click: ModificarFechasSobres, visible: !IsRevisado()">Modificar Fechas</button>
 
-            <!-- Botón a la derecha -->
-            <button class="btn btn-xl green" style="margin-left: auto;"
-                data-bind="click: VerOfertas, visible: !IsRevisado(), disable: (!verOfertasEnable())">Ver
-                Ofertas</button>
+                <!-- Botón "Ver Ofertas" -->
+                <button class="btn btn-xl green"
+                    data-bind="click: VerOfertas, visible: !IsRevisado(), disable: (!verOfertasEnable())">Ver
+                    Ofertas</button>
+            </div>
 
-            <!-- Espacio para separar el elemento incluido -->
-            <div style="flex: 1;"></div>
 
             <!-- Elemento incluido debajo de todo -->
             <table class="table table-striped table-bordered" id="ListaConcursosEconomicas">

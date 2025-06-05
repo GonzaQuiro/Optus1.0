@@ -600,7 +600,8 @@ class ConcursoController extends BaseController
                 'DescripcionImagen' => $concurso->descriptionImagen,
                 'CondicionPago' => $concurso->condicion_pago,
                 'urlChatMuro' => route($route_name, ['type' => $concurso->tipo_concurso, 'id' => $concurso->id, 'step' => 'chat-muro-consultas']),
-                'ChatEnable' => $oferente->is_chat_enabled,
+                //'ChatEnable' => $oferente->is_chat_enabled,
+                'ChatEnable' => $concurso->is_sobrecerrado ? true : ($concurso->chat == 'si' ? true : false ),
                 'ShowChatButton' => $oferente->has_invitacion_aceptada
             ];
 

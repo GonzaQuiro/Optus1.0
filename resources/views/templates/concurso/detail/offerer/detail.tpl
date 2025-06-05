@@ -474,7 +474,8 @@
             this.MuroConsultaActive = ko.observable(data.list.MuroConsultaActive);
             this.UrlChatMuro = ko.observable(data.list.urlChatMuro);
             this.ChatEnable = ko.observable(data.list.ChatEnable);
-            this.ShowChatButton = ko.observable(data.list.ShowChatButton);
+            //this.ShowChatButton = ko.observable(data.list.ShowChatButton);
+            this.ShowChatButton = ko.observable(self.IsSobrecerrado() ? true : data.list.ChatEnable);
             this.HasNewMessage = ko.observable(false);
             this.IsClient = ko.observable(false);
             this.IsProv = ko.observable(true);

@@ -821,6 +821,15 @@
 
             }
 
+            self.MessageSelectedFormatted = ko.computed(function () {
+                if (!self.MessageSelected() || !self.MessageSelected().mensaje) return '';
+                return self.MessageSelected().mensaje().replace(/\n/g, '<br>');
+            });
+
+            self.formatMessageWithLineBreaks = function (mensaje) {
+                return mensaje ? mensaje.replace(/\n/g, '<br>') : '';
+            };
+
             var getMessage = function(parent_id) {
                 var url = '/concursos/chat/message';
                 var data = {
