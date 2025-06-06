@@ -35,9 +35,11 @@
                         UserToken: User.Token,
                         path: $parent.FilePathOferente(),
                     },
+                    
                     initialPreview: filename() ? [$parent.FilePathOferente() + filename()] : [],
                     allowedFileExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'zip', 'rar', 'doc', 'docx', 'xls', 'xlsx', 'dwg']
-                }" name="file[]" type="file">
+                },
+                    " name="file[]" type="file">
             </td>
             <!-- /ko -->
             <td class="col-md-2 vertical-align-middle text-center">
@@ -66,7 +68,7 @@
                         caracteres</label>
                     <textarea class="form-control placeholder-no-fix" maxlength="5000" rows="3" id="maxlength_textarea"
                         name="comentario_economica"
-                        data-bind="value: EconomicProposal().comment, disable: !EnableEconomic() || $root.PresentacionEconomicas() > $root.FechaHoy() ||$root.PresentacionEconomicas() == $root.FechaHoy() && $root.PresentacionEconomicasHora > $root.HoraHoy()">
+                        data-bind="value: EconomicProposal().comment, disable: !EnableEconomic() ">
                     </textarea>
                     <td class="col-md-3 text-center vertical-align-middle">           
                     </td>
@@ -165,7 +167,7 @@
                             <td class="text-center vertical-align-middle col-md-1">
                                 <div class="onoffswitch">
                                     <input type="checkbox" class="onoffswitch-checkbox"
-                                        data-bind="attr: { id: product_id }, checked: ProductSelected, disable: !$root.EnableEconomic() || $root.PresentacionEconomicas() > $root.FechaHoy() ||$root.PresentacionEconomicas() == $root.FechaHoy() && $root.PresentacionEconomicasHora > $root.HoraHoy()" />
+                                        data-bind="attr: { id: product_id }, checked: ProductSelected, disable: !$root.EnableEconomic()" />
                                     <label class="onoffswitch-label" data-bind="attr: { for: product_id }">
                                         <span class="onoffswitch-inner"></span>
                                         <span class="onoffswitch-switch"></span>
@@ -191,28 +193,31 @@
                             <td class="text-center vertical-align-middle col-md-1" data-bind="text: minimum_quantity">
                             </td>
                             <td  class="text-center vertical-align-middle col-md-2">
-                                <input id="cotizacion" class="cotizacion form-control placeholder-no-fix" data-bind="inputmask: {
+                                <input id="cotizacion" class="cotizacion form-control placeholder-no-fix"  data-bind="inputmask: {
                                         value: cotizacion,
                                         alias: 'monto',
-                                    }, 
-                                    disable:!$root.EnableEconomic() || !ProductSelected() || $root.PresentacionEconomicas() > $root.FechaHoy() ||$root.PresentacionEconomicas() == $root.FechaHoy() && $root.PresentacionEconomicasHora > $root.HoraHoy()"/>
+                                    },
+                                    attr: { required: ProductSelected() ? true : null },
+                                    disable:!$root.EnableEconomic() || !ProductSelected() "/>
                             </td>
                             <td class="text-center vertical-align-middle col-md-1">
-                                <input id="cantidad" class="cantidad form-control placeholder-no-fix" data-bind="inputmask: {
+                                <input id="cantidad" class="cantidad form-control placeholder-no-fix"   data-bind="inputmask: {
                                         alias: 'monto',
-                                    }, 
+                                    },
                                     textInput: cantidad,
-                                    disable:!$root.EnableEconomic() || !ProductSelected() || $root.PresentacionEconomicas() > $root.FechaHoy() ||$root.PresentacionEconomicas() == $root.FechaHoy() && $root.PresentacionEconomicasHora > $root.HoraHoy()" />
+                                    attr: { required: ProductSelected() ? true : null },
+                                    disable:!$root.EnableEconomic() || !ProductSelected()" />
                             </td>
                             <!-- ko if: $root.IsSobrecerrado() -->
                             <td class="text-center vertical-align-middle col-md-1">
-                                <input id="fecha" class="fecha form-control placeholder-no-fix" data-bind="inputmask: {
+                                <input id="fecha" class="fecha form-control placeholder-no-fix"  data-bind="inputmask: {
                                         alias: 'cant',
                                         max: 365, 
                                         min: 1,
                                     },
                                     textInput: fecha,
-                                    disable:!$root.EnableEconomic() || !ProductSelected() || $root.PresentacionEconomicas() > $root.FechaHoy()  ||$root.PresentacionEconomicas() == $root.FechaHoy() && $root.PresentacionEconomicasHora > $root.HoraHoy()"  />
+                                    attr: { required: ProductSelected() ? true : null },
+                                    disable:!$root.EnableEconomic() || !ProductSelected() "  />
                             </td>
                             <td class="text-center vertical-align-middle col-md-2">
                                 <input class="form-control" 
@@ -243,7 +248,7 @@
                             options: EconomicProposal().CondicionesPago, 
                             optionsText: 'text', 
                             optionsValue: 'id', 
-                            disable: !$root.EnableEconomic() || $root.CondicionPago() === 'no' || $root.PresentacionEconomicas() > $root.FechaHoy() ||$root.PresentacionEconomicas() == $root.FechaHoy() && $root.PresentacionEconomicasHora > $root.HoraHoy(),
+                            disable: !$root.EnableEconomic() || $root.CondicionPago() === 'no',
                             select2: { placeholder: 'Seleccionar...' }">
                         </select>
                     </div>
@@ -259,7 +264,6 @@
                             options: EconomicProposal().PlazosPago, 
                             optionsText: 'text', 
                             optionsValue: 'id', 
-                            disable: !$root.EnableEconomic(),
                             select2: { placeholder: 'Seleccionar...' }">
                         </select>
                     </div>
@@ -292,10 +296,11 @@
                     <td colspan="3" class="col-md-2 text-center vertical-align-middle">
                         <!-- ko if: !HasEconomicaRevisada() -->
                         <button type="button" class="btn btn-lg green" title="Enviar propuesta económica"
-                            data-bind="click: EconomicSend.bind($data, false)">
+                    data-bind="click: EconomicSend.bind($data, false)">
                             Enviar propuesta económica
                             <i class="fa fa-send"></i>
                         </button>
+
 
                         <button type="button" class="btn btn-lg default" title="Guardar sin enviar"
                             data-bind="click: EconomicSend.bind($data, true)">
@@ -360,5 +365,7 @@ td.instructions {
 
 
 </style>
+
+
 
 <!-- /ko -->
