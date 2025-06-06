@@ -32,8 +32,10 @@
     <!-- ko if: ShowChatButton()-->
     <div class="row" style="margin-bottom: 1em;">
         {if $tipo neq 'chat-muro-consultas'}
-            <a class="btn uppercase btn-info btn-lg" data-bind="attr: {literal}{ href: UrlChatMuro() }{/literal}">Chat Muro
-                de consultas</a>
+            <a class="btn uppercase btn-info btn-lg" href="javascript:void(0);" data-bind="click: goToChatMuroConToken">
+                Chat Muro de consultas
+            </a>
+
             <div class="caption-subject font-hide" style="padding:5px; display: inline-block;" data-bind="pulsate: $root.HasNewMessage, pulsateOptions: { 
                         color: '#ed6b75',
                         reach: '5',
@@ -47,7 +49,7 @@
             </div>
         {/if}
         {if $tipo eq 'chat-muro-consultas'}
-            <a class="btn uppercase btn-info btn-md" href="javascript:history.back()">Volver al concurso</a>
+            <a class="btn uppercase btn-info btn-md" href="javascript:void(0);" data-bind="click: goBackWithToken">Volver al concurso</a>
         {/if}
     </div>
     <!-- /ko -->
