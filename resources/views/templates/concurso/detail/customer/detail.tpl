@@ -407,7 +407,54 @@
         }
 
         var ConcursoPorEtapaCliente = function(data) {
+        
             var self = this;
+
+            this.goToChatMuroConToken = function () {
+                $.blockUI();
+                Services.Post('/concursos/guardar-token-acceso', {
+                    UserToken: User.Token,
+                    id: self.IdConcurso()
+                }, 
+                (response) => {
+                    $.unblockUI();
+                    if (response.success) {
+                        window.location.href = self.UrlChatMuro();
+                    } else {
+                        swal('Error', 'No se pudo generar el token de acceso: ' + response.message, 'error');
+                    }
+                }, 
+                (error) => {
+                    $.unblockUI();
+                    swal('Error', error.message || 'Error generando el token de acceso.', 'error');
+                });
+            }
+
+            self.goBackWithToken = function () {
+                $.blockUI();
+
+                Services.Post('/concursos/guardar-token-acceso', {
+                    UserToken: User.Token,
+                    id: self.IdConcurso()
+                },
+                function (response) {
+                    $.unblockUI();
+
+                    if (response.success) {
+                        // Usamos history.back() después de generar el token
+                        window.history.back();
+                    } else {
+                        swal('Error', response.message, 'error');
+                    }
+                },
+                function (error) {
+                    $.unblockUI();
+                    swal('Error', error.message || 'Error generando token.', 'error');
+                });
+            };
+
+
+
             this.IdConcurso = ko.observable(data.list.IdConcurso);
             this.Tipo = ko.observable(data.list.Tipo);
             this.Nombre = ko.observable(data.list.Nombre);
@@ -916,7 +963,7 @@
                 });
             }
 
-            this.VerOfertas = function() {
+            this.VerOfertas = function () {
                 if (self.concurso_fiscalizado() == 'si') {
                     $.blockUI();
                     var url = '/concursos/setToken/' + self.IdConcurso();
@@ -926,66 +973,74 @@
                             if (response.success) {
                                 swal({
                                     title: "Concurso Fiscalizado",
-                                    text: "Se ha enviado un e-mail a " + self.emailSuper() +", con el codigo alfanumerico al fiscalizador del concurso, pongase en contacto e introduzca el codigo para poder ver las ofertas de los proveedores, recuerde al abrir las ofertas, los proveedores no podran editarlas",
+                                    text: "Se ha enviado un e-mail a " + self.emailSuper() + ", con el código alfanumérico al fiscalizador del concurso. Póngase en contacto e introduzca el código para poder ver las ofertas de los proveedores. Recuerde: al abrir las ofertas, los proveedores no podrán editarlas.",
                                     type: "input",
                                     showCancelButton: true,
                                     closeOnConfirm: false,
                                     inputPlaceholder: "Introduzca el código"
-                                }, function(inputValue) {
+                                }, function (inputValue) {
                                     if (inputValue === false) return false;
                                     if (inputValue === "") {
                                         swal.showInputError("Ingrese el token por favor");
-                                        return false
+                                        return false;
                                     }
+
                                     $.blockUI();
                                     var url = '/concursos/verOfertas/' + self.IdConcurso();
                                     Services.Post(url, {
-                                            UserToken: User.Token,
-                                            Token: inputValue
-                                        },
+                                        UserToken: User.Token,
+                                        Token: inputValue
+                                    },
                                         (response) => {
-                                            swal.close();
                                             $.unblockUI();
+                                            swal.close();
+
                                             if (response.success) {
-                                                setTimeout(function() {
-                                                    swal({
-                                                        title: 'Hecho',
-                                                        text: response.message,
-                                                        type: 'success',
-                                                        closeOnClickOutside: false,
-                                                        closeOnConfirm: true,
-                                                        confirmButtonText: 'Aceptar',
-                                                        confirmButtonClass: 'btn btn-success'
-                                                    }, function(result) {
-                                                        if (response.data
-                                                            .redirect) {
-                                                            window.location.href =
-                                                                response.data
-                                                                .redirect;
-                                                        } else {
-                                                            location.reload();
-                                                        }
-                                                    });
-                                                }, 500);
+                                                // GUARDAR TOKEN DE ACCESO
+                                                Services.Post('/concursos/oferente/guardar-token-acceso', {
+                                                    UserToken: User.Token,
+                                                    id: self.IdConcurso()
+                                                }, (resToken) => {
+                                                    if (resToken.success) {
+                                                        setTimeout(function () {
+                                                            swal({
+                                                                title: 'Hecho',
+                                                                text: response.message,
+                                                                type: 'success',
+                                                                closeOnClickOutside: false,
+                                                                closeOnConfirm: true,
+                                                                confirmButtonText: 'Aceptar',
+                                                                confirmButtonClass: 'btn btn-success'
+                                                            }, function (result) {
+                                                                if (response.data.redirect) {
+                                                                    window.location.href = response.data.redirect;
+                                                                } else {
+                                                                    location.reload();
+                                                                }
+                                                            });
+                                                        }, 500);
+                                                    } else {
+                                                        swal('Error', 'No se pudo generar token de acceso.', 'error');
+                                                    }
+                                                }, (errToken) => {
+                                                    swal('Error', 'Error generando token: ' + errToken.message, 'error');
+                                                });
+
                                             } else {
-                                                setTimeout(function() {
-                                                    swal('Error',
-                                                        'Token invalido',
-                                                        'error');
+                                                setTimeout(function () {
+                                                    swal('Error', 'Token inválido', 'error');
                                                 }, 500);
                                             }
                                         },
                                         (error) => {
-                                            swal.close();
                                             $.unblockUI();
-                                            setTimeout(function() {
+                                            setTimeout(function () {
                                                 swal('Error', error.message, 'error');
                                             }, 500);
                                         },
                                         null,
                                         null
-                                    )
-
+                                    );
                                 });
                             } else {
                                 swal('Error', response.message, 'error');
@@ -998,11 +1053,11 @@
                         null,
                         null
                     );
-
                 } else {
+                    // NO FISCALIZADO
                     swal({
                         title: 'Ver ofertas',
-                        text: 'Al abrir las ofertas, los proveedores no podran editarlas, ¿Está seguro?',
+                        text: 'Al abrir las ofertas, los proveedores no podrán editarlas. ¿Está seguro?',
                         closeOnClickOutside: false,
                         showCancelButton: true,
                         closeOnConfirm: false,
@@ -1011,48 +1066,58 @@
                         confirmButtonClass: 'btn btn-success',
                         cancelButtonText: 'Cancelar',
                         cancelButtonClass: 'btn btn-default'
-                    }, function(result) {
+                    }, function (result) {
                         swal.close();
                         if (result !== false) {
                             $.blockUI();
                             var url = '/concursos/verOfertas/' + self.IdConcurso();
                             Services.Post(url, {
-                                    UserToken: User.Token,
-                                },
+                                UserToken: User.Token
+                            },
                                 (response) => {
-                                    swal.close();
                                     $.unblockUI();
+                                    swal.close();
+
                                     if (response.success) {
-                                        setTimeout(function() {
-                                            swal({
-                                                title: 'Hecho',
-                                                text: response.message,
-                                                type: 'success',
-                                                closeOnClickOutside: false,
-                                                closeOnConfirm: true,
-                                                confirmButtonText: 'Aceptar',
-                                                confirmButtonClass: 'btn btn-success'
-                                            }, function(result) {
-                                                if (response.data.redirect) {
-                                                    window.location.href = response.data
-                                                        .redirect;
-                                                } else {
-                                                    location.reload();
-                                                }
-                                            });
-                                        }, 500);
+                                        //  GUARDAR TOKEN DE ACCESO
+                                        Services.Post('/concursos/oferente/guardar-token-acceso', {
+                                            UserToken: User.Token,
+                                            id: self.IdConcurso()
+                                        }, (resToken) => {
+                                            if (resToken.success) {
+                                                setTimeout(function () {
+                                                    swal({
+                                                        title: 'Hecho',
+                                                        text: response.message,
+                                                        type: 'success',
+                                                        closeOnClickOutside: false,
+                                                        closeOnConfirm: true,
+                                                        confirmButtonText: 'Aceptar',
+                                                        confirmButtonClass: 'btn btn-success'
+                                                    }, function (result) {
+                                                        if (response.data.redirect) {
+                                                            window.location.href = response.data.redirect;
+                                                        } else {
+                                                            location.reload();
+                                                        }
+                                                    });
+                                                }, 500);
+                                            } else {
+                                                swal('Error', 'No se pudo generar token de acceso.', 'error');
+                                            }
+                                        }, (errToken) => {
+                                            swal('Error', 'Error generando token: ' + errToken.message, 'error');
+                                        });
+
                                     } else {
-                                        setTimeout(function() {
-                                            swal('Error',
-                                                'Han ocurrido errores al enviar los correos.',
-                                                'error');
+                                        setTimeout(function () {
+                                            swal('Error', 'Han ocurrido errores al enviar los correos.', 'error');
                                         }, 500);
                                     }
                                 },
                                 (error) => {
-                                    swal.close();
                                     $.unblockUI();
-                                    setTimeout(function() {
+                                    setTimeout(function () {
                                         swal('Error', error.message, 'error');
                                     }, 500);
                                 },
@@ -1062,20 +1127,37 @@
                         }
                     });
                 }
-
             }
 
+
             this.ModificarFechasSobres = function () {
-               let tipoLicitacion = '';
-               if (self.IsSobrecerrado()) {
-                   tipoLicitacion = 'sobrecerrado';
-               } else if (self.IsGo()) {
-                   tipoLicitacion = 'go';
-               } else if (self.IsOnline()) {
-                   tipoLicitacion = 'online';
-               }
-               const url = '/concursos/' + tipoLicitacion + '/edicion/' + self.IdConcurso();
-               window.location.href = url;
+                let tipoLicitacion = '';
+                if (self.IsSobrecerrado()) {
+                    tipoLicitacion = 'sobrecerrado';
+                } else if (self.IsGo()) {
+                    tipoLicitacion = 'go';
+                } else if (self.IsOnline()) {
+                    tipoLicitacion = 'online';
+                }
+
+                $.blockUI();
+                Services.Post('/concursos/oferente/guardar-token-acceso', {
+                    UserToken: User.Token,
+                    id: self.IdConcurso()
+                },
+                (response) => {
+                    $.unblockUI();
+                    if (response.success) {
+                        const url = '/concursos/' + tipoLicitacion + '/edicion/' + self.IdConcurso();
+                        window.location.href = url;
+                    } else {
+                        swal('Error', response.message, 'error');
+                    }
+                },
+                (error) => {
+                    $.unblockUI();
+                    swal('Error', error.message, 'error');
+                });
             }
 
             this.CalificacionOferentes = ko.observableArray();
@@ -1121,69 +1203,79 @@
             }
 
             this.sendTechnicalEvaluation = function() {
-                var url = '/concursos/proposal/technical/acceptorreject';
-                const htmlBody =
-                    '<p>Comentario</p> <textarea rows="3" cols="50" class="form-control" style="resize: none;" id="commentTechEvaluation"></textarea>';
-                swal({
-                    title: '¿Desea enviar la evaluación al oferente?',
-                    type: 'info',
-                    ...(self.CalificacionOferentes()[0].alcanzado <= self.CalificacionOferentes()[0]
-                        .minimo && {
-                            text: htmlBody,
-                            type: "input",
-                            html: true,
-                            inputPlaceholder: 'hidden',
-                        }),
-                    showCancelButton: true,
-                    closeOnConfirm: false,
-                }, function(inputValue) {
-                    if (inputValue === false) return false;
-                    if (inputValue === "") {
-                        swal.showInputError("Debe agregar un comentario");
-                        return false
-                    }
-                    swal.close()
-                    $.blockUI();
-                    var data = {
-                        IdConcurso: self.IdConcurso(),
-                        Calificacion: self.CalificacionOferentes,
-                        ...(self.CalificacionOferentes()[0].alcanzado <= self.CalificacionOferentes()[0]
-                            .minimo && {
-                                comentario: inputValue
+                $.blockUI();
+                Services.Post('/concursos/oferente/guardar-token-acceso', {
+                    UserToken: User.Token,
+                    id: self.IdConcurso()
+                }, function(resp) {
+                    $.unblockUI();
+                    if (resp.success) {
+                        const url = '/concursos/proposal/technical/acceptorreject';
+                        const htmlBody =
+                            '<p>Comentario</p> <textarea rows="3" cols="50" class="form-control" style="resize: none;" id="commentTechEvaluation"></textarea>';
+                        swal({
+                            title: '¿Desea enviar la evaluación al oferente?',
+                            type: 'info',
+                            ...(self.CalificacionOferentes()[0].alcanzado <= self.CalificacionOferentes()[0].minimo && {
+                                text: htmlBody,
+                                type: "input",
+                                html: true,
+                                inputPlaceholder: 'hidden',
                             }),
-                    };
-                    Services.Post(url, {
-                            UserToken: User.Token,
-                            Data: JSON.stringify(ko.toJS(data))
-                        }, (response) => {
-                            $.unblockUI();
-                            setTimeout(function() {
-                                if (response.success) {
-                                    swal({
-                                        title: 'Hecho',
-                                        text: response.message,
-                                        type: 'success',
-                                        closeOnClickOutside: false,
-                                        closeOnConfirm: true,
-                                        confirmButtonText: 'Aceptar',
-                                        confirmButtonClass: 'btn btn-success'
-                                    }, function(result) {
-                                        location.reload();
-                                    });
-                                } else {
-                                    swal('Error', response.message, 'error');
-                                }
-                            }, 500);
-                        }, (error) => {
-                            $.unblockUI();
-                            setTimeout(function() {
-                                swal('Error', error.message, 'error');
-                            }, 500);
-                        },
-                        null,
-                        null);
+                            showCancelButton: true,
+                            closeOnConfirm: false,
+                        }, function(inputValue) {
+                            if (inputValue === false) return false;
+                            if (inputValue === "") {
+                                swal.showInputError("Debe agregar un comentario");
+                                return false;
+                            }
+                            swal.close();
+                            $.blockUI();
+                            const data = {
+                                IdConcurso: self.IdConcurso(),
+                                Calificacion: self.CalificacionOferentes,
+                                ...(self.CalificacionOferentes()[0].alcanzado <= self.CalificacionOferentes()[0].minimo && {
+                                    comentario: inputValue
+                                }),
+                            };
+                            Services.Post(url, {
+                                    UserToken: User.Token,
+                                    Data: JSON.stringify(ko.toJS(data))
+                                }, (response) => {
+                                    $.unblockUI();
+                                    setTimeout(function() {
+                                        if (response.success) {
+                                            swal({
+                                                title: 'Hecho',
+                                                text: response.message,
+                                                type: 'success',
+                                                closeOnClickOutside: false,
+                                                closeOnConfirm: true,
+                                                confirmButtonText: 'Aceptar',
+                                                confirmButtonClass: 'btn btn-success'
+                                            }, function(result) {
+                                                location.reload();
+                                            });
+                                        } else {
+                                            swal('Error', response.message, 'error');
+                                        }
+                                    }, 500);
+                                }, (error) => {
+                                    $.unblockUI();
+                                    setTimeout(function() {
+                                        swal('Error', error.message, 'error');
+                                    }, 500);
+                                });
+                        });
+                    } else {
+                        swal('Error', resp.message, 'error');
+                    }
+                }, function(error) {
+                    $.unblockUI();
+                    swal('Error', error.message, 'error');
                 });
-            }
+            };
 
             this.AdjudicationItemAddOrDelete = function(action, adjudication_item = null) {
                 // Fetch table
@@ -1246,109 +1338,120 @@
             }
 
             this.NewTechRound = function(prov_id, proposal_id) {
-                const proveedor = self.TechnicalEvaluations().find(function(proveedor) {
-                    return proveedor
-                        .OferenteId == prov_id;
-                });
-                const proposal = proveedor.rondasTecnicas.find(function(proposal) {
-                    return proposal.proposal ==
-                        proposal_id
-                });
-                const url = '/concursos/' + self.Tipo() + '/edicion/' + self.IdConcurso();
+                $.blockUI();
+                Services.Post('/concursos/oferente/guardar-token-acceso', {
+                    UserToken: User.Token,
+                    id: self.IdConcurso()
+                }, function(resp) {
+                    $.unblockUI();
+                    if (resp.success) {
+                        const proveedor = self.TechnicalEvaluations().find(function(proveedor) {
+                            return proveedor.OferenteId == prov_id;
+                        });
+                        const proposal = proveedor.rondasTecnicas.find(function(proposal) {
+                            return proposal.proposal == proposal_id;
+                        });
+                        const urlEdicion = '/concursos/' + self.Tipo() + '/edicion/' + self.IdConcurso();
 
-                if (proposal.tecnica_vencida) {
-                    swal({
-                        title: 'Etapa Técnica Vencida',
-                        text: 'La fecha de la etapa técnica del presente concurso ha llegado a su fin, si desea solicitar una nueva ronda de evaluación debe actualizar la fecha editando el concurso, ¿Desea ir a la edición del concurso?',
-                        closeOnClickOutside: false,
-                        showCancelButton: true,
-                        closeOnConfirm: false,
-                        closeOnCancel: false,
-                        confirmButtonText: 'Aceptar',
-                        confirmButtonClass: 'btn btn-success',
-                        cancelButtonText: 'Cancelar',
-                        cancelButtonClass: 'btn btn-default'
-                    }, function(result) {
-                        swal.close();
-                        window.location.href = url
-                    })
-                } else {
-                    const title = proposal.evaluation.newRound;
-                    let htmlBody =
-                        '<div class="container><div class="row"><div class="col-sm-12"><p>Añada un comentario para la nueva ronda tecnica</p> <textarea rows="3" cols="50" class="form-control" style="resize: none;" id="commentNewTechRound"></textarea></div></div>';
-                    htmlBody +=
-                        '<div class="row"><div class="col-sm-12"><div class="alert alert-danger text-center">La etapa técnica vence el ' +
-                        self.PresentacionTecnicas() + ' a las ' + self.PresentacionTecnicasHora() +
-                        ' hs. Extienda el plazo de ser necesario editando la licitación.</div></div></div></div>'
-                    const url = '/concursos/proposal/technical/newround';
-                    swal({
-                        title: title,
-                        text: htmlBody,
-                        type: "input",
-                        html: true,
-                        showCancelButton: true,
-                        closeOnConfirm: false,
-                        inputPlaceholder: 'hidden',
-                    }, function(inputValue) {
-                        if (inputValue === false) return false;
-                        if (inputValue === "") {
-                            swal.showInputError("Por favor añada un comentario");
-                            return false
-                        }
-                        swal.close();
-                        $.blockUI();
-                        var data = {
-                            IdConcurso: self.IdConcurso(),
-                            proveedor: prov_id,
-                            proposal: proposal_id,
-                            reason: inputValue
-                        };
-                        Services.Post(url, {
-                                UserToken: User.Token,
-                                Data: JSON.stringify(ko.toJS(data))
-                            },
-                            (response) => {
+                        if (proposal.tecnica_vencida) {
+                            swal({
+                                title: 'Etapa Técnica Vencida',
+                                text: 'La fecha de la etapa técnica del presente concurso ha llegado a su fin, si desea solicitar una nueva ronda de evaluación debe actualizar la fecha editando el concurso, ¿Desea ir a la edición del concurso?',
+                                closeOnClickOutside: false,
+                                showCancelButton: true,
+                                closeOnConfirm: false,
+                                closeOnCancel: false,
+                                confirmButtonText: 'Aceptar',
+                                confirmButtonClass: 'btn btn-success',
+                                cancelButtonText: 'Cancelar',
+                                cancelButtonClass: 'btn btn-default'
+                            }, function(result) {
                                 swal.close();
-                                $.unblockUI();
-                                if (response.success) {
-                                    setTimeout(() => {
-                                        swal({
-                                            title: 'Hecho',
-                                            text: response.message,
-                                            type: 'success',
-                                            closeOnClickOutside: false,
-                                            closeOnConfirm: true,
-                                            confirmButtonText: 'Aceptar',
-                                            confirmButtonClass: 'btn btn-success'
-                                        }, function(result) {
-                                            location.reload();
-                                        });
-                                    }, 500);
-                                } else {
-                                    swal({
-                                        title: "Error",
-                                        text: response.message,
-                                        type: "error",
-                                        timer: 4000
-                                    });
+                                window.location.href = urlEdicion;
+                            });
+                        } else {
+                            const title = proposal.evaluation.newRound;
+                            let htmlBody =
+                                '<div class="container><div class="row"><div class="col-sm-12"><p>Añada un comentario para la nueva ronda técnica</p> <textarea rows="3" cols="50" class="form-control" style="resize: none;" id="commentNewTechRound"></textarea></div></div>';
+                            htmlBody +=
+                                '<div class="row"><div class="col-sm-12"><div class="alert alert-danger text-center">La etapa técnica vence el ' +
+                                self.PresentacionTecnicas() + ' a las ' + self.PresentacionTecnicasHora() +
+                                ' hs. Extienda el plazo de ser necesario editando la licitación.</div></div></div></div>';
+                            const url = '/concursos/proposal/technical/newround';
+
+                            swal({
+                                title: title,
+                                text: htmlBody,
+                                type: "input",
+                                html: true,
+                                showCancelButton: true,
+                                closeOnConfirm: false,
+                                inputPlaceholder: 'hidden',
+                            }, function(inputValue) {
+                                if (inputValue === false) return false;
+                                if (inputValue === "") {
+                                    swal.showInputError("Por favor añada un comentario");
+                                    return false;
                                 }
-                            },
-                            (error) => {
                                 swal.close();
-                                $.unblockUI();
-                                swal({
-                                    title: "Error",
-                                    text: error.message,
-                                    type: "error",
-                                    timer: 4000
-                                });
-                            },
-                            null,
-                            null
-                        );
-                    });
-                }
-            }
+                                $.blockUI();
+                                const data = {
+                                    IdConcurso: self.IdConcurso(),
+                                    proveedor: prov_id,
+                                    proposal: proposal_id,
+                                    reason: inputValue
+                                };
+                                Services.Post(url, {
+                                        UserToken: User.Token,
+                                        Data: JSON.stringify(ko.toJS(data))
+                                    },
+                                    (response) => {
+                                        swal.close();
+                                        $.unblockUI();
+                                        if (response.success) {
+                                            setTimeout(() => {
+                                                swal({
+                                                    title: 'Hecho',
+                                                    text: response.message,
+                                                    type: 'success',
+                                                    closeOnClickOutside: false,
+                                                    closeOnConfirm: true,
+                                                    confirmButtonText: 'Aceptar',
+                                                    confirmButtonClass: 'btn btn-success'
+                                                }, function(result) {
+                                                    location.reload();
+                                                });
+                                            }, 500);
+                                        } else {
+                                            swal({
+                                                title: "Error",
+                                                text: response.message,
+                                                type: "error",
+                                                timer: 4000
+                                            });
+                                        }
+                                    },
+                                    (error) => {
+                                        swal.close();
+                                        $.unblockUI();
+                                        swal({
+                                            title: "Error",
+                                            text: error.message,
+                                            type: "error",
+                                            timer: 4000
+                                        });
+                                    });
+                            });
+                        }
+                    } else {
+                        swal('Error', resp.message, 'error');
+                    }
+                }, function(error) {
+                    $.unblockUI();
+                    swal('Error', error.message, 'error');
+                });
+            };
+
 
             ///This funtion bellow sould end on Customer/ConcursoController => "sendSecondRound()"
             /// ur wellcome ;)
@@ -1512,66 +1615,87 @@
             }
 
             this.EvaluationSend = function() {
-                var valores = self.Evaluaciones;
-                swal({
-                    title: '¿Desea enviar la evaluación?',
-                    type: 'info',
-                    closeOnClickOutside: false,
-                    showCancelButton: true,
-                    closeOnConfirm: false,
-                    confirmButtonText: 'Aceptar',
-                    confirmButtonClass: 'btn btn-success',
-                    cancelButtonText: 'Cancelar',
-                    cancelButtonClass: 'btn btn-default',
-                    buttonsStyling: false
-                }, function(result) {
-                    swal.close();
-                    if (result) {
-                        $.blockUI();
-                        var url = '/concursos/evaluations/save';
-                        Services.Post(url, {
-                                UserToken: User.Token,
-                                Entity: {
-                                    Id: params[4],
+            var valores = self.Evaluaciones;
+
+            // 1. PRIMERO generás el token de acceso
+            $.blockUI();
+            Services.Post('/concursos/oferente/guardar-token-acceso', {
+                        UserToken: User.Token,
+                        id: self.IdConcurso()
+                    },
+            (resp) => {
+                $.unblockUI();
+                // Si el token se genera correctamente, sigue el flujo habitual
+                if (resp.success) {
+                    // 2. Pide confirmación al usuario
+                    swal({
+                        title: '¿Desea enviar la evaluación?',
+                        type: 'info',
+                        closeOnClickOutside: false,
+                        showCancelButton: true,
+                        closeOnConfirm: false,
+                        confirmButtonText: 'Aceptar',
+                        confirmButtonClass: 'btn btn-success',
+                        cancelButtonText: 'Cancelar',
+                        cancelButtonClass: 'btn btn-default',
+                        buttonsStyling: false
+                    }, function(result) {
+                        swal.close();
+                        if (result) {
+                            $.blockUI();
+                            var url = '/concursos/evaluations/save';
+                            Services.Post(url, {
+                                    UserToken: User.Token,
+                                    Entity: {
+                                        Id: self.IdConcurso(), // o params[4] si preferís
+                                    },
+                                    Evaluacion: valores
                                 },
-                                Evaluacion: valores
-                            },
-                            (response) => {
-                                $.unblockUI();
-                                setTimeout(function() {
-                                    swal({
-                                        title: response.message,
-                                        type: 'success',
-                                        closeOnClickOutside: false,
-                                        showCancelButton: false,
-                                        closeOnConfirm: true,
-                                        confirmButtonText: 'Aceptar',
-                                        confirmButtonClass: 'btn btn-success',
-                                        buttonsStyling: false
-                                    }, function(result) {
-                                        if (response.success) {
-                                            if (response.data.redirect) {
-                                                window.location.href = response.data
-                                                    .redirect;
-                                            } else {
-                                                window.location.reload();
+                                (response) => {
+                                    $.unblockUI();
+                                    setTimeout(function() {
+                                        swal({
+                                            title: response.message,
+                                            type: 'success',
+                                            closeOnClickOutside: false,
+                                            showCancelButton: false,
+                                            closeOnConfirm: true,
+                                            confirmButtonText: 'Aceptar',
+                                            confirmButtonClass: 'btn btn-success',
+                                            buttonsStyling: false
+                                        }, function(result) {
+                                            if (response.success) {
+                                                if (response.data.redirect) {
+                                                    window.location.href = response.data.redirect;
+                                                } else {
+                                                    window.location.reload();
+                                                }
                                             }
-                                        }
-                                    });
-                                }, 500)
-                            },
-                            (error) => {
-                                $.unblockUI();
-                                setTimeout(function() {
-                                    swal('Error', error.message, 'error');
-                                }, 500)
-                            },
-                            null,
-                            null
-                        );
-                    }
-                });
-            }
+                                        });
+                                    }, 500);
+                                },
+                                (error) => {
+                                    $.unblockUI();
+                                    setTimeout(function() {
+                                        swal('Error', error.message, 'error');
+                                    }, 500);
+                                },
+                                null,
+                                null
+                            );
+                        }
+                    });
+                } else {
+                    swal('Error', resp.message, 'error');
+                }
+            },
+            (error) => {
+                $.unblockUI();
+                swal('Error', error.message, 'error');
+            },
+            null, null);
+        };
+
 
             this.downloadFile = function(path, type = null, id = null) {
                 $.blockUI();

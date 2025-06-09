@@ -176,8 +176,24 @@ jQuery(document).ready(function () {
                         };
 
                         var step = etapaToStep[calEvent.content] || 'invitacion';
-                        var url = '/concursos/oferente/' + tipo.toLowerCase() + '/' + step + '/' + realId;
-                        window.open(url, '_blank');
+                        $.blockUI();
+                        Services.Post('/concursos/oferente/guardar-token-acceso', {
+                            UserToken: User.Token,
+                            id: realId
+                        },
+                        (response) => {
+                            $.unblockUI();
+                            if (response.success) {
+                                var url = '/concursos/oferente/' + tipo.toLowerCase() + '/' + step + '/' + realId;
+                                window.open(url, '_blank');
+                            } else {
+                                swal('Error', response.message, 'error');
+                            }
+                        },
+                        (error) => {
+                            $.unblockUI();
+                            swal('Error', error.message, 'error');
+                        });
                     }
                 });
             }

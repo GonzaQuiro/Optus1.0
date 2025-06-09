@@ -18,106 +18,101 @@ class AuthController extends BaseController
     
     public function login(Request $request, Response $response)
     {
-        //Obetener la ip
-        $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'Unknown';
+        $ip = $_SERVER['REMOTE_ADDR'] ?? 'Unknown';
         $limiteIntentosLogin = 5;
         $ventanaDeTiempo = Carbon::now()->subMinutes(15);
-      
-        //Contar intentos fallidos
-        $intentosFallidos = dependency('db')->table('login_logs')
 
+        // Contar intentos fallidos desde la IP
+        $intentosFallidos = dependency('db')->table('login_logs')
             ->where('ip', $ip)
-            ->where('estado', 'F') // 'F' = Failed
+            ->where('estado', 'F')
             ->where('fecha', '>=', $ventanaDeTiempo)
-            ->count();        
+            ->count();
 
         if ($intentosFallidos >= $limiteIntentosLogin) {
-            //Demaciados intentos en la ventana de tiempo
             $this->login_logs($request->getParsedBody()['UserName'], null, 'F', 'Optus', 'Bloqueado por exceso de intentos');
             return $this->json($response, [
                 'success' => false,
                 'message' => 'Demasiados intentos fallidos. Intenta nuevamente más tarde.',
                 'data'    => ['user' => null]
-            ], 429); // 429 demaciadas requests
+            ], 429);
         }
 
         $username = $request->getParsedBody()['UserName'];
         $password = $request->getParsedBody()['Password'];
 
-        // Buscar usuario por nombre de usuario o email
+        // Buscar usuario
         $user = User::where(function ($query) use ($username) {
-            $query
-                ->where('username', '=', $username)
+            $query->where('username', '=', $username)
                 ->orWhere('email', '=', $username);
         })->first();
-        if ($user) {
 
-             // Validar IP
-             $ip = $_SERVER['REMOTE_ADDR'] ?? 'Unknown';
-             $isTrusted = $this->isTrustedIp($user->id, $ip);
- 
-             if (!$isTrusted) {
-                 // Marcar que requiere 2FA
-                 
-                 $user->update(['requires_ip_verification' => 'S']);
-             }
-             
-            // Obtener el MD5 del nombre de usuario
+        if ($user) {
+            // IP dinámica
+            $ipsActuales = dependency('db')->table('users_login_ips')
+            ->where('user_id', $user->id)
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+            $ipsRegistradas = $ipsActuales->pluck('ip_address')->toArray();
+
+            if (!in_array($ip, $ipsRegistradas)) {
+                if ($ipsActuales->count() >= 5) {
+                    // Activar 2FA: no guardar la nueva IP todavía
+                    $user->update(['requires_ip_verification' => 'S']);
+                } else {
+                    // Guardar nueva IP directamente
+                    $this->guardarIpUsuario($user->id, $ip);
+                    $user->update(['requires_ip_verification' => 'N']);
+                }
+            } else {
+                // IP ya conocida, login normal
+                $user->update(['requires_ip_verification' => 'N']);
+            }
+
+            // Validación de contraseña
             $username_md5 = md5($user->username);
-            // Dividir el MD5 en dos partes
             $part1 = substr($username_md5, 0, strlen($username_md5) / 2);
             $part2 = substr($username_md5, strlen($username_md5) / 2);
-
-            // Generar el hash con sha256 usando la fórmula proporcionada
             $passwordHash = hash("sha256", $part2 . $password . $part1);
 
-            
-
             if ($user->password === $passwordHash) {
-                // Se encontró usuario y la contraseña coincide
                 $result = $this->setUsuario($user, $password);
                 if ($result) {
                     $success = true;
                     $message = 'Usuario validado.';
                     $status = 200;
-                    // Se registra el login exitoso
                     $this->login_logs($username, $user, 'S', 'Optus', 'Inicio de sesión exitoso');
                     $user = $result;
                 } else {
                     $success = false;
                     $message = 'Ha ocurrido un error.';
                     $status = 500;
-                    // Se registra el error al establecer la sesión
                     $this->login_logs($username, $user, 'F', 'Optus', 'Error al establecer la sesión');
                     $user = null;
                 }
             } else {
-                // La contraseña es incorrecta
                 $success = false;
                 $message = 'Usuario o Contraseña incorrectos.';
                 $status = 422;
                 $user = null;
-                // Se registra el fallo: contraseña incorrecta
                 $this->login_logs($username, $user, 'F', 'Optus', 'Contraseña incorrecta');
             }
         } else {
-            // No se encontró el usuario en la base de datos
             $success = false;
             $message = 'Usuario o Contraseña incorrectos.';
             $status = 422;
             $user = null;
-            // Se registra el fallo: usuario incorrecto
             $this->login_logs($username, null, 'F', 'Optus', 'Usuario incorrecto');
         }
 
         return $this->json($response, [
-            'success'   => $success,
-            'message'   => $message,
-            'data'      => [
-                'user'  => $user
-            ]
+            'success' => $success,
+            'message' => $message,
+            'data'    => ['user' => $user]
         ], $status);
     }
+
     
     public function logout(Request $request, Response $response)
     {
@@ -453,64 +448,30 @@ class AuthController extends BaseController
         }
     }
 
-    private function isTrustedIp($user_id, $ip)
-    {
-        $capsule = dependency('db');
-        $connection = $capsule->getConnection();
-
-        $result = $connection->table('users_login_ips')
-            ->where('user_id', $user_id)
-            ->where('ip_address', $ip)
-            ->where('expires_at', '>', Carbon::now())
-            ->first();
-        
-        // Logging simple
-        $mensaje = "Verificando IP: $ip | User ID: $user_id | Resultado: " . ($result ? "CONFIABLE" : "NO CONFIABLE") . "\n";
-
-        $txt = fopen("ip_debug.txt", "a"); // crea o abre el archivo en modo append
-        fwrite($txt, $mensaje);
-        fclose($txt);
-
-        return $result !== null;
-    }
-
     private function guardarIpUsuario($user_id, $ip)
     {
         $capsule = dependency('db');
         $connection = $capsule->getConnection();
 
-        // Verificamos si la IP ya existe y está activa
         $ipExistente = $connection->table('users_login_ips')
             ->where('user_id', $user_id)
             ->where('ip_address', $ip)
-            ->where('expires_at', '>', Carbon::now())
             ->first();
 
         if ($ipExistente) {
-            // Ya está registrada y vigente, no hacemos nada
             return;
         }
 
-        // Contamos cuántas IPs activas tiene el usuario
-        $ipsActuales = $connection->table('users_login_ips')
-            ->where('user_id', $user_id)
-            ->orderBy('created_at', 'asc') // más antiguas primero
-            ->get();
+        $now = Carbon::now();
 
-        if ($ipsActuales->count() >= 5) {
-            // Eliminar la más antigua
-            $ipMasAntigua = $ipsActuales->first();
-            $connection->table('users_login_ips')->where('id', $ipMasAntigua->id)->delete();
-        }
-
-        // Insertamos la nueva IP con vencimiento a 2 meses
         $connection->table('users_login_ips')->insert([
             'user_id'    => $user_id,
             'ip_address' => $ip,
-            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-            'expires_at' => Carbon::now()->addMonths(2)->format('Y-m-d H:i:s')
+            'created_at' => $now->format('Y-m-d H:i:s'),
+            'expires_at' => $now->copy()->addMonths(2)->format('Y-m-d H:i:s')
         ]);
     }
+
  
     public function verifyCode(Request $request, Response $response)
     {
@@ -528,28 +489,37 @@ class AuthController extends BaseController
         }
 
         if ($usuario->two_factor_code === $input_code) {
-            // Código correcto → Guardar IP como confiable
             $ip = $_SERVER['REMOTE_ADDR'] ?? 'Unknown';
-            $this->guardarIpUsuario($usuario->id, $ip);
 
-            // Resetear código 2FA y marca la IP como verificada
+            $ipsActuales = dependency('db')->table('users_login_ips')
+                ->where('user_id', $usuario->id)
+                ->orderBy('created_at', 'asc')
+                ->get();
+
+            $ipsRegistradas = $ipsActuales->pluck('ip_address')->toArray();
+
+            if (!in_array($ip, $ipsRegistradas)) {
+                if ($ipsActuales->count() >= 5) {
+                    dependency('db')->table('users_login_ips')
+                        ->where('user_id', $usuario->id)
+                        ->delete();
+                }
+
+                $this->guardarIpUsuario($usuario->id, $ip);
+            }
+
             $usuario->update([
                 'two_factor_code' => null,
                 'requires_ip_verification' => 'N',
             ]);
 
-            // Redirigir según si debe cambiar contraseña o no
-            if ($usuario->pass_change === 'S') {
-                return $response->withRedirect('/change-password');
-            } else {
-                return $response->withRedirect('/login');
-            }
-        } else {
-            // Código incorrecto
-            return $response->withRedirect('/verify-code?error=1');
+            return $response->withRedirect(
+                $usuario->pass_change === 'S' ? '/change-password' : '/login'
+            );
         }
-    }
 
+        return $response->withRedirect('/verify-code?error=1');
+    }
 
     public function generateTwoFactorCode()
     {
