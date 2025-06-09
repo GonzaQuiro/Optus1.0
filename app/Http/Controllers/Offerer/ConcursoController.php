@@ -792,19 +792,38 @@ class ConcursoController extends BaseController
             // ECONÓMICA
             if ($params['step'] === Step::STEPS['offerer']['economica']) {
                 $economic_proposal = $oferente->parsed_economic_proposal;
+
                 $array = json_decode(json_encode($economic_proposal->values), true);
-                foreach ($array as $key => $value) {
+
+                // Mapear los valores anteriores desde Items a EconomicProposal
+                $items_map = [];
+                foreach (json_decode(json_encode($concurso->getCotizacionesOutputByUser()), true) as $item) {
+                    if (isset($item['valores']) && isset($item['id'])) {
+                        $items_map[$item['id']] = $item['valores'];
+                    }
                 }
-                $array[$key]['maximum_cotizacion'] = null;
-                $arrStdClass = json_decode(json_encode($array));
-                $economic_proposal->values = $arrStdClass;
+
+                // Recorremos EconomicProposal y metemos los valores del item si existen
+                foreach ($array as $i => $producto) {
+                    $productId = $producto['product_id'];
+                    if (isset($items_map[$productId])) {
+                        $valores = $items_map[$productId];
+                        $array[$i]['cotizacion'] = $valores['cotizacion'] ?? 0;
+                        $array[$i]['cantidad'] = $valores['cantidad'] ?? 0;
+                        $array[$i]['fecha'] = $valores['fecha'] ?? 0;
+                        $array[$i]['creado'] = $valores['creado'] ?? null;
+                    }
+                    $array[$i]['maximum_cotizacion'] = null;
+                }
+
+                $economic_proposal->values = json_decode(json_encode($array));
 
                 $list = array_merge($list, array_merge($common, [
-                    'Costs' => isset($concurso->estructura_costos) ? $concurso->estructura_costos : 'no',
-                    'AnalisisApu' => isset($concurso->apu) ? $concurso->apu : 'no',
+                    'Costs' => $concurso->estructura_costos ?? 'no',
+                    'AnalisisApu' => $concurso->apu ?? 'no',
                     'EconomicProposal' => $economic_proposal,
-                    'Descendente' => $concurso->tipo_valor_ofertar == 'descendente' ? true : false,
-                    'PermiteAnularOferta' => $concurso->permitir_anular_oferta == 'si' ? true : false,
+                    'Descendente' => $concurso->tipo_valor_ofertar == 'descendente',
+                    'PermiteAnularOferta' => $concurso->permitir_anular_oferta === 'si',
                     'CantidadOferentes' => $concurso->oferentes
                         ->whereIn('etapa_actual', [
                             Participante::ETAPAS['economica-pendiente'],
@@ -812,10 +831,9 @@ class ConcursoController extends BaseController
                             Participante::ETAPAS['economica-presentada'],
                             Participante::ETAPAS['adjudicacion-pendiente']
                         ])->count(),
-                    'Duracion' =>
-                        isset($concurso->parsed_duracion) ?
-                        $concurso->parsed_duracion[0] . ' minutos ' . $concurso->parsed_duracion[1] . ' segundos' :
-                        ' 0 minutos 0 segundos',
+                    'Duracion' => isset($concurso->parsed_duracion)
+                        ? $concurso->parsed_duracion[0] . ' minutos ' . $concurso->parsed_duracion[1] . ' segundos'
+                        : ' 0 minutos 0 segundos',
                     'TiempoAdicional' => $concurso->tiempo_adicional,
                     'Countdown' => $concurso->countdown,
                     'Timeleft' => $concurso->timeleft,
@@ -831,11 +849,9 @@ class ConcursoController extends BaseController
                     'RondaActual' => $rondaActual,
                     'Title' => $title
                 ]));
+
                 if ($concurso->is_online) {
-                    $list = array_merge(
-                        $list,
-                        $concurso->getSubastaOutputByUser()
-                    );
+                    $list = array_merge($list, $concurso->getSubastaOutputByUser());
                 } else {
                     $list = array_merge($list, [
                         'Items' => $concurso->getCotizacionesOutputByUser()
