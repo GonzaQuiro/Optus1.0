@@ -85,36 +85,34 @@ class ConcursoController extends BaseController
     }
 
     public function serveDetail(Request $request, Response $response, $params)
-    {   
+    {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
-        define('TOKEN_SECRET_KEY', 'Optus1.0');
+        $secret = getenv('TOKEN_SECRET_KEY');
 
         $id = (int) $params['id'];
-
-        // VALIDAR TOKEN
         $sessionId = session_id();
-        $expectedToken = hash_hmac('sha256', $id . $sessionId, TOKEN_SECRET_KEY);
-        $sessionToken = $_SESSION['edit_token'][$id] ?? null;
+        $expectedToken = hash_hmac('sha256', $id . $sessionId, $secret);
+        $storedToken   = $_SESSION['edit_token'][$id] ?? null;
 
-        if ($expectedToken !== $sessionToken) {
+        if (!$storedToken || $expectedToken !== $storedToken) {
             return $this->json($response, [
                 'success' => false,
-                'message' => 'Acceso no autorizado. Token invÃ¡lido para acceder al detalle del concurso.'
+                'message' => 'Acceso no autorizado. Token invÃ¡lido para ver el detalle del concurso'
             ], 403);
         }
 
-        // ðŸ”¥ Invalida el token despuÃ©s de usarlo
-        unset($_SESSION['edit_token'][$id]);
+        // No eliminamos el token para permitir F5
+        // unset($_SESSION['edit_token'][$id]);
 
         if (isAdmin()) {
             $concurso = Concurso::find($id);
         } else {
             $user = user();
-            $concurso = $user->customer_company->getAllConcursosByCompany()->find($id);
-            $concurso = $concurso ?? $user->concursos_evalua->find($id);
+            $concurso = $user->customer_company->getAllConcursosByCompany()->find($id)
+                    ?? $user->concursos_evalua->find($id);
         }
 
         abort_if($request, $response, !$concurso, true, 404);
@@ -131,29 +129,29 @@ class ConcursoController extends BaseController
         ]);
     }
 
+
     public function serveEdit(Request $request, Response $response, $params)
     {   
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
-        define('TOKEN_SECRET_KEY', 'Optus1.0');
+        $secret = getenv('TOKEN_SECRET_KEY');
 
         $id = (int) $params['id'];
-
-        // VALIDAR TOKEN
         $sessionId = session_id();
-        $expectedToken = hash_hmac('sha256', $id . $sessionId, TOKEN_SECRET_KEY);
-        $sessionToken = $_SESSION['edit_token'][$id] ?? null;
-
-        if ($expectedToken !== $sessionToken) {
+        $expectedToken = hash_hmac('sha256', $id . $sessionId, $secret);
+        $storedToken   = $_SESSION['edit_token'][$id] ?? null;
+        
+        if (!$storedToken || $expectedToken !== $storedToken) {
             return $this->json($response, [
                 'success' => false,
                 'message' => 'Acceso no autorizado. Token invÃ¡lido para editar el concurso.'
             ], 403);
         }
 
-        unset($_SESSION['edit_token'][$id]);
+        // âŒ No lo eliminamos para permitir F5
+        // unset($_SESSION['edit_token'][$id]);
 
         $concurso = user()->customer_company->getAllConcursosByCompany()->find($id);
         abort_if($request, $response, !$concurso, true, 404);
@@ -188,9 +186,12 @@ class ConcursoController extends BaseController
     }
 
     public function guardarTokenAcceso(Request $request, Response $response)
-    {   
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
-        define('TOKEN_SECRET_KEY', 'Optus1.0');
+        $secret = getenv('TOKEN_SECRET_KEY');
 
         $id = $request->getParsedBody()['id'] ?? null;
 
@@ -202,8 +203,10 @@ class ConcursoController extends BaseController
         }
 
         $sessionId = session_id();
-        $token = hash_hmac('sha256', $id . $sessionId, TOKEN_SECRET_KEY);
+        $token = hash_hmac('sha256', $id . $sessionId, $secret);
 
+        $_SESSION['edit_token'] = [];
+         
         $_SESSION['edit_token'][$id] = $token;
 
         return $this->json($response, [
@@ -211,27 +214,30 @@ class ConcursoController extends BaseController
         ]);
     }
 
-
     public function serveCreate(Request $request, Response $response, $params)
     {
         $title = null;
         $description = null;
         $concurso_id = $request->getQueryParam('concurso');
 
-        // Si viene con ID de concurso, validamos el token
         if ($concurso_id) {
-            define('TOKEN_SECRET_KEY', 'Optus1.0');
-            $expectedToken = hash_hmac('sha256', $concurso_id . session_id(), TOKEN_SECRET_KEY);
-            $storedToken = $_SESSION['edit_token'][$concurso_id] ?? null;
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
 
-            if (!$storedToken || $storedToken !== $expectedToken) {
+            $secret = getenv('TOKEN_SECRET_KEY');
+
+            $expectedToken = hash_hmac('sha256', $concurso_id . session_id(), $secret);
+            $storedToken = $_SESSION['edit_token'][$concurso_id] ?? null;
+            if (!$storedToken || $expectedToken !== $storedToken) {
                 return $this->json($response, [
                     'success' => false,
                     'message' => 'Acceso no autorizado. Token invÃ¡lido para copiar concurso.'
                 ], 403);
             }
 
-            unset($_SESSION['edit_token'][$concurso_id]); // Consumimos el token una sola vez
+            //  No se elimina para permitir F5
+            // unset($_SESSION['edit_token'][$concurso_id]);
         }
 
         switch ($params['type']) {
@@ -260,6 +266,7 @@ class ConcursoController extends BaseController
             'isCopy' => $concurso_id ? 1 : 0
         ]);
     }
+
 
     public function typeList(Request $request, Response $response, $args)
     {
@@ -544,7 +551,7 @@ class ConcursoController extends BaseController
                     }
                 }
 
-            // EN PREPARACI¨®N
+            // EN PREPARACIï¿½ï¿½N
             $concursos = collect();
 
             $concursos = $concursos->merge(
@@ -595,7 +602,7 @@ class ConcursoController extends BaseController
                 );
             }
 
-            // PROPUESTAS T¨¦CNICAS
+            // PROPUESTAS Tï¿½ï¿½CNICAS
 
             $etapas_tecnica = array_merge(
                 [
@@ -645,7 +652,7 @@ class ConcursoController extends BaseController
                 );
             }
 
-            // PROPUESTAS ECON¨®MICAS
+            // PROPUESTAS ECONï¿½ï¿½MICAS
             $concursos = collect();
             $concursos = $concursos->merge(
                 $created
@@ -660,12 +667,12 @@ class ConcursoController extends BaseController
                     $fecha = $concurso->fecha_limite_economicas->format('d-m-Y');
                     $hora = $concurso->fecha_limite_economicas->format('H:i:s');
 
-                    // Fecha presentaci¨®n en curso o todav¨ªa hay oferentes sin presentar oferta.
+                    // Fecha presentaciï¿½ï¿½n en curso o todavï¿½ï¿½a hay oferentes sin presentar oferta.
                     if ($concurso->fecha_limite_economicas > Carbon::now()) {
                         $status_text = 'Licitando';
                     } elseif ($concurso->adjudicacion_anticipada && $oferentes->where('has_economica_presentada', false)->count() > 0) {
                         $status_text = 'Fin parcial';
-                        // Fecha presentaci¨®n vencida o todos presentaron oferta.
+                        // Fecha presentaciï¿½ï¿½n vencida o todos presentaron oferta.
                     } else {
                         $status_text = 'Finalizado';
                     }
@@ -676,15 +683,15 @@ class ConcursoController extends BaseController
                     $fecha = $concurso->inicio_subasta->format('d-m-Y');
                     $hora = $concurso->inicio_subasta->format('H:i:s');
 
-                    // La subasta no inici¨®.
+                    // La subasta no iniciï¿½ï¿½.
                     if ($concurso->timeleft) {
                         $status_text = 'No iniciado';
                         $cantidad = 0;
-                        // La subasta est¨¢ en curso.
+                        // La subasta estï¿½ï¿½ en curso.
                     } elseif ($concurso->countdown) {
                         $status_text = 'Licitando';
                         $cantidad = 0;
-                        // La subasta termin¨®.
+                        // La subasta terminï¿½ï¿½.
                     } else {
                         $status_text = 'Finalizado';
                         $cantidad = $concurso->oferentes
@@ -738,7 +745,7 @@ class ConcursoController extends BaseController
                 );
             }
 
-            // EVALUACI¨®N
+            // EVALUACIï¿½ï¿½N
             $concursos = collect();
             $concursos = $concursos
                 ->merge(

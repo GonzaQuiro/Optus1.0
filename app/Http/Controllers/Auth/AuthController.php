@@ -57,7 +57,7 @@ class AuthController extends BaseController
             $ipsRegistradas = $ipsActuales->pluck('ip_address')->toArray();
 
             if (!in_array($ip, $ipsRegistradas)) {
-                if ($ipsActuales->count() >= 5) {
+                if ($ipsActuales->count() >= 10) {
                     // Activar 2FA: no guardar la nueva IP todavía
                     $user->update(['requires_ip_verification' => 'S']);
                 } else {
@@ -499,7 +499,7 @@ class AuthController extends BaseController
             $ipsRegistradas = $ipsActuales->pluck('ip_address')->toArray();
 
             if (!in_array($ip, $ipsRegistradas)) {
-                if ($ipsActuales->count() >= 5) {
+                if ($ipsActuales->count() >= 10) {
                     dependency('db')->table('users_login_ips')
                         ->where('user_id', $usuario->id)
                         ->delete();
