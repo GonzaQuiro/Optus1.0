@@ -13,13 +13,13 @@ class PermissionController extends BaseController
 {
     public function serveEdit(Request $request, Response $response, $params)
     {
-        define('TOKEN_SECRET_KEY', 'Optus1.0');
+        $secret = getenv('TOKEN_SECRET_KEY');
 
         $id = (int) $params['id'];
         $user = User::find($id);
         abort_if($request, $response, !$user, true, 404);
 
-        $expectedToken = hash_hmac('sha256', $id . session_id(), TOKEN_SECRET_KEY);
+        $expectedToken = hash_hmac('sha256', $id . session_id(), $secret);
         $storedToken = $_SESSION['perm_token'][$id] ?? null;
 
         if (!$storedToken || $storedToken !== $expectedToken) {
@@ -29,7 +29,7 @@ class PermissionController extends BaseController
             ], 403);
         }
 
-        unset($_SESSION['perm_token'][$id]);
+        //unset($_SESSION['perm_token'][$id]);
 
         $data = $user->is_admin
             ? ['type' => 'admin']
@@ -48,7 +48,7 @@ class PermissionController extends BaseController
 
     public function guardarIdPermisos(Request $request, Response $response)
     {
-        define('TOKEN_SECRET_KEY', 'Optus1.0');
+        $secret = getenv('TOKEN_SECRET_KEY');
 
         $id = $request->getParsedBody()['id'] ?? null;
 
@@ -60,7 +60,10 @@ class PermissionController extends BaseController
         }
 
         $sessionId = session_id();
-        $token = hash_hmac('sha256', $id . $sessionId, TOKEN_SECRET_KEY);
+        $token = hash_hmac('sha256', $id . $sessionId, $secret);
+
+        $_SESSION['perm_token'] = [];
+
         $_SESSION['perm_token'][$id] = $token;
 
         return $this->json($response, [
@@ -85,7 +88,7 @@ class PermissionController extends BaseController
                 'FullName' => strtoupper($user->full_name),
                 'PermissionsSelected' => $user->permissions ? $user->permissions->pluck('id') : [],
                 'PermissionGroups' => [],
-		'TipoUsuario' => $user->type_id
+		        'TipoUsuario' => $user->type_id
 
             ];
 

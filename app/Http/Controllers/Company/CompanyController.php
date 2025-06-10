@@ -39,11 +39,11 @@ class CompanyController extends BaseController
 
     public function serveEdit(Request $request, Response $response, $params)
     {
-        define('TOKEN_SECRET_KEY', 'Optus1.0');
+        $secret = getenv('TOKEN_SECRET_KEY');
 
         $id = (int) $params['id'];
         $sessionId = session_id();
-        $expectedToken = hash_hmac('sha256', $id . $sessionId, TOKEN_SECRET_KEY);
+        $expectedToken = hash_hmac('sha256', $id . $sessionId, $secret);
         $storedToken = $_SESSION['edit_company_token'][$id] ?? null;
 
         if (!$storedToken || $storedToken !== $expectedToken) {
@@ -54,7 +54,7 @@ class CompanyController extends BaseController
         }
 
         // Consumir el token (uso único)
-        unset($_SESSION['edit_company_token'][$id]);
+        //unset($_SESSION['edit_company_token'][$id]);
 
         switch ($params['role']) {
             case 'client':
@@ -82,7 +82,7 @@ class CompanyController extends BaseController
 
     public function guardarIdEdicion(Request $request, Response $response)
     {
-        define('TOKEN_SECRET_KEY', 'Optus1.0');
+        $secret = getenv('TOKEN_SECRET_KEY');
 
         $id = $request->getParsedBody()['id'] ?? null;
 
@@ -94,7 +94,10 @@ class CompanyController extends BaseController
         }
 
         $sessionId = session_id();
-        $token = hash_hmac('sha256', $id . $sessionId, TOKEN_SECRET_KEY);
+        $token = hash_hmac('sha256', $id . $sessionId, $secret);
+
+        $_SESSION['edit_company_token'] = [];
+
         $_SESSION['edit_company_token'][$id] = $token;
 
         return $this->json($response, [
@@ -124,7 +127,7 @@ class CompanyController extends BaseController
 
     public function serveDetail(Request $request, Response $response, $params)
     {
-        define('TOKEN_SECRET_KEY', 'Optus1.0');
+        $secret = getenv('TOKEN_SECRET_KEY');
         $id = (int) $params['id'];
 
         switch ($params['role']) {
@@ -140,7 +143,7 @@ class CompanyController extends BaseController
 
         abort_if($request, $response, !$company, true, 404);
 
-        $expectedToken = hash_hmac('sha256', $id . session_id(), TOKEN_SECRET_KEY);
+        $expectedToken = hash_hmac('sha256', $id . session_id(), $secret);
         $storedToken = $_SESSION['detalle_token'][$id] ?? null;
 
         if (!$storedToken || $storedToken !== $expectedToken) {
@@ -150,7 +153,7 @@ class CompanyController extends BaseController
             ], 403);
         }
 
-        unset($_SESSION['detalle_token'][$id]);
+        //unset($_SESSION['detalle_token'][$id]);
 
         return $this->render($response, 'empresas/detail.tpl', [
             'page' => 'empresas',
@@ -164,7 +167,7 @@ class CompanyController extends BaseController
 
     public function guardarIdDetalle(Request $request, Response $response)
     {
-        define('TOKEN_SECRET_KEY', 'Optus1.0');
+        $secret = getenv('TOKEN_SECRET_KEY');
         $id = $request->getParsedBody()['id'] ?? null;
 
         if (!$id || !is_numeric($id)) {
@@ -174,7 +177,10 @@ class CompanyController extends BaseController
             ], 400);
         }
 
-        $token = hash_hmac('sha256', $id . session_id(), TOKEN_SECRET_KEY);
+        $token = hash_hmac('sha256', $id . session_id(), $secret);
+
+        $_SESSION['detalle_token'] = [];
+
         $_SESSION['detalle_token'][$id] = $token;
 
         return $this->json($response, [

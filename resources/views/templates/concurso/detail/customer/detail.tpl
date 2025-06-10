@@ -1141,7 +1141,7 @@
                 }
 
                 $.blockUI();
-                Services.Post('/concursos/oferente/guardar-token-acceso', {
+                Services.Post('/concursos/guardar-token-acceso', {
                     UserToken: User.Token,
                     id: self.IdConcurso()
                 },
