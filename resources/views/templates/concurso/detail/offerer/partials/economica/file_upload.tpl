@@ -146,7 +146,7 @@
                             <th class="text-center vertical-align-middle" style="white-space: nowrap;">
                                 Cant Min
                             </th>
-                            <th class="text-center vertical-align-middle" style="white-space: nowrap;" data-bind="text:'Precio Unit (' + Moneda() + ')'">
+                            <th class="text-center vertical-align-middle" style="white-space: nowrap;" data-bind="text:'Precio Unit (' + Moneda() + ') (Precios sin IVA)'">
                               
                             </th>
                             <th class="text-center vertical-align-middle" style="white-space: nowrap;">
@@ -158,7 +158,7 @@
                                 Pl. Entr (días)
                             </th>
                             <th class="text-center vertical-align-middle" style="white-space: nowrap;">
-                                Total Parcial
+                                Total Parcial (Precios sin IVA)
                             </th>
                         </tr>
                     </thead>

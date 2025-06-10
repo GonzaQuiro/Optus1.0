@@ -3444,7 +3444,7 @@ class ConcursoController extends BaseController
                 'required',
                 'numeric',
                 'gt:0',
-                'lte:100000'
+                'lte:99000000'
             ],
             'products.*.unidad' => [
                 'required',
