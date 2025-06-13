@@ -869,71 +869,179 @@ class ConcursoController extends BaseController
         ];
     }
 
+    // public function delete(Request $request, Response $response, $params)
+    // {
+    //     $success = false;
+    //     $message = null;
+    //     $status = 200;
+    //     $result = [];
+    //     $redirect_url = null;
+
+    //     try {
+    //         $capsule = dependency('db');
+    //         $connection = $capsule->getConnection();
+    //         $connection->beginTransaction();
+    //         $emailService = new EmailService();
+
+    //         $body = $request->getParsedBody();
+    //         $user = user();
+    //         $concurso = $user->customer_company->getAllConcursosByCompany()->find($params['id']);
+
+    //         $validator = validator(
+    //             $data = [
+    //                 'reason' => $body['Reason']
+    //             ],
+    //             $rules = [
+    //                 'reason' => 'required|string'
+    //             ],
+    //             $messages = [
+    //                 'reason.required' => 'Debe ingresar un motivo para cancelar el concurso.'
+    //             ]
+    //         );
+    //         if ($validator->fails()) {
+    //             $success = false;
+    //             $status = 422;
+    //             $message = $validator->errors()->first();
+    //         } else {
+    //             $concurso->update([
+    //                 'comentario_cancelacion' => $body['Reason'],
+    //                 'usuario_cancelacion' => $user->id
+    //             ]);
+
+    //             $concurso->delete();
+
+    //             $title = 'Concurso Cancelado';
+    //             $subject = $concurso->nombre . ' - ' . $title;
+
+    //             $template = rootPath(config('app.templates_path')) . '/email/cancellation.tpl';
+
+    //             $companiesInvited = $concurso->oferentes->pluck('id_offerer');
+    //             $companies = OffererCompany::with('users')->whereIn('id', $companiesInvited)->get();
+    //             $offerersTable = (new Participante())->getTable();
+    //             DB::table($offerersTable)->where('id_concurso', $concurso->id)->whereIn('id_offerer', $companies)->update(array('rechazado' => true));
+    //             foreach ($companies as $company) {
+    //                 $users = $company->users->pluck('email');
+    //                 $html = $this->fetch($template, [
+    //                     'title' => $title,
+    //                     'ano' => Carbon::now()->format('Y'),
+    //                     'concurso' => $concurso,
+    //                     'company_name' => $company->business_name
+    //                 ]);
+
+    //                 $result = $emailService->send($html, $subject, $users, "");
+    //                 $success = $result['success'];
+    //                 if (!$success) {
+    //                     break;
+    //                 }
+    //             }
+    //         }
+
+    //         if ($success) {
+    //             $connection->commit();
+    //             $message = 'Concurso cancelado con éxito.';
+    //             $redirect_url = route('concursos.cliente.serveList');
+    //         } else {
+    //             $connection->rollBack();
+    //             $message = $message ?? 'Han ocurrido errores al enviar las notificaciones.';
+    //         }
+    //     } catch (\Exception $e) {
+
+    //         $connection->rollBack();
+    //         $success = false;
+    //         $message = $e->getMessage();
+    //         $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : (method_exists($e, 'getCode') ? $e->getCode() : 500);
+    //     }
+
+    //     return $this->json($response, [
+    //         'success' => $success,
+    //         'message' => $message,
+    //         'data' => [
+    //             'redirect' => $redirect_url
+    //         ]
+    //     ], $status);
+    // }
+
     public function delete(Request $request, Response $response, $params)
-    {
-        $success = false;
-        $message = null;
-        $status = 200;
-        $result = [];
-        $redirect_url = null;
+{
+    $success = false;
+    $message = null;
+    $status = 200;
+    $result = [];
+    $redirect_url = null;
 
-        try {
-            $capsule = dependency('db');
-            $connection = $capsule->getConnection();
-            $connection->beginTransaction();
-            $emailService = new EmailService();
+    try {
+        $capsule = dependency('db');
+        $connection = $capsule->getConnection();
+        $connection->beginTransaction();
+        $emailService = new EmailService();
 
-            $body = $request->getParsedBody();
-            $user = user();
-            $concurso = $user->customer_company->getAllConcursosByCompany()->find($params['id']);
+        $body = $request->getParsedBody();
+        $user = user();
+        $concurso = $user->customer_company->getAllConcursosByCompany()->find($params['id']);
 
-            $validator = validator(
-                $data = [
-                    'reason' => $body['Reason']
-                ],
-                $rules = [
-                    'reason' => 'required|string'
-                ],
-                $messages = [
-                    'reason.required' => 'Debe ingresar un motivo para cancelar el concurso.'
-                ]
-            );
-            if ($validator->fails()) {
-                $success = false;
-                $status = 422;
-                $message = $validator->errors()->first();
-            } else {
-                $concurso->update([
-                    'comentario_cancelacion' => $body['Reason'],
-                    'usuario_cancelacion' => $user->id
+        $validator = validator(
+            $data = [
+                'reason' => $body['Reason']
+            ],
+            $rules = [
+                'reason' => 'required|string'
+            ],
+            $messages = [
+                'reason.required' => 'Debe ingresar un motivo para cancelar el concurso.'
+            ]
+        );
+
+        if ($validator->fails()) {
+            $success = false;
+            $status = 422;
+            $message = $validator->errors()->first();
+        } else {
+            $concurso->update([
+                'comentario_cancelacion' => $body['Reason'],
+                'usuario_cancelacion' => $user->id
+            ]);
+
+            $concurso->delete();
+
+            // Marcar como rechazados a los oferentes
+            $companiesInvited = $concurso->oferentes->pluck('id_offerer');
+            $companies = OffererCompany::with('users')->whereIn('id', $companiesInvited)->get();
+            $offerersTable = (new Participante())->getTable();
+            DB::table($offerersTable)
+                ->where('id_concurso', $concurso->id)
+                ->whereIn('id_offerer', $companiesInvited)
+                ->update(['rechazado' => true]);
+
+            // Enviar mails a los oferentes
+            $title = 'Concurso Cancelado';
+            $subject = $concurso->nombre . ' - ' . $title;
+            $templateOferentes = rootPath(config('app.templates_path')) . '/email/cancellation.tpl';
+
+            foreach ($companies as $company) {
+                $users = $company->users->pluck('email');
+                $html = $this->fetch($templateOferentes, [
+                    'title' => $title,
+                    'ano' => Carbon::now()->format('Y'),
+                    'concurso' => $concurso,
+                    'company_name' => $company->business_name
                 ]);
 
-                $concurso->delete();
+                $result = $emailService->send($html, $subject, $users, "");
+                $success = $result['success'];
+                if (!$success) break;
+            }
 
-                $title = 'Concurso Cancelado';
-                $subject = $concurso->nombre . ' - ' . $title;
+            // Enviar mail al usuario que canceló el concurso
+            if ($success) {
+                $templateUsuario = rootPath(config('app.templates_path')) . '/email/delete-confirmation-client.tpl';
 
-                $template = rootPath(config('app.templates_path')) . '/email/cancellation.tpl';
+                $htmlUser = $this->fetch($templateUsuario, [
+                    'user' => $user,
+                    'concurso' => $concurso
+                ]);
 
-                $companiesInvited = $concurso->oferentes->pluck('id_offerer');
-                $companies = OffererCompany::with('users')->whereIn('id', $companiesInvited)->get();
-                $offerersTable = (new Participante())->getTable();
-                DB::table($offerersTable)->where('id_concurso', $concurso->id)->whereIn('id_offerer', $companies)->update(array('rechazado' => true));
-                foreach ($companies as $company) {
-                    $users = $company->users->pluck('email');
-                    $html = $this->fetch($template, [
-                        'title' => $title,
-                        'ano' => Carbon::now()->format('Y'),
-                        'concurso' => $concurso,
-                        'company_name' => $company->business_name
-                    ]);
-
-                    $result = $emailService->send($html, $subject, $users, "");
-                    $success = $result['success'];
-                    if (!$success) {
-                        break;
-                    }
-                }
+                $result = $emailService->send($htmlUser, 'Confirmación de Cancelación de Concurso', [$user->email], "");
+                $success = $result['success'];
             }
 
             if ($success) {
@@ -944,22 +1052,23 @@ class ConcursoController extends BaseController
                 $connection->rollBack();
                 $message = $message ?? 'Han ocurrido errores al enviar las notificaciones.';
             }
-        } catch (\Exception $e) {
-
-            $connection->rollBack();
-            $success = false;
-            $message = $e->getMessage();
-            $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : (method_exists($e, 'getCode') ? $e->getCode() : 500);
         }
 
-        return $this->json($response, [
-            'success' => $success,
-            'message' => $message,
-            'data' => [
-                'redirect' => $redirect_url
-            ]
-        ], $status);
+    } catch (\Exception $e) {
+        $connection->rollBack();
+        $success = false;
+        $message = $e->getMessage();
+        $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : (method_exists($e, 'getCode') ? $e->getCode() : 500);
     }
+
+    return $this->json($response, [
+        'success' => $success,
+        'message' => $message,
+        'data' => [
+            'redirect' => $redirect_url
+        ]
+    ], $status);
+}
 
     private function mapConcursoList($concurso)
     {
@@ -1818,6 +1927,349 @@ class ConcursoController extends BaseController
         ]);
     }
 
+    // public function store(Request $request, Response $response, $params)
+    // {
+    //     $entity = json_decode($request->getParsedBody()['Entity'], false);
+
+    //     $success = false;
+    //     $message = null;
+    //     $status = 200;
+    //     $error = false;
+
+    //     $create = (bool) !(isset($params['id']));
+
+    //     // validamos que se hace, crear o editar
+    //     try {
+    //         $capsule = dependency('db');
+    //         $connection = $capsule->getConnection();
+    //         $connection->beginTransaction();
+
+    //         if ($create) {
+    //             // Validar si el usuario fiscalizador está habilitado
+    //             if ($entity->concurso_fiscalizado == 'no') {
+    //                 // Si no se requiere fiscalizador, asegúrate de que no se esté validando
+    //                 $entity->UsuarioSupervisor = null; // O manejarlo según tu lógica
+    //             } else {
+    //                 // Validar si el usuario fiscalizador está habilitado
+    //                 if (!$entity->UsuarioSupervisor) {
+    //                     return [
+    //                         'success' => false,
+    //                         'message' => 'Debe seleccionar un fiscalizador si se habilita la opción.',
+    //                         'status' => 422
+    //                     ];
+    //                 }
+    //             }
+
+    //             $result = $this->createConcurso($params['type'], $entity);
+
+    //             if ($result['error']) {
+    //                 $connection->rollBack();
+    //                 $message = $result['message'];
+    //                 $status = 422;
+    //                 $success = false;
+    //             } else {
+    //                 $connection->commit();
+    //                 $message = 'Concurso guardado con éxito.';
+    //                 $success = true;
+    //             }
+    //         }
+
+    //         if (!$create) {
+
+                
+    //             // Validar si el usuario fiscalizador está habilitado
+    //             if ($entity->concurso_fiscalizado == 'no') {
+    //                 // Si no se requiere fiscalizador, asegúrate de que no se esté validando
+    //                 $entity->UsuarioSupervisor = null; // O manejarlo según tu lógica
+    //             } else {
+    //                 // Validar si el usuario fiscalizador está habilitado
+    //                 if (!$entity->UsuarioSupervisor) {
+    //                     return [
+    //                         'success' => false,
+    //                         'message' => 'Debe seleccionar un fiscalizador si se habilita la opción.',
+    //                         'status' => 422
+    //                     ];
+    //                 }
+    //             }
+                
+    //             $result = $this->editConcurso($params['type'], $params['id'], $entity);
+
+    //             if ($result['error']) {
+    //                 $connection->rollBack();
+    //                 $status = 422;
+    //                 $success = false;
+    //                 $message = $result['message'];
+    //             } else {
+    //                 $concurso = $result['data']['concurso'];
+    //                 $oferentes = [];
+    //                 foreach ($concurso->oferentes as $oferente) {
+    //                     if (!$oferente->is_concurso_rechazado && !$oferente->is_seleccionado) {
+    //                         array_push($oferentes, $oferente);
+    //                     }
+    //                 }
+
+    //                 if (count($oferentes) === 0) {
+    //                     $result = [
+    //                         'success' => true
+    //                     ];
+    //                 }
+
+    //                 if (count($oferentes) > 0) {
+
+    //                     $ajustdate = $result['data']['ajustdate'];
+    //                     $documentChange = $result['data']['documentsChanged']['documentChange'];
+    //                     $documentDeleted = $result['data']['documentsChanged']['documentDeleted'];
+    //                     $productsDeleted = $result['data']['products_results']['productsDeleted'];
+    //                     $productsUpdated = $result['data']['products_results']['productsUpdated'];
+    //                     $productsNew = $result['data']['products_results']['productsNew'];
+
+    //                     if (isset($result['data']['payroll_results'])) {
+    //                         $technicalAdded = $result['data']['payroll_results']['technicalAdded'];
+    //                         $technicalDeleted = $result['data']['payroll_results']['technicalDeleted'];
+    //                         $technicalChanged = $result['data']['payroll_results']['technicalChanged'];
+    //                     } else {
+    //                         $technicalAdded = false;
+    //                         $technicalDeleted = false;
+    //                         $technicalChanged = false;
+    //                     }
+
+    //                     $tecnicalDocuments = $result['data']['tecnicalDocuments'];
+    //                     $ajustDocumentsEconomica = $result['data']['ajustDocumentsEconomica'];
+
+    //                     if (
+    //                         !$ajustdate && !$documentChange && !$documentDeleted && !$technicalAdded && !$technicalDeleted && !$technicalChanged && count($productsDeleted) == 0 &&
+    //                         count($productsUpdated) == 0 && count($productsNew) == 0 && count($tecnicalDocuments) == 0 && count($ajustDocumentsEconomica) == 0
+    //                     ) {
+    //                         $result = [
+    //                             'success' => true
+    //                         ];
+    //                     } else {
+    //                         $tipoConcurso = null;
+    //                         if ($concurso->is_sobrecerrado)
+    //                             $tipoConcurso = 'Licitación';
+    //                         if ($concurso->is_online)
+    //                             $tipoConcurso = 'Subasta';
+    //                         if ($concurso->is_go)
+    //                             $tipoConcurso = 'Go';
+    //                         $title = 'Ajustes en ' . $tipoConcurso;
+    //                         $subject = $concurso->nombre . ' - ' . $title;
+    //                         $htmlBody = [
+    //                             'title' => $title,
+    //                             'ano' => Carbon::now()->format('Y'),
+    //                             'concurso' => $concurso,
+    //                             'tipoConcurso' => $tipoConcurso,
+    //                             'ajustdates' => false,
+    //                             'documentChange' => false,
+    //                             'documentDeleted' => false,
+    //                             'technicalAdded' => false,
+    //                             'technicalDeleted' => false,
+    //                             'technicalChanged' => false,
+    //                             'productsDeleted' => false,
+    //                             'productsUpdated' => false,
+    //                             'productsNew' => false,
+    //                             'tecnicalDocuments' => false,
+    //                             'ajustDocumentsEconomica' => false,
+    //                             'listProductsDeleted' => [],
+    //                             'listProductsUpdated' => [],
+    //                             'listProductsNew' => [],
+    //                             'listTecnicalDocuments' => [],
+    //                             'listDocumentsEconomica' => [],
+    //                             'fecha_tecnica' => $concurso->technical_includes ? $concurso->ficha_tecnica_fecha_limite->format('d-m-Y H:i') : 'No aplica',
+    //                             'company_name' => null
+
+    //                         ];
+
+
+    //                         $template = rootPath(config('app.templates_path')) . '/email/date-change.tpl';
+
+    //                         if ($ajustdate) {
+    //                             $htmlBody['ajustdates'] = true;
+    //                         }
+
+    //                         if ($documentChange) {
+    //                             $htmlBody['documentChange'] = true;
+    //                         }
+
+    //                         if ($documentDeleted) {
+    //                             $htmlBody['documentDeleted'] = true;
+    //                         }
+
+    //                         if ($technicalAdded) {
+    //                             $htmlBody['technicalAdded'] = true;
+    //                         }
+
+    //                         if ($technicalDeleted) {
+    //                             $htmlBody['technicalDeleted'] = true;
+    //                         }
+
+    //                         if ($technicalChanged) {
+    //                             $htmlBody['technicalChanged'] = true;
+    //                         }
+
+    //                         if (count($productsDeleted) > 0) {
+    //                             $listProductsDeleted = [];
+    //                             foreach ($productsDeleted as $value) {
+    //                                 $listProductsDeleted[] = $value->toArray();
+    //                             }
+    //                             $htmlBody['productsDeleted'] = true;
+    //                             $htmlBody['listProductsDeleted'] = $listProductsDeleted;
+    //                         }
+
+    //                         if (count($productsUpdated) > 0) {
+    //                             $listProductsUpdated = [];
+    //                             foreach ($productsUpdated as $value) {
+    //                                 $listProductsUpdated[] = $value;
+    //                             }
+    //                             $htmlBody['productsUpdated'] = true;
+    //                             $htmlBody['listProductsUpdated'] = $listProductsUpdated;
+    //                         }
+
+    //                         if (count($productsNew) > 0) {
+    //                             $listProductsNew = [];
+    //                             foreach ($productsNew as $value) {
+    //                                 $listProductsNew[] = $value;
+    //                             }
+    //                             $htmlBody['productsNew'] = true;
+    //                             $htmlBody['listProductsNew'] = $listProductsNew;
+    //                         }
+
+    //                         if (count($tecnicalDocuments) > 0) {
+    //                             $htmlBody['tecnicalDocuments'] = true;
+    //                             $htmlBody['listTecnicalDocuments'] = $tecnicalDocuments;
+    //                         }
+
+    //                         if (count($ajustDocumentsEconomica) > 0) {
+    //                             $htmlBody['ajustDocumentsEconomica'] = true;
+    //                             $htmlBody['listDocumentsEconomica'] = $ajustDocumentsEconomica;
+    //                         }
+
+
+
+    //                         $emailService = new EmailService();
+
+
+    //                         //Enviamos el mail a los oferentes que se envio Invitación
+    //                         foreach ($oferentes as $oferente) {
+    //                             $users = $oferente->company->users->pluck('email');
+    //                             $htmlBody['company_name'] = $oferente->company->business_name;
+    //                             if ($ajustdate) {
+    //                                 if ($oferente->has_invitacion_vencida || $oferente->is_invitacion_pendiente) {
+    //                                     $invitation = $oferente->invitation;
+    //                                     $invitation_status = InvitationStatus::where('code', InvitationStatus::CODES['pending'])->first();
+    //                                     $invitation->update([
+    //                                         'status_id' => $invitation_status->id
+    //                                     ]);
+    //                                 }
+    //                             }
+
+    //                             // si se elimina la etapa tecnica los proveedores pasan a etapa economica
+    //                             if ($technicalDeleted) {
+    //                                 if ($oferente->has_invitacion_aceptada && !$oferente->has_tecnica_rechazada) {
+    //                                     $oferente->update([
+    //                                         'etapa_actual' => Participante::ETAPAS['economica-pendiente']
+    //                                     ]);
+    //                                     $technical_proposal = $oferente->technical_proposal;
+    //                                     if ($technical_proposal) {
+    //                                         $technical_proposal->delete();
+    //                                         $technical_proposal->refresh();
+    //                                     }
+    //                                     $oferente->refresh();
+    //                                 }
+    //                             }
+
+    //                             // si se edita y los proveedores estan en etapa economica se pasan a tecnica
+    //                             if ($technicalAdded || $technicalChanged) {
+    //                                 if ($oferente->has_invitacion_aceptada && !$oferente->has_tecnica_rechazada) {
+    //                                     $oferente->update([
+    //                                         'etapa_actual' => Participante::ETAPAS['tecnica-pendiente']
+    //                                     ]);
+    //                                     $technical_proposal = $oferente->technical_proposal;
+    //                                     if ($technical_proposal) {
+    //                                         $technical_proposal->delete();
+    //                                         $technical_proposal->refresh();
+    //                                     }
+    //                                     $oferente->refresh();
+    //                                 }
+    //                             }
+
+    //                             // si se edita los documentos de la tecnica y los proveedores estan en etapa economica se pasan a tecnica
+    //                             if (count($tecnicalDocuments) > 0) {
+    //                                 if ($oferente->has_invitacion_aceptada && !$oferente->has_tecnica_rechazada) {
+    //                                     $oferente->update([
+    //                                         'etapa_actual' => Participante::ETAPAS['tecnica-pendiente']
+    //                                     ]);
+    //                                     $technical_proposal = $oferente->technical_proposal;
+    //                                     if ($technical_proposal) {
+    //                                         $technical_proposal->delete();
+    //                                         $technical_proposal->refresh();
+    //                                     }
+    //                                     $oferente->refresh();
+    //                                 }
+    //                             }
+
+    //                             if (count($productsDeleted) > 0 || count($productsUpdated) > 0 || count($productsNew) > 0) {
+    //                                 if (
+    //                                     $oferente->has_invitacion_aceptada &&
+    //                                     (
+    //                                         $concurso->technical_includes && $oferente->has_tecnica_aprobada
+    //                                     ) ||
+    //                                     (
+    //                                         !$concurso->technical_includes &&
+    //                                         (
+    //                                             $oferente->has_economica_presentada || $oferente->has_economica_revisada
+    //                                         )
+    //                                     )
+    //                                 ) {
+    //                                     $oferente->update([
+    //                                         'etapa_actual' => Participante::ETAPAS['economica-pendiente']
+    //                                     ]);
+    //                                     $economic_proposal = $oferente->economic_proposal;
+    //                                     if ($economic_proposal) {
+    //                                         $economic_proposal->delete();
+    //                                         $economic_proposal->refresh();
+    //                                     }
+    //                                     $oferente->refresh();
+    //                                 }
+    //                             }
+    //                             $html = $this->fetch($template, $htmlBody);
+    //                             $result = $emailService->send(
+    //                                 $html,
+    //                                 $subject,
+    //                                 $users,
+    //                                 ""
+    //                             );
+    //                         }
+    //                     }
+    //                 }
+
+    //                 if ($result['success']) {
+    //                     $connection->commit();
+    //                     $message = 'Concurso guardado con éxito.';
+    //                     $success = true;
+    //                 } else {
+    //                     $connection->rollBack();
+    //                     $message = 'Ha ocurrido un error al enviar las notificaciones';
+    //                     $success = false;
+    //                 }
+    //             }
+    //         }
+    //     } catch (Exception $e) {
+    //         $connection->rollBack();
+    //         $success = false;
+    //         $message = $e->getMessage();
+    //         $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : (method_exists($e, 'getCode') ? $e->getCode() : 500);
+    //         //$status = 500;
+    //     }
+    //     $result = [
+    //         'success' => $success,
+    //         'message' => $message,
+    //         'data' => [
+    //             'redirect' => ''
+    //         ]
+    //     ];
+
+    //     return $this->json($response, $result, $status);
+    // }
     public function store(Request $request, Response $response, $params)
     {
         $entity = json_decode($request->getParsedBody()['Entity'], false);
@@ -1851,18 +2303,48 @@ class ConcursoController extends BaseController
                     }
                 }
 
-                $result = $this->createConcurso($params['type'], $entity);
+$result = $this->createConcurso($params['type'], $entity);
 
-                if ($result['error']) {
-                    $connection->rollBack();
-                    $message = $result['message'];
-                    $status = 422;
-                    $success = false;
-                } else {
-                    $connection->commit();
-                    $message = 'Concurso guardado con éxito.';
-                    $success = true;
-                }
+if ($result['error']) {
+    $connection->rollBack();
+    $message = $result['message'];
+    $status = 422;
+    $success = false;
+} else {
+    $connection->commit();
+    $message = 'Concurso guardado con éxito.';
+    $success = true;
+
+    // Enviar email de confirmación al usuario que creó el concurso
+    $user = user();
+    $concurso = $result['data']['concurso'] ?? null;
+
+    // ✅ IMPORTANTE: asegurar que el objeto tenga los oferentes cargados
+    if ($concurso && !$concurso->relationLoaded('oferentes')) {
+        $concurso->load('oferentes.company');
+    }
+
+    $oferentesNombres = [];
+    if ($concurso && $concurso->oferentes && $concurso->oferentes->count() > 0) {
+        foreach ($concurso->oferentes as $oferente) {
+            $oferentesNombres[] = $oferente->company->business_name ?? 'Sin nombre';
+        }
+    }
+
+    $templateUsuario = rootPath(config('app.templates_path')) . '/email/confirmation-creation-client.tpl';
+
+    $htmlUser = $this->fetch($templateUsuario, [
+        'user' => $user,
+        'ano' => Carbon::now()->format('Y'),
+        'concurso' => $concurso,
+        'title' => 'Confirmación de Creación de Concurso',
+        'oferentes' => $oferentesNombres, // 👈 ahora sí, se pasa al email
+    ]);
+
+    $emailService = new EmailService();
+    $emailService->send($htmlUser, 'Confirmación de Creación de Concurso', [$user->email], "");
+}
+
             }
 
             if (!$create) {
@@ -2137,6 +2619,16 @@ class ConcursoController extends BaseController
                         $connection->commit();
                         $message = 'Concurso guardado con éxito.';
                         $success = true;
+                        // Enviar email de confirmación al usuario que editó
+                        $user = user();
+                        $templateUsuario = rootPath(config('app.templates_path')) . '.\email\edition-confirmation-client.tpl';
+                        $htmlUser = $this->fetch($templateUsuario, [
+                            'user' => $user,
+                            'concurso' => $concurso
+                        ]);
+                        $emailService = new EmailService();
+                        $emailService->send($htmlUser, 'Confirmación de Edición de Concurso', [$user->email], "");
+
                     } else {
                         $connection->rollBack();
                         $message = 'Ha ocurrido un error al enviar las notificaciones';
