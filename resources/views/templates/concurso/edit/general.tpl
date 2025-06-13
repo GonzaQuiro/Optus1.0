@@ -15,9 +15,15 @@
                 <div class="form-group">
                     <label class="control-label visible-ie8 visible-ie9" style="display: block;">N° de solicitud de
                         compra</label>
-                    <input class="form-control placeholder-no-fix" type="text" maxlength="11" autocomplete="off"
-                        max="11" placeholder="" name="" id="SolicitudCompra"
-                        data-bind="value: Entity.SolicitudCompra, disable: ReadOnly()" />
+                        <input
+                        id="SolicitudCompra"
+                        class="form-control placeholder-no-fix"
+                        type="text"
+                        maxlength="11"
+                        autocomplete="off"
+                        data-bind="value: Entity.SolicitudCompra, disable: ReadOnly()"
+                        oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                      />                      
                 </div>
             </div>
 

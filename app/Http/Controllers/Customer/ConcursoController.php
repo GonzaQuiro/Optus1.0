@@ -608,7 +608,6 @@ class ConcursoController extends BaseController
                 [
                     'tecnica-pendiente', 'tecnica-pendiente-2', 'tecnica-pendiente-3', 'tecnica-pendiente-4', 'tecnica-pendiente-5',
                     'tecnica-presentada', 'tecnica-presentada-2', 'tecnica-presentada-3', 'tecnica-presentada-4', 'tecnica-presentada-5',
-                    'tecnica-declinada', 'tecnica-declinada-2', 'tecnica-declinada-3', 'tecnica-declinada-4', 'tecnica-declinada-5',
                     'tecnica-rechazada', 'tecnica-rechazada-2', 'tecnica-rechazada-3', 'tecnica-rechazada-4', 'tecnica-rechazada-5'
                 ]
             );
@@ -632,9 +631,23 @@ class ConcursoController extends BaseController
                         })
                 )
                 ->unique('id')
+                ->filter(function ($concurso) {
+                    // asumimos que ficha_tecnica_fecha_limite es instancia de Carbon o DateTime
+                    return $concurso->ficha_tecnica_fecha_limite->greaterThan(Carbon::now());
+                })
+                ->filter(function($concurso) {
+                    foreach ($concurso->oferentes as $oferente) {
+                        if ((int) $oferente->rechazado === 1) {
+                            return false;
+                        }
+                    }
+                    return true;
+                })
                 ->sortBy('id');
 
             foreach ($concursos as $concurso) {
+                $fechaTecnica = $concurso->ficha_tecnica_fecha_limite->format('d-m-Y');
+                $horaTecnica = $concurso->ficha_tecnica_fecha_limite->format('H:i:s');
                 array_push(
                     $list['ListaConcursosPropuestasTecnicas'],
                     array_merge(
@@ -647,7 +660,9 @@ class ConcursoController extends BaseController
                             'CantidadPresentaciones' => $concurso->oferentes
                                 ->where('has_tecnica_presentada', true)
                                 ->count(),
-                        ]
+                            'FechaTecnica' => $fechaTecnica,
+                            'HoraTecnica' => $horaTecnica,
+                        ]   
                     )
                 );
             }
