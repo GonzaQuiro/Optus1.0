@@ -249,7 +249,7 @@
             }
         }
 
-        var EconomicProposalProduct = function(data) {
+        var EconomicProposalProduct = function(data, currentRound) {
             var self = this;
             // Fixed fields
             self.product_id = ko.observable(data.product_id);
@@ -261,13 +261,16 @@
             self.currency_name = ko.observable(data.currency_name);
             self.measurement_id = ko.observable(data.measurement_id);
             self.measurement_name = ko.observable(data.measurement_name);
-            // Form fields
-            self.ProductSelected = ko.observable(data.cotizacion === 0 ? false : true);
+            
+            self.ProductSelected = ko.observable(
+                currentRound === 1 ? true : parseFloat(data.cotizacion) > 0
+            );
             self.cotizacion = ko.observable(data.cotizacion);
             self.maximum_cotizacion = ko.observable(data.maximum_cotizacion);
             self.cantidad = ko.observable(data.cantidad);
             self.fecha = ko.observable(data.fecha);
             self.creado = ko.observable(data.creado);
+
             self.ProductSelected.subscribe(function() {
                 if (!self.ProductSelected()) {
                     self.cotizacion(0);
@@ -280,9 +283,26 @@
                 }
             });
 
+            self.isValid = ko.computed(function () {
+                if (!self.ProductSelected()) {
+                    return true; // No está seleccionado, entonces no validamos
+                }
+
+                // Validaciones si el switch está activado
+                const cot = parseFloat(self.cotizacion());
+                const cant = parseFloat(self.cantidad());
+                const fec = parseInt(self.fecha());
+
+                return (
+                    !isNaN(cot) && cot > 0 &&
+                    !isNaN(cant) && cant > 0 &&
+                    (!isNaN(fec) && fec > 0 && fec <= 365) // Solo si tu lógica lo requiere
+                );
+            });
+
         }
 
-        var EconomicProposal = function(data) {
+        var EconomicProposal = function(data, currentRound) {
             var self = this;
             this.comment = ko.observable(data.comment);
             this.PlazosPago = ko.observableArray(data.plazosPagos);
@@ -290,7 +310,9 @@
             this.PlazoPago = ko.observable(data.payment_deadline);
             this.CondicionPago = ko.observable(data.payment_condition);
             this.documents = ko.observableArray([]);
-            this.values = ko.observableArray([]);
+            self.values = ko.observableArray(
+                data.values.map(item => new EconomicProposalProduct(item, currentRound))
+            );
 
             this.title1 = ko.observable(data.title1);
             this.active1 = ko.observable(data.active1);
@@ -302,11 +324,6 @@
                 });
             }
 
-            if (data.values.length > 0) {
-                data.values.forEach(item => {
-                    self.values.push(new EconomicProposalProduct(item));
-                });
-            }
         }
 
         var AuctionItemValues = function(data) {
@@ -665,7 +682,10 @@
                     this.Costs = ko.observable(data.list.Costs);
                     this.AnalisisApu = ko.observable(data.list.AnalisisApu);
                     this.CondicionPago = ko.observable(data.list.CondicionPago);
-                    this.EconomicProposal = ko.observable(new EconomicProposal(data.list.EconomicProposal));
+                    this.RondaActual = ko.observable(data.list.RondaActual);
+                    this.EconomicProposal = ko.observable(
+                        new EconomicProposal(data.list.EconomicProposal, this.RondaActual())
+                    );
                     this.Items = ko.observableArray();
                     if (self.IsOnline()) {
                         if (data.list.Items.length > 0) {
@@ -696,7 +716,6 @@
                     this.SoloOfertasMejores = ko.observable(data.list.SoloOfertasMejores);
                     this.PrecioMaximo = ko.observable(data.list.PrecioMaximo);
                     this.PrecioMinimo = ko.observable(data.list.PrecioMinimo);
-                    this.RondaActual = ko.observable(data.list.RondaActual);
                     this.Title = ko.observable(data.list.Title);
 
                     // SUBASTA
@@ -1168,13 +1187,37 @@
             }
         
             this.EconomicSend = function(isUpdate = false) {
-                if (isUpdate) {
-                    var url = '/concursos/proposal/economic/update';
-                    var title = '¿Desea guardar los cambios?';
-                } else {
-                    var url = '/concursos/proposal/economic/send';
-                    var title = '¿Desea enviar propuesta económica?';
+                // Validar campos de ítems seleccionados
+                const itemsInvalidos = self.EconomicProposal().values().filter(item => {
+                    if (!item.ProductSelected()) return false; // No validamos si el switch está apagado
+
+                    const cot = parseFloat(item.cotizacion());
+                    const cant = parseFloat(item.cantidad());
+                    const fec = parseInt(item.fecha());
+
+                    return (
+                        isNaN(cot) || cot <= 0 ||
+                        isNaN(cant) || cant <= 0 ||
+                        (self.IsSobrecerrado() && (isNaN(fec) || fec <= 0 || fec > 365))
+                    );
+                });
+
+                if (itemsInvalidos.length > 0) {
+                    swal({
+                        title: "Error",
+                        text: "Existen ítems seleccionados con campos obligatorios incompletos o inválidos. Por favor, complete la información requerida o deseleccione esos ítems.",
+                        type: "error",
+                        confirmButtonText: "Aceptar",
+                        confirmButtonClass: 'btn btn-danger',
+                        buttonsStyling: false
+                    });
+                    return;
                 }
+
+                // Continuar con envío si todo está válido
+                var url = isUpdate ? '/concursos/proposal/economic/update' : '/concursos/proposal/economic/send';
+                var title = isUpdate ? '¿Desea guardar los cambios?' : '¿Desea enviar propuesta económica?';
+
                 swal({
                     title: title,
                     type: 'info',
@@ -1215,8 +1258,7 @@
                                         buttonsStyling: false
                                     }, function(result) {
                                         if (response.success) {
-                                            window.location.href =
-                                                '/concursos/oferente';
+                                            window.location.href = '/concursos/oferente';
                                         }
                                     });
                                 }, 500)
@@ -1225,8 +1267,7 @@
                                 swal.close();
                                 $.unblockUI();
                                 setTimeout(function() {
-                                    swal('Error', typeof error.message != 'undefined' ? error
-                                        .message : error.responseJSON.message, 'error');
+                                    swal('Error', typeof error.message != 'undefined' ? error.message : error.responseJSON.message, 'error');
                                 }, 500)
                             },
                             null,
@@ -1235,6 +1276,7 @@
                     }
                 });
             }
+
              
 
            

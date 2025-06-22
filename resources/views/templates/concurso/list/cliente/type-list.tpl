@@ -239,7 +239,7 @@
                                     <td data-bind="text: AreaSolicitante()" class="vertical-align-middle"></td>
                                     <td data-bind="text: UsuarioSolicitante()" class="vertical-align-middle"></td>
                                     <td data-bind="text: NumSolicitud()" class="vertical-align-middle"></td>
-                                    <td data-bind="text: FechaLimite()" class="vertical-align-middle"></td>
+                                    <td data-bind="text: FechaTecnica()+ ' ' + HoraTecnica()" class="vertical-align-middle"></td>
                                     <td data-bind="text: TipoConcurso()" class="vertical-align-middle"></td>
                                     <td data-bind="text: CantidadPresentaciones() + '/' + CantidadOferentes()"
                                         class="vertical-align-middle"></td>
@@ -511,6 +511,8 @@
                 this.HabilitaEnvioInvitaciones = ko.observable(data.HabilitaEnvioInvitaciones);
                 this.Estado = ko.observable(data.Estado);
                 this.Fecha = ko.observable(data.Fecha);
+                this.FechaTecnica = ko.observable(data.FechaTecnica);
+                this.HoraTecnica = ko.observable(data.HoraTecnica);
                 this.FechaLimite = ko.observable(data.FechaLimite);
                 this.Hora = ko.observable(data.Hora);
                 this.Nombre = ko.observable(data.Nombre);
