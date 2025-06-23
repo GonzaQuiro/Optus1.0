@@ -1644,11 +1644,15 @@ class ConcursoController extends BaseController
                     $create ?
                     [] :
                     $concurso->oferentes->pluck('id_offerer')->toArray(),
-                'FinalizacionConsultas' => $create ? Carbon::now()->addDays(3)->addHour(1)->format('d-m-Y H:i') : $concurso->finalizacion_consultas->format('d-m-Y H:i'),
-                'AceptacionTerminos' => $create && !$is_copy ? 'no' : $concurso->aceptacion_terminos,
+                //'FinalizacionConsultas' => $create ? Carbon::now()->addDays(3)->addHour(1)->format('d-m-Y H:i') : $concurso->finalizacion_consultas->format('d-m-Y H:i'),
+                'FinalizacionConsultas' => $create
+                ? Carbon::now()->addDays(3)->addHour(1)->minute(0)->second(0)->format('d-m-Y H:i')
+                : $concurso->finalizacion_consultas->addHour(1)->minute(0)->second(0)->format('d-m-Y H:i'),                'AceptacionTerminos' => $create && !$is_copy ? 'no' : $concurso->aceptacion_terminos,
                 'Aperturasobre' => $create && !$is_copy ? 'no' : $concurso->aperturasobre,
-                'FechaLimite' => $create ? Carbon::now()->addDays(1)->addHour()->format('d-m-Y H:i') : $concurso->fecha_limite->format('d-m-Y H:i'),
-                'SeguroCaucion' => $create && !$is_copy ? 'no' : $concurso->seguro_caucion,
+                //'FechaLimite' => $create ? Carbon::now()->addDays(1)->addHour()->format('d-m-Y H:i') : $concurso->fecha_limite->format('d-m-Y H:i'),
+                'FechaLimite' => $create 
+                ? Carbon::now()->addDays(1)->addHour()->minute(0)->second(0)->format('d-m-Y H:i')
+                : $concurso->fecha_limite->addHour()->minute(0)->second(0)->format('d-m-Y H:i'),                'SeguroCaucion' => $create && !$is_copy ? 'no' : $concurso->seguro_caucion,
                 'DiagramaGant' => $create && !$is_copy ? 'no' : $concurso->diagrama_gant,
 
                 'CertificadoVisitaObra' => $create && !$is_copy ? 'no' : $concurso->cert_visita,
