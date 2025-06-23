@@ -1549,6 +1549,7 @@ class ConcursoController extends BaseController
         $is_copy = isset($params['id']);
         $isReadOnly = false;
         $emailService = new EmailService();
+        $bloquearInvitacionOferentes = false;
 
 
         try {
@@ -1576,8 +1577,11 @@ class ConcursoController extends BaseController
                 $habilita_envio_invitaciones = $concurso->productos->count() > 0 && $concurso->oferentes->where('is_seleccionado', true)->count() > 0;
 
                 $is_revisado = $concurso->oferentes->where('has_economica_revisada', true)->count() > 0 ? true : false;
+                $invitacionesExistentes = DB::table('invitations')->where('concurso_id', $concurso->id)->exists();
                 if ($is_sobrecerrado) {
                     $isReadOnly = ($is_revisado && $concurso->ronda_actual == 1) || $concurso->ronda_actual > 1;
+                    $bloquearInvitacionOferentes = $invitacionesExistentes;
+                    
                 } elseif ($is_online) {
                     $isReadOnly = ($fechasubasta < $fechaActual); // Asegúrate de usar ">" en lugar de ">="
                 } else {
@@ -1614,6 +1618,7 @@ class ConcursoController extends BaseController
                 'ReadOnly' => $create
                     ? false 
                     : $isReadOnly,
+                'BloquearInvitacionOferentes' => $bloquearInvitacionOferentes,
                 'Nombre' => $create && !$is_copy ? '' : $concurso->nombre,
                 'AreaUsr' => $create && !$is_copy ? '' : $concurso->area_sol,
                 'FechaAlta' => $create ? Carbon::now()->format('Y-m-d H:i:s') : $concurso->fecha_alta->format('Y-m-d H:i:s'),
@@ -1639,18 +1644,10 @@ class ConcursoController extends BaseController
                     $create ?
                     [] :
                     $concurso->oferentes->pluck('id_offerer')->toArray(),
-                //'FinalizacionConsultas' => $create ? Carbon::now()->addDays(3)->addHour(1)->format('d-m-Y H:i') : $concurso->finalizacion_consultas->format('d-m-Y H:i'),
-                'FinalizacionConsultas' => $create
-                ? Carbon::now()->addDays(3)->addHour(1)->minute(0)->second(0)->format('d-m-Y H:i')
-                : $concurso->finalizacion_consultas->addHour(1)->minute(0)->second(0)->format('d-m-Y H:i'),
-
+                'FinalizacionConsultas' => $create ? Carbon::now()->addDays(3)->addHour(1)->format('d-m-Y H:i') : $concurso->finalizacion_consultas->format('d-m-Y H:i'),
                 'AceptacionTerminos' => $create && !$is_copy ? 'no' : $concurso->aceptacion_terminos,
                 'Aperturasobre' => $create && !$is_copy ? 'no' : $concurso->aperturasobre,
-                //'FechaLimite' => $create ? Carbon::now()->addDays(1)->addHour()->format('d-m-Y H:i') : $concurso->fecha_limite->format('d-m-Y H:i'),
-                'FechaLimite' => $create 
-                ? Carbon::now()->addDays(1)->addHour()->minute(0)->second(0)->format('d-m-Y H:i')
-                : $concurso->fecha_limite->addHour()->minute(0)->second(0)->format('d-m-Y H:i'),
-
+                'FechaLimite' => $create ? Carbon::now()->addDays(1)->addHour()->format('d-m-Y H:i') : $concurso->fecha_limite->format('d-m-Y H:i'),
                 'SeguroCaucion' => $create && !$is_copy ? 'no' : $concurso->seguro_caucion,
                 'DiagramaGant' => $create && !$is_copy ? 'no' : $concurso->diagrama_gant,
 

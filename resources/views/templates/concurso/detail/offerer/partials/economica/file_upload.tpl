@@ -124,7 +124,21 @@
             
         </tr>
         </tbody>
-    
+
+        <tr>
+            <td colspan="9">
+                <table style="width: 100%;">
+                    <tr>
+                        <td style="width: calc(100% / 5);"></td> <!-- salta las primeras 5 columnas -->
+                        <td style="text-align: center; font-size: 20px;">
+                            <span><strong>Moneda:</strong> <span data-bind="text: Moneda"></span><strong> -</strong></span>
+                            <span style="color: red; font-weight: bold;">PRECIOS SIN IVA</span>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
 
         <tr>
             <td colspan="4">
@@ -146,8 +160,8 @@
                             <th class="text-center vertical-align-middle" style="white-space: nowrap;">
                                 Cant Min
                             </th>
-                            <th class="text-center vertical-align-middle" style="white-space: nowrap;" data-bind="text:'Precio Unit (' + Moneda() + ') (Precios sin IVA)'">
-                              
+                            <th class="text-center vertical-align-middle" style="white-space: nowrap;">
+                                Precio Unitario
                             </th>
                             <th class="text-center vertical-align-middle" style="white-space: nowrap;">
                                 Cant Cot
@@ -158,7 +172,7 @@
                                 Pl. Entr (días)
                             </th>
                             <th class="text-center vertical-align-middle" style="white-space: nowrap;">
-                                Total Parcial (Precios sin IVA)
+                                Total Parcial
                             </th>
                         </tr>
                     </thead>
@@ -212,8 +226,6 @@
                             <td class="text-center vertical-align-middle col-md-1">
                                 <input id="fecha" class="fecha form-control placeholder-no-fix"  data-bind="inputmask: {
                                         alias: 'cant',
-                                        max: 365, 
-                                        min: 1,
                                     },
                                     textInput: fecha,
                                     attr: { required: ProductSelected() ? true : null },
@@ -232,10 +244,6 @@
                         </tr>
                     </tbody>
                 </table>
-                <div class="col-md-4">
-                    <h5 class="block bold" style="margin-top: 0; padding-top: 0; color: red;">**Precios sin IVA**</h5>
-                </div>
-                
                 
                 <div class="col-md-3">
                     <label class="control-label visible-ie8 visible-ie9" style="display: block;">
@@ -269,16 +277,18 @@
                     </div>
                 </div>
             
-                <div class="col-md-2">
-                    <label class="control-label visible-ie8 visible-ie9" style="display: block;" >
-                        Total Cotizado
-                    </label>
-                    <input type="text" class="form-control" style="font-size: 12px;" 
-                        data-bind="value: EconomicProposal().values().reduce(function(total, item) { 
-                            return total + (item.cantidad() * item.cotizacion()); 
-                        }, 0), 
-                                inputmask: { alias: 'monto' }, 
-                                disable: true" />
+                <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
+                    <div style="width: 253px;">
+                        <label class="control-label" style="display: block;">
+                            Total Cotizado
+                        </label>
+                        <input type="text" class="form-control" style="font-size: 13px;" 
+                            data-bind="value: EconomicProposal().values().reduce(function(total, item) { 
+                                return total + (item.cantidad() * item.cotizacion()); 
+                            }, 0), 
+                                    inputmask: { alias: 'monto' }, 
+                                    disable: true" />
+                    </div>
                 </div>
             </td>
         </tr>

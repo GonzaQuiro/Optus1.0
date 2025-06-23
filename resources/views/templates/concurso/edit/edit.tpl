@@ -998,6 +998,9 @@
             this.IsSobrecerrado = ko.observable(data.list.IsSobrecerrado);
             this.IsOnline = ko.observable(data.list.IsOnline);
             this.ReadOnly = ko.observable(data.list.ReadOnly);
+
+            this.BloquearInvitacionOferentes = ko.observable(data.list.BloquearInvitacionOferentes);
+            
             this.FilePath = ko.observable(data.list.FilePath);
             this.ProductMeasurementList = ko.observableArray(data.list.ProductMeasurementList);
             this.NewProduct = ko.observable(new Product());

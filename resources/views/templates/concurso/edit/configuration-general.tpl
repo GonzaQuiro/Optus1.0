@@ -13,10 +13,10 @@
                         valueAllowUnset: true, 
                         optionsText: 'text', 
                         optionsValue: 'id', 
-                        select2: { placeholder: 'Seleccionar...', allowClear: true, multiple: true }, disable: ReadOnly()">
+                        select2: { placeholder: 'Seleccionar...', allowClear: true, multiple: true }, disable: BloquearInvitacionOferentes()">
                 </select>
             </div>
-            <!-- ko if: !ReadOnly() -->
+            <!-- ko if: !BloquearInvitacionOferentes() -->
             <div style="text-align:right;padding:10px;">
                 <a class="btn btn-primary" data-bind='click: addAll'>
                     Añadir todos
