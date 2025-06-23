@@ -1188,8 +1188,19 @@
         
             this.EconomicSend = function(isUpdate = false) {
                 // Validar campos de ítems seleccionados
-                const itemsInvalidos = self.EconomicProposal().values().filter(item => {
-                    if (!item.ProductSelected()) return false; // No validamos si el switch está apagado
+                const items = self.EconomicProposal().values();
+
+                // Separar errores de fecha
+                const erroresFecha = items.filter(item => {
+                    if (!item.ProductSelected()) return false;
+
+                    const fec = parseInt(item.fecha());
+                    return self.IsSobrecerrado() && (isNaN(fec) || fec < 1 || fec > 365);
+                });
+
+                // Validar todos los campos
+                const itemsInvalidos = items.filter(item => {
+                    if (!item.ProductSelected()) return false;
 
                     const cot = parseFloat(item.cotizacion());
                     const cant = parseFloat(item.cantidad());
@@ -1202,6 +1213,20 @@
                     );
                 });
 
+                // Mensaje específico si hay errores en la fecha
+                if (erroresFecha.length > 0) {
+                    swal({
+                        title: "Plazo de entrega inválido",
+                        text: "El campo 'Plazo de entrega' debe estar entre 1 y 365 días.",
+                        type: "error",
+                        confirmButtonText: "Aceptar",
+                        confirmButtonClass: 'btn btn-danger',
+                        buttonsStyling: false
+                    });
+                    return;
+                }
+
+                // Mensaje genérico si hay otros errores
                 if (itemsInvalidos.length > 0) {
                     swal({
                         title: "Error",
@@ -1275,7 +1300,8 @@
                         );
                     }
                 });
-            }
+            };
+
 
              
 
