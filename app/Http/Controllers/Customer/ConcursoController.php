@@ -2636,10 +2636,12 @@ if ($result['error']) {
                         $success = true;
                         // Enviar email de confirmación al usuario que editó
                         $user = user();
-                        $templateUsuario = rootPath(config('app.templates_path')) . '.\email\edition-confirmation-client.tpl';
+                        $templateUsuario = rootPath(config('app.templates_path')) . '/email/edition-confirmation-client.tpl';
                         $htmlUser = $this->fetch($templateUsuario, [
                             'user' => $user,
-                            'concurso' => $concurso
+                            'concurso' => $concurso,
+                            'title' => 'Confirmación de Edición de Concurso',
+                            'ano' => Carbon::now()->format('Y')
                         ]);
                         $emailService = new EmailService();
                         $emailService->send($htmlUser, 'Confirmación de Edición de Concurso', [$user->email], "");
