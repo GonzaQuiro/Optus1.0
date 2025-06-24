@@ -225,6 +225,8 @@ class User extends Model
                 $this->getRelatedByRoleSlug(UserType::TYPES['customer-approve'])
             )->merge(
                 $this->getRelatedByRoleSlug(UserType::TYPES['customer'])
+            )->merge(
+                $this->getRelatedByRoleSlug(UserType::TYPES['evaluator'])
             );
 
         foreach ($users as $user) {
