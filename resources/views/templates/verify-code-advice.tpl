@@ -82,7 +82,7 @@
     function sendVerifyCode(){
                 var email = $('#email').val();
                 swal({
-                    title: '¿Recuperar contraseña?',
+                    title: 'Verificación de seguridad',
                     text: 'Se enviará un código de verificación al correo:\n' + email,
                     type: 'info',
                     showCancelButton: true,
