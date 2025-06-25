@@ -69,43 +69,91 @@ class ReportsController extends BaseController
 
     private function detailsAdj($concurso)
     {
-        $details = [];
-        $productos = $concurso->productos;
-        $adjudication = $concurso->adjudicacion_items;
-        $oferente = $concurso->oferentes->find($adjudication[0]['oferenteId']);
+        $details      = [];
+        $productos    = $concurso->productos;
+        // Aseguramos que siempre sea un array
+        $adjudication = $concurso->adjudicacion_items ?? [];
+
         foreach ($adjudication as $adj) {
-            $producto = $productos->find($adj['itemId']);
-            $oferente = $concurso->oferentes->find($adj['oferenteId']);
-            $proposal = $oferente->economic_proposal;
+            // Buscamos el producto y el oferente de forma segura
+            $producto = $productos->firstWhere('id', $adj['itemId']);
+            $oferente = $concurso->oferentes->firstWhere('id_offerer', $adj['oferenteId']);
+
+            if (! $producto || ! $oferente) {
+                continue;
+            }
+
+            // Precio unitario y costo objetivo
             $precioUni = floatval($adj['cotUnitaria']);
-            $costoObj = floatval($producto->targetcost);
-            $ahorro = $costoObj != 0 ? $costoObj - $precioUni : 'N/A';
-            $ahorroRel = $costoObj != 0 ? ($ahorro * 100) / $costoObj : 'N/A';
-            $det = [
-                'id' => $concurso->id,
-                'nombre' => $concurso->nombre,
-                'pos' => $adj['itemId'],
-                'item' => $adj['itemNombre'],
-                'cant' => $adj['cantidad'],
-                'unidad' => $adj['unidad'],
-                'unitario' => number_format($precioUni, 2, ',', ''),
-                'costoObj' => $costoObj != 0 ? number_format($costoObj, 2, ',', '') : 'N/A',
-                'ahorro' => $ahorro === 'N/A' ? $ahorro : number_format($ahorro, 2, ',', ''),
-                'ahorroRel' => $ahorroRel === 'N/A' ? $ahorroRel : number_format($ahorroRel, 2, ',', ''),
-                'plazoP' => $proposal->payment_deadline,
-                'plazoE' => $adj['fecha'],
-                'prov' => $adj['razonSocial'],
-                'aceptAdj' => $oferente->acepta_adjudicacion ? 'SI' : 'NO',
-                'FechaAdj' => $oferente->acepta_adjudicacion ? $oferente->acepta_adjudicacion_fecha : null,
-                'tipo' => $concurso->getAdjudicationTypeAttribute(),
-                'comentario' => $concurso->adjudicacion_comentario,
-                'evalTech' => $concurso->technical_includes ? number_format($oferente->analisis_tecnica_valores[0]['alcanzado'], 2, ',', '') : 'N/A',
-                'userAdj' => $concurso->cliente->full_name
+            $costoObj  = floatval($producto->targetcost);
+
+            // Ahorro absoluto
+            $ahorro = $costoObj - $precioUni;
+
+            // Ahorro relativo: solo si costoObj > 0
+            if ($costoObj > 0) {
+                $ahorroRel = ($ahorro * 100) / $costoObj;
+            } else {
+                // Evita división por cero
+                $ahorroRel = null;
+            }
+
+            // Formateos numéricos
+            $unitario   = number_format($precioUni, 2, ',', '');
+            $costoObjF  = $costoObj > 0 ? number_format($costoObj, 2, ',', '') : 'N/A';
+            $ahorroF    = $costoObj > 0 ? number_format($ahorro,   2, ',', '') : 'N/A';
+            $ahorroRelF = $costoObj > 0 ? number_format($ahorroRel, 2, ',', '') : 'N/A';
+
+            // Propuesta económica (puede ser null)
+            $proposal = $oferente->economic_proposal ?? null;
+            $plazoP   = $proposal->payment_deadline ?? null;
+
+            // Aceptación de adjudicación
+            $aceptAdj = $oferente->acepta_adjudicacion ?? false;
+            $fechaAdj = $aceptAdj
+                ? ($oferente->acepta_adjudicacion_fecha ?? null)
+                : null;
+
+            // Evaluación técnica (solo si aplica)
+            $evalTech = 'N/A';
+            if (
+                $concurso->technical_includes
+                && is_array($oferente->analisis_tecnica_valores)
+                && isset($oferente->analisis_tecnica_valores[0]['alcanzado'])
+            ) {
+                $evalTech = number_format(
+                    $oferente->analisis_tecnica_valores[0]['alcanzado'],
+                    2, ',', ''
+                );
+            }
+
+            $details[] = [
+                'id'         => $concurso->id,
+                'nombre'     => $concurso->nombre,
+                'pos'        => $adj['itemId'],
+                'item'       => $adj['itemNombre'],
+                'cant'       => $adj['cantidad'],
+                'unidad'     => $adj['unidad'],
+                'unitario'   => $unitario,
+                'costoObj'   => $costoObjF,
+                'ahorro'     => $ahorroF,
+                'ahorroRel'  => $ahorroRelF,
+                'plazoP'     => $plazoP,
+                'plazoE'     => $adj['fecha'],
+                'prov'       => $adj['razonSocial'],
+                'aceptAdj'   => $aceptAdj ? 'SI' : 'NO',
+                'FechaAdj'   => $fechaAdj,
+                'tipo'       => $concurso->getAdjudicationTypeAttribute(),
+                'comentario' => $concurso->adjudicacion_comentario ?? null,
+                'evalTech'   => $evalTech,
+                'userAdj'    => $concurso->cliente->full_name ?? null,
             ];
-            array_push($details, $det);
         }
+
         return $details;
     }
+
+
     public function setFiltersAdj()
     {
         if (isAdmin()) {
