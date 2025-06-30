@@ -44,7 +44,7 @@ License: You must have a valid license purchased only from themeforest(the above
         <!-- BEGIN LOGO -->
         <div class="logo">
             <a href="index.html">
-                <img src="{asset('/global/img/logo.png')}" alt="" style="width: 200px;">
+                <img src="{asset('/global/img/logo-small.png')}" alt="" style="width: 200px;">
             </a>
         </div>
         <!-- END LOGO -->

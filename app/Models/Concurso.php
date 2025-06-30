@@ -1007,43 +1007,43 @@ class Concurso extends Model
 
     public function getAdjudicacionItemsAttribute()
     {
-
         $result = [];
-        $parsed = $this->attributes['adjudicacion_items'] ?
-            json_decode($this->attributes['adjudicacion_items'], true) :
-            null;
 
-        if ($parsed) {
-            foreach ($parsed as $row) {
-                $oferente = Participante::where([
-                    ['id_offerer', (int) $row['oferenteId']],
-                    ['id_concurso', $this->id]
-                ])->first();
-                if ($row['cantidad'] > 0) {
-                    $result[] = [
-                        'itemId' => $row['itemId'],
-                        'itemSolicitado' => $row['itemSolicitado'],
-                        'itemNombre' => $row['itemNombre'],
-                        'oferenteId' => $oferente->id,
-                        'razonSocial' => $oferente->company->business_name,
-                        'cotUnitaria' => $row['cotUnitaria'],
-                        'cantidad' => $row['cantidad'],
-                        'cotizacion' => $row['cotizacion'],
-                        'cantidadCot' => $row['cantidadCot'],
-                        'cantidadAdj' => $row['cantidadAdj'],
-                        'total' => $row['total'],
-                        'moneda' => $row['moneda'],
-                        'unidad' => $row['unidad'],
-                        'fecha' => $row['fecha']
-                    ];
-                } else {
-                    continue;
-                }
+        // Decodifica seguro (si no existe o es invalido, pasa a [])
+        $parsed = json_decode($this->attributes['adjudicacion_items'] ?? '[]', true);
+        if (! is_array($parsed)) {
+            $parsed = [];
+        }
+
+        foreach ($parsed as $row) {
+            // Definir valores con fallback
+            $cantidad    = isset($row['cantidad'])    ? $row['cantidad']    : 0;
+            $cantidadAdj = isset($row['cantidadAdj']) ? $row['cantidadAdj'] : 0;
+
+            if ($cantidad > 0) {
+                $result[] = [
+                    'itemId'          => $row['itemId']          ?? null,
+                    'itemSolicitado'  => $row['itemSolicitado']  ?? null,
+                    'itemNombre'      => $row['itemNombre']      ?? null,
+                    'oferenteId'      => $row['oferenteId']      ?? null,
+                    'razonSocial'     => $row['razonSocial']     ?? null,
+                    'cotUnitaria'     => $row['cotUnitaria']     ?? null,
+                    'cantidad'        => $cantidad,
+                    'cotizacion'      => $row['cotizacion']      ?? null,
+                    'cantidadCot'     => $row['cantidadCot']     ?? null,
+                    'cantidadAdj'     => $cantidadAdj,
+                    'total'           => $row['total']           ?? null,
+                    'moneda'          => $row['moneda']          ?? null,
+                    'unidad'          => $row['unidad']          ?? null,
+                    'fecha'           => $row['fecha']           ?? null,
+                ];
             }
         }
 
-        return count($result) > 0 ? $result : null;
+        // **Importante**: devuelve SIEMPRE un array (vacío si no hay nada)
+        return $result;
     }
+
 
     public function getFinSubastaAttribute()
     {
