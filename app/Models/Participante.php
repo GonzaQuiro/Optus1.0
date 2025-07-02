@@ -24,7 +24,12 @@ class Participante extends Model
     ];
 
     protected $dates = [
-        'fecha_declination'
+        'fecha_declination',
+        'fecha_primera_ronda_tecnica',
+        'fecha_segunda_ronda_tecnica',
+        'fecha_tercera_ronda_tecnica',
+        'fecha_cuarta_ronda_tecnica',
+        'fecha_quinta_ronda_tecnica',
     ];
 
     protected $fillable = [
@@ -43,7 +48,12 @@ class Participante extends Model
         'id_trailer',
         'reasonDeclination',
         'fecha_declination',
-        'ronda_tecnica'
+        'ronda_tecnica',
+        'fecha_primera_ronda_tecnica',
+        'fecha_segunda_ronda_tecnica',
+        'fecha_tercera_ronda_tecnica',
+        'fecha_cuarta_ronda_tecnica',
+        'fecha_quinta_ronda_tecnica',
     ];
 
     protected $appends = [

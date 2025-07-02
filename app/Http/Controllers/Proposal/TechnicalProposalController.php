@@ -84,6 +84,30 @@ class TechnicalProposalController extends BaseController
                     $technical_proposal->refresh();
                 }
                 $technical_proposal->update($fields);
+
+                $fechaCampo = null;
+                switch ((int) $oferente->ronda_tecnica) {
+                    case 1:
+                        $fechaCampo = 'fecha_primera_ronda_tecnica';
+                        break;
+                    case 2:
+                        $fechaCampo = 'fecha_segunda_ronda_tecnica';
+                        break;
+                    case 3:
+                        $fechaCampo = 'fecha_tercera_ronda_tecnica';
+                        break;
+                    case 4:
+                        $fechaCampo = 'fecha_cuarta_ronda_tecnica';
+                        break;
+                    case 5:
+                        $fechaCampo = 'fecha_quinta_ronda_tecnica';
+                        break;
+                }
+                
+                if ($fechaCampo && !$oferente->$fechaCampo) {
+                    $oferente->$fechaCampo = Carbon::now()->format('Y-m-d H:i:s');
+                    $oferente->save();
+                }
                 $oferente->refresh();
 
                 $fields_offerer = [
@@ -254,6 +278,29 @@ class TechnicalProposalController extends BaseController
                 $technical_proposal->update($fields);
                 $oferente->refresh();
                 
+                $fechaCampo = null;
+                switch ((int) $oferente->ronda_tecnica) {
+                    case 1:
+                        $fechaCampo = 'fecha_primera_ronda_tecnica';
+                        break;
+                    case 2:
+                        $fechaCampo = 'fecha_segunda_ronda_tecnica';
+                        break;
+                    case 3:
+                        $fechaCampo = 'fecha_tercera_ronda_tecnica';
+                        break;
+                    case 4:
+                        $fechaCampo = 'fecha_cuarta_ronda_tecnica';
+                        break;
+                    case 5:
+                        $fechaCampo = 'fecha_quinta_ronda_tecnica';
+                        break;
+                }
+                
+                if ($fechaCampo && !$oferente->$fechaCampo) {
+                    $oferente->$fechaCampo = Carbon::now()->format('Y-m-d H:i:s');
+                    $oferente->save();
+                }
                 
                 $result = $this->updateDocuments($concurso, $oferente, $body);
 

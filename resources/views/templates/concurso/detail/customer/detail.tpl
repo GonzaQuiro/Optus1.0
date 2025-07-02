@@ -1892,7 +1892,10 @@
                             // a.click();
                             // document.body.removeChild(a);
                             window.open(response.data.public_path);
+                            // espera 5 segundos antes de borrar
+                            setTimeout(function() {
                             self.rollbackFile(response.data.real_path);
+                            }, 5000);
 
                         }).fail(function(jqXHR, textStatus) {
                             console.log(jqXHR);

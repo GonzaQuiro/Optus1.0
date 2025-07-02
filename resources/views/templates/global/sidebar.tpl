@@ -130,7 +130,7 @@
                                 <li class="nav-item{if $page eq 'usuarios'} active open{/if}">
                                     <a href="/usuarios/tipo/client" class="nav-link nav-toggle">
                                         <i class="icon-user"></i>
-                                        <span class="title">Usuarios Compradores</span>
+                                        <span class="title">Usuarios</span>
                                         {if $page eq 'usuarios'}
                                             <span class="selected"></span>
                                         {/if}

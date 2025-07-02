@@ -321,6 +321,224 @@ class DataInforme extends Rest
         ];
     }
 
+    private function seccionPresentacionTecnica()
+    {
+        if (! $this->concurso->technical_includes) {
+            return [
+                'titulo'   => '3. Presentación etapa técnica',
+                'contenido'=> [[
+                    'tipo'     => 'parrafo',
+                    'contenido'=> '<em>No se realizó etapa técnica para este concurso.</em>',
+                ]]
+            ];
+        }
+
+        $oferentes = $this->concurso->oferentes;
+
+        // Determinar ronda técnica máxima
+        $rondaMaximaTecnica = 1;
+        foreach ($oferentes as $oferente) {
+            if ($oferente->ronda_tecnica > $rondaMaximaTecnica) {
+                $rondaMaximaTecnica = $oferente->ronda_tecnica;
+            }
+        }
+
+        $contenido              = [];
+        $comentariosDeclinacion = [];
+        $comentariosReprobacion = [];
+
+        $rondasTitulos = [
+            1 => '1ª Ronda Técnica',
+            2 => '2ª Ronda Técnica',
+            3 => '3ª Ronda Técnica',
+            4 => '4ª Ronda Técnica',
+            5 => '5ª Ronda Técnica',
+        ];
+
+        for ($ronda = 1; $ronda <= $rondaMaximaTecnica; $ronda++) {
+            $tabla = [];
+
+            foreach ($oferentes as $oferente) {
+                $res = $this->determinarEstadoTecnico($oferente, $ronda);
+                if ($res === null) {
+                    continue;
+                }
+
+                $estado = $res['estado'];
+
+                // Acumular motivos
+                if ($estado === 'Declinó' && $oferente->reasonDeclination) {
+                    $comentariosDeclinacion[$oferente->company->business_name] = $oferente->reasonDeclination;
+                }
+                if ($estado === 'Reprobado' && ! empty($res['comentario'])) {
+                    $comentariosReprobacion[$oferente->company->business_name] = $res['comentario'];
+                }
+
+                // Cálculo de fecha según estado y ronda
+                $fecha = '';
+                $estadosConEnvio = [
+                    'Se le solicitó otra ronda técnica',
+                    'No fue calificada',
+                    'Aprobado',
+                    'Reprobado',
+                ];
+
+                if (in_array($estado, $estadosConEnvio, true)) {
+                    $camposFecha = [
+                        1 => 'fecha_primera_ronda_tecnica',
+                        2 => 'fecha_segunda_ronda_tecnica',
+                        3 => 'fecha_tercera_ronda_tecnica',
+                        4 => 'fecha_cuarta_ronda_tecnica',
+                        5 => 'fecha_quinta_ronda_tecnica',
+                    ];
+                    $campo = $camposFecha[$ronda] ?? null;
+                    if ($campo && ! empty($oferente->$campo)) {
+                        $fecha = $oferente->$campo instanceof \Carbon\Carbon
+                            ? $oferente->$campo->format('d/m/Y H:i')
+                            : \Carbon\Carbon::parse($oferente->$campo)->format('d/m/Y H:i');
+                    }
+                } elseif ($estado === 'Declinó' && ! empty($oferente->fecha_declination)) {
+                    $fecha = $oferente->fecha_declination instanceof \Carbon\Carbon
+                        ? $oferente->fecha_declination->format('d/m/Y H:i')
+                        : \Carbon\Carbon::parse($oferente->fecha_declination)->format('d/m/Y H:i');
+                }
+                // Si "No presentó técnica", $fecha queda vacío
+
+                // Agregar fila a la tabla
+                $tabla[] = [
+                    $oferente->company->business_name,
+                    $estado,
+                    $fecha,
+                ];
+            }
+
+            if (! empty($tabla)) {
+                $contenido[] = [
+                    'tipo'     => 'parrafo',
+                    'contenido'=> '<div style="font-weight:bold">' . $rondasTitulos[$ronda] . '</div>',
+                ];
+                $contenido[] = [
+                    'tipo'     => 'tabla',
+                    'cabeceras'=> [['Proveedor', 'Estado', 'Fecha']],
+                    'contenido'=> $tabla,
+                ];
+            }
+        }
+
+        // Párrafo de declinación
+        if (! empty($comentariosDeclinacion)) {
+            $lineas = array_map(function ($motivo, $prov) {
+                return 'Motivo de declinación "' . $prov . '": ' . $motivo;
+            }, $comentariosDeclinacion, array_keys($comentariosDeclinacion));
+
+            $contenido[] = [
+                'tipo'     => 'parrafo',
+                'contenido'=> '<div style="font-style:italic; margin-top:10px;"><strong>Motivos de declinación:</strong><br>'
+                    . implode('<br>', $lineas)
+                    . '</div>',
+            ];
+        }
+
+        // Párrafo de reprobación
+        if (! empty($comentariosReprobacion)) {
+            $lineas = array_map(function ($motivo, $prov) {
+                return 'Motivo de reprobación "' . $prov . '": ' . $motivo;
+            }, $comentariosReprobacion, array_keys($comentariosReprobacion));
+
+            $contenido[] = [
+                'tipo'     => 'parrafo',
+                'contenido'=> '<div style="font-style:italic; margin-top:10px;"><strong>Motivos de reprobación:</strong><br>'
+                    . implode('<br>', $lineas)
+                    . '</div>',
+            ];
+        }
+
+        return [
+            'titulo'   => '3. Presentación etapa técnica',
+            'contenido'=> $contenido,
+        ];
+    }
+
+    private function determinarEstadoTecnico($oferente, $ronda)
+    {
+        $estado         = $oferente->etapa_actual;
+        $rondaProveedor = (int) $oferente->ronda_tecnica;
+
+        // 1) Excluir quienes no llegaron a técnica
+        if (in_array($estado, [
+            'seleccionado',
+            'invitacion-pendiente',
+            'invitacion-rechazada',
+        ])) {
+            return null;
+        }
+
+        // 2) Grupos de estados
+        $pendientes  = [
+            'tecnica-pendiente','tecnica-pendiente-2','tecnica-pendiente-3',
+            'tecnica-pendiente-4','tecnica-pendiente-5'
+        ];
+        $presentados = [
+            'tecnica-presentada','tecnica-presentada-2','tecnica-presentada-3',
+            'tecnica-presentada-4','tecnica-presentada-5'
+        ];
+        $declinados  = [
+            'tecnica-declinada','tecnica-declinada-2','tecnica-declinada-3',
+            'tecnica-declinada-4','tecnica-declinada-5'
+        ];
+        $posteriores = [
+            'economica-pendiente','economica-pendiente-2','economica-pendiente-3',
+            'economica-pendiente-4','economica-pendiente-5','economica-2da-pendiente',
+            'economica-presentada','economica-revisada','economica-declinada',
+            'adjudicacion-pendiente','adjudicacion-aceptada','adjudicacion-rechazada',
+            'estrategia-aceptada','estrategia-rechazada',
+        ];
+
+        // 3) Caso posterior a técnica
+        if (in_array($estado, $posteriores)) {
+            if ($ronda < $rondaProveedor) {
+                return ['estado' => 'Se le solicitó otra ronda técnica'];
+            }
+            if ($ronda == $rondaProveedor) {
+                return ['estado' => 'Aprobado'];
+            }
+            return null;
+        }
+
+        // 4) Durante la etapa técnica
+        $todosTecn = array_merge($pendientes, $presentados, $declinados);
+        if (in_array($estado, $todosTecn)) {
+            if ($ronda < $rondaProveedor) {
+                return ['estado' => 'Se le solicitó otra ronda técnica'];
+            }
+            if ($ronda == $rondaProveedor) {
+                if (in_array($estado, $pendientes)) {
+                    return ['estado' => 'No presentó técnica'];
+                }
+                if (in_array($estado, $presentados)) {
+                    if ($oferente->rechazado && is_array($oferente->analisis_tecnica_valores)) {
+                        $vals = $oferente->analisis_tecnica_valores;
+                        if (isset($vals[0]['comentario']) && trim($vals[0]['comentario']) !== '') {
+                            return [
+                                'estado'     => 'Reprobado',
+                                'comentario' => trim($vals[0]['comentario']),
+                            ];
+                        }
+                    }
+                    return ['estado' => 'No fue calificada'];
+                }
+                if (in_array($estado, $declinados)) {
+                    return ['estado' => 'Declinó'];
+                }
+            }
+        }
+
+        // Cualquier otro caso
+        return null;
+    }
+
+    
+
     private function seccionPresentacionOfertas() 
     {
         if ($this->concurso->technical_includes) {
@@ -386,10 +604,12 @@ class DataInforme extends Rest
             $contenido[] = $tabla;
         }        
         return [
-            'titulo' => '3. Presentacion de ofertas',
+            'titulo' => '4. Presentacion de ofertas',
             'contenido' => $contenido
         ];
     }
+
+    
 
     private function seccionAdjudicacion() 
     {
@@ -398,7 +618,7 @@ class DataInforme extends Rest
         ];
 
         $contenidoSinOfertas = [
-            'titulo' => '4. Adjudicación',
+            'titulo' => '5. Adjudicación',
             'contenido' => [
                 [
                     'tipo' => 'parrafo',
@@ -412,7 +632,7 @@ class DataInforme extends Rest
         ];
 
         $contenidoSinAdjudicar = [
-            'titulo' => '4. Adjudicación',
+            'titulo' => '5. Adjudicación',
             'contenido' => [
                 [
                     'tipo' => 'parrafo',
@@ -624,6 +844,7 @@ class DataInforme extends Rest
         $retorno[] = $this->seccionPreparacion();
         $retorno[] = $this->seccionParametros();
         $retorno[] = $this->seccionConvocatoriaOferentes();
+        $retorno[] = $this->seccionPresentacionTecnica();
         $retorno[] = $this->seccionPresentacionOfertas();        
         $retorno[] = $this->seccionAdjudicacion();
         $retorno[] = $this->seccionReputacion();
@@ -819,7 +1040,7 @@ class DataInforme extends Rest
         $tablaComparativaOfertas = $this->armarTablaComparativaOfertas($proveedores);
 
         return [
-            'titulo' => '4. Adjudicación',
+            'titulo' => '5. Adjudicación',
             'contenido' => [
                 [
                     'tipo' => 'parrafo',
@@ -878,7 +1099,7 @@ class DataInforme extends Rest
         $tablaComparativaOfertas = $this->armarTablaComparativaOfertas($proveedores);
         
         return [
-            'titulo' => '4. Adjudicación',
+            'titulo' => '5. Adjudicación',
             'contenido' => [
                 [
                     'tipo' => 'parrafo',
@@ -961,7 +1182,7 @@ class DataInforme extends Rest
             $adjudicacionItems['razonSocial'],
         ]; 
         return [
-            'titulo' => '4. Adjudicación',
+            'titulo' => '5. Adjudicación',
             'contenido' => [
                 [
                     'tipo' => 'parrafo',
