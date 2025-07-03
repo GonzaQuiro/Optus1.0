@@ -18,12 +18,14 @@
 {block 'user-edit-permissions'}
 <div class="row equal" data-bind="foreach: { data: PermissionGroups, as: 'group' }">
     
-    <!-- ko ifnot: (($root.TipoUsuario() === 5 && group.description() == 'Tarifas') || ($root.TipoUsuario() === 5 && group.description() == 'Configuraciones') || ($root.TipoUsuario() === 5 && group.description() == 'Empresas') || ($root.TipoUsuario() === 5 && group.description() == 'Usuarios') 
-    ||             ($root.TipoUsuario() === 8 && group.description() == 'Tarifas') || ($root.TipoUsuario() === 8 && group.description() == 'Empresas') || ($root.TipoUsuario() === 8 && group.description() == 'Configuraciones')
-    ||             ($root.TipoUsuario() === 7 && group.description() == 'Tarifas') ||  ($root.TipoUsuario() === 7 && group.description() == 'Empresas') || ($root.TipoUsuario() === 7 && group.description() == 'Configuraciones')
-    ||             ($root.TipoUsuario() === 3 && group.description() == 'Tarifas') || ($root.TipoUsuario() === 3 && group.description() == 'Empresas')   || ($root.TipoUsuario() === 3 && group.description() == 'Configuraciones')
+  <!-- ko ifnot: (
+    ($root.TipoUsuario() === 5 && group.description() === 'Tarifas') ||
+    ($root.TipoUsuario() === 8 && group.description() === 'Tarifas') ||
+    ($root.TipoUsuario() === 7 && group.description() === 'Tarifas') ||
+    ($root.TipoUsuario() === 3 && group.description() === 'Tarifas')
+)-->
+
     
-    )-->
     <div class="col-md-4">
         <div class="portlet light bordered" style="min-height: 200px">
             <div class="portlet-body">
@@ -31,7 +33,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-xs-9 col-sm-9 col-md-9 tit">
-                                <span class="text-bold" data-bind="text: description()"></span>
+                                <span class="text-bold" data-bind="text: group.description()"></span>
                             </div>
                             <div class="col-xs-3 col-sm-3 col-md-3">
                                 <input 
@@ -42,10 +44,10 @@
                                     data-on-text="SI" 
                                     data-off-text="NO"
                                     data-bind="bootstrapSwitchOn: group.active, onChangeCallback: $root.toggleGroup.bind($data, group)"
-                                    />
+                                />
                             </div>
-                            <!-- ko foreach: permissions() -->
-                            
+
+                            <!-- ko foreach: group.visiblePermissions -->
                             <div class="col-xs-offset-1 col-xs-8 col-sm-offset-1 col-sm-8 col-md-offset-1 col-md-8 tit">
                                 <span data-bind="text: description()"></span>
                             </div>
@@ -60,6 +62,7 @@
                                     data-bind="bootstrapSwitchOn: active" />
                             </div>
                             <!-- /ko -->
+
                         </div>
                     </div>
                 </div>
@@ -67,7 +70,6 @@
         </div>
     </div>
     <!-- /ko -->
-    
 
 </div>
 
@@ -106,12 +108,10 @@
 <script type="text/javascript">
 var Permission = function (data) {
     var self = this;
-
-
     this.id = ko.observable(data.id);
     this.description = ko.observable(data.text);
     this.active = ko.observable(false);
-}
+};
 
 var PermissionGroup = function (data, permissionsSelected) {
     var self = this;
@@ -133,24 +133,31 @@ var PermissionGroup = function (data, permissionsSelected) {
         }
         self.permissions.push(permission);
     });
-}
+
+    this.visiblePermissions = ko.pureComputed(() => {
+         const permisosNoVisibles = ['Clientes', 'Unidades de Medida'];
+
+         return self.permissions().filter(p => {
+            return !permisosNoVisibles.includes(p.description());
+        });
+    });
+
+};
 
 var UsuariosPermisos = function (data) {
     var self = this;
-    console.log("data:", data) 
     this.Breadcrumbs = ko.observableArray(data.breadcrumbs);
 
     this.Id = ko.observable(data.list.Id);
     this.FullName = ko.observable(data.list.FullName);
     this.PermissionGroups = ko.observableArray();
     this.TipoUsuario = ko.observable(data.list.TipoUsuario);
- 
+
     if (data.list.PermissionGroups && data.list.PermissionGroups.length > 0) {
         data.list.PermissionGroups.forEach(item => {
             self.PermissionGroups.push(new PermissionGroup(item, data.list.PermissionsSelected));
         });
     } else {
-        // If there are no permission groups, display a message
         self.noPermissionsMessage = ko.observable("No hay grupos de permisos disponibles para este usuario.");
     }
 
@@ -193,14 +200,13 @@ var UsuariosPermisos = function (data) {
         if (newValue !== oldValue) {
             group.permissions().forEach(permission => {
                 permission.active(newValue);
-            })
+            });
         }
     };
 };
 
 jQuery(document).ready(function () {
     $.blockUI();
-
     var data = {
         UserToken: User.Token
     };
