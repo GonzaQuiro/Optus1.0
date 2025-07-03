@@ -43,6 +43,7 @@ use \Exception as Exception;
 use App\Models\User;
 use Illuminate\Database\Capsule\Manager as DB;
 use App\Models\OffererCompany;
+use App\Models\Evaluacion;
 use DateTimeZone;
 use DateTime;
 use stdClass;
@@ -740,26 +741,6 @@ class ConcursoController extends BaseController
                 );
             }
 
-            //LIBERACION ADJUDICADOS
-            $customer_company_id = $user->customer_company_id;
-
-            // Obtener los concursos que pertenecen al customer_company_id del usuario logueado
-            // y cuya etapa actual es 'adjudicacion-aceptada'
-            $concursos = Concurso::whereHas('oferentes', function ($query) {
-                    $query->where('etapa_actual', 'adjudicacion-aceptada');
-                })
-                ->whereHas('cliente', function ($query) use ($customer_company_id) {
-                    $query->where('customer_company_id', $customer_company_id);
-                })
-                ->get();
-
-            foreach ($concursos as $concurso) {
-                array_push(
-                    $list['ListaConcursosAdjudicados'],
-                    $this->mapConcursoList($concurso)
-                );
-            }
-
             // EVALUACI��N
             $concursos = collect();
             $concursos = $concursos
@@ -795,17 +776,31 @@ class ConcursoController extends BaseController
 
 
             // INFORMES
-            $concursos = collect();
-            $concursos = $concursos->merge(
-                $created
-            );
+                $concursos = collect();
+                $concursos = $concursos->merge(
+                    $created->filter(function ($concurso) {
+                        // Filtrar oferentes con adjudicación aceptada
+                        $oferentesAdjudicados = $concurso->oferentes
+                            ->where('etapa_actual', 'adjudicacion-aceptada');
 
-            foreach ($concursos as $concurso) {
-                array_push(
-                    $list['ListaConcursosInformes'],
-                    $this->mapConcursoList($concurso)
+                        // Para cada oferente adjudicado, buscamos si tiene evaluación asociada
+                        foreach ($oferentesAdjudicados as $oferente) {
+                            $evaluado = Evaluacion::where('id_participante', $oferente->id)->exists();
+                            if ($evaluado) {
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    })
                 );
-            }
+
+                foreach ($concursos as $concurso) {
+                    array_push(
+                        $list['ListaConcursosInformes'],
+                        $this->mapConcursoList($concurso)
+                    );
+                }
 
 
             // CANCELADOS
