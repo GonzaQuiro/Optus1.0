@@ -161,7 +161,7 @@
     <div class="row text-center">
         {if $tipo neq 'chat-muro-consultas'}
             <!-- ko if: UserType() != 'customer-approve' -->
-            <!-- ko if: !Adjudicado() && !Eliminado()  && User.Tipo !== 5 -->
+            <!-- ko if: !Adjudicado() && !Eliminado() -->
             <div class="{if $tipo eq 'convocatoria-oferentes'}col-md-6{else}col-md-12{/if}">
                 <div class="form-group">
                     <button type="button" class="btn btn-xl red" data-bind="click: CancelConcurso">
