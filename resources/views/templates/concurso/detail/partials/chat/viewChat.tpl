@@ -76,19 +76,27 @@
                                             <span class="badge badge-danger">Comentario rechazado</span>
                                             <!-- /ko -->
                                             <!-- /ko -->
-
+                                            
+                                            <!-- ko if: User.Tipo !== 5 -->
                                             <!-- ko if: User.can('chat-admin') -->
                                             <!-- ko if: !is_admin() && estado() == 2 -->
-                                            <div class="text-right">
+                                            <div class="text-right" >
+                                                
+                                                <!-- ko if: User.Tipo !== 5 -->
                                                 <a class="btn btn-xs green" data-bind="click: $parent.approveOrReject.bind($data,
-                                                    id(), 'approve')">
+                                                    id(), 'approve'), visible: User.Tipo() !== 5">
                                                     Aprobar
                                                 </a>
+                                                <!-- /ko -->
+                                                <!-- ko if: User.Tipo !== 5 -->
                                                 <a class="btn btn-xs red" data-bind="click: $parent.approveOrReject.bind($data,
                                                     id(), 'reject')">
                                                     Rechazar
                                                 </a>
+                                                <!-- /ko -->
                                             </div>
+                                            
+                                            <!-- /ko -->
                                             <!-- /ko -->
                                             <!-- /ko -->
                                             <!-- ko if:  filename().filename() -->
@@ -107,6 +115,7 @@
                         </div>
                     </div>
                     <!-- ko if: ChatEnable() || IsClient() -->
+                    <!-- ko if: User.Tipo !== 5 -->
                     <div class="col-md-12">
                         <div class="chat-form">
                             <textarea class="form-control msjText" placeholder="Escriba su mensaje aquí..."
@@ -131,6 +140,7 @@
                             </div>
                         </div>
                     </div>
+                     <!-- /ko -->
                      <!-- /ko -->
                 </div>
             </div>

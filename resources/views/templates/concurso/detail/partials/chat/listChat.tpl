@@ -58,9 +58,11 @@
                 <div class="row">
                     <div class="col-md-12 text-right">
                         <div class="inbox-sidebar">
+                        <!-- ko if: User.Tipo !== 5 -->
                             <button data-title="Nuevo mensaje" class="btn green compose-btn"
                                 data-bind="click: NewChat.bind($data, showNewChat())">
                                 <i class="fa fa-edit"></i> Nuevo Mensaje </button>
+                        <!-- /ko -->
                         </div>
                     </div>
                 </div>

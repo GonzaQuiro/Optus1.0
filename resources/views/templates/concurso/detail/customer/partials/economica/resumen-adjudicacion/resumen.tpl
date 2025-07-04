@@ -64,24 +64,33 @@
         <!-- ko if: !$root.Adjudicado() && !$root.Eliminado() && active -->
         <tr>
             <td class="text-center" colspan="4">
-                <!-- ko if: ConcursoEconomicas.mejoresOfertas.mejorIntegral.items.length > 0 -->
+                <!-- ko if: ConcursoEconomicas.mejoresOfertas.mejorIntegral.items.length > 0  -->
+                <!-- ko if: $root.UserType() !== 'customer-read' -->
                 <button type="button" class="btn btn-primary"
                     data-bind="click: $root.AdjudicationSend.bind($data, 'integral', ConcursoEconomicas.mejoresOfertas.mejorIntegral.idOferente)">
                     Adjudicar Integral
                 </button>
                 <!-- /ko -->
+                <!-- /ko -->
                 <!-- ko if: ConcursoEconomicas.mejoresOfertas.mejorIndividual.individual.length > 0 -->
+                <!-- ko if: $root.UserType() !== 'customer-read' -->
+
                 <button type="button" class="btn btn-primary"
                     data-bind="click: $root.AdjudicationSend.bind($data, 'individual', ConcursoEconomicas.mejoresOfertas.idOferentes)">
                     Adjudicar Individual
                 </button>
                 <!-- /ko -->
+                <!-- /ko -->
                 <!-- ko if: ConcursoEconomicas.proveedores.length > 0 -->
+                <!-- ko if: $root.UserType() !== 'customer-read' -->
+
                 <button type="button" class="btn btn-primary"
                     data-bind="click: $root.AdjudicationSend.bind($data, 'manual'), disable: $root.ManualAdjudication().total() == 0">
                     Adjudicar Manual
                 </button>
                 <!-- /ko -->
+                <!-- /ko -->
+
             </td>
         </tr>
         <!-- /ko -->
@@ -89,6 +98,7 @@
 </table>
 
 <!-- ko if: active && $root.EjecutarNuevaRonda() -->
+<!-- ko if: $root.UserType() !== 'customer-read' -->
 <button type="button" class="btn btn-primary" style="width: 100%;"
     data-bind="text:$root.TitleNewRound(), click: $root.ShowModalNewRound, visible: !($root.Adjudicado() || $root.Eliminado())">
 </button>
@@ -167,6 +177,7 @@
     </div>
 </div>
 
+<!-- /ko -->
 <!-- /ko -->
 
 <!-- ko if: $root.Adjudicado()  -->
