@@ -457,171 +457,176 @@ class UserController extends BaseController
     }
 
     public function store(Request $request, Response $response, $params)
-    {
-        $success = false;
-        $message = null;
-        $status = 200;
-        $list = [];
-        $redirect_url = null;
-        try {
-            $capsule = dependency('db');
-            $connection = $capsule->getConnection();
-            $connection->beginTransaction();
+{
+    $success = false;
+    $message = null;
+    $status = 200;
+    $list = [];
+    $redirect_url = null;
 
-            $body = json_decode($request->getParsedBody()['Data']);
-            
-            $creation = !isset($params['id']);
-            $fields = [];
-            $type = null;
+    try {
+        $capsule = dependency('db');
+        $connection = $capsule->getConnection();
+        $connection->beginTransaction();
 
+        $body = json_decode($request->getParsedBody()['Data']);
+        $creation = !isset($params['id']);
+        $fields = [];
+        $type = null;
 
-            // Relationships
-            $user_status = UserStatus::find((int) $body->Estado);
-            $user_type = UserType::find((int) $body->Tipo);
+        // Relationships
+        $user_status = UserStatus::find((int) $body->Estado);
+        $user_type = UserType::find((int) $body->Tipo);
 
-            if ($user_type->code === 'admin' || $user_type->code === 'superadmin') {
-                $type = 'admin';
-            }
-            if ($user_type->code === 'customer' || $user_type->code === 'customer-approve' || $user_type->code === 'customer-read' || $user_type->code === 'supervisor') {
-                $type = 'client';
-            }
-            if ($user_type->code === 'offerer') {
-                $type = 'offerer';
-            }
-            $company = null;
-            if ($user_type->is_offerer) {
-                $company = OffererCompany::where('id', (int) $body->Empresa)->get()->first();
-                $fields = array_merge($fields, [
-                    'offerer_company_id' => $company ? $company->id : null,
-                ]);
-            } else if ($user_type->is_customer) {
-                $company = CustomerCompany::where('id', (int) $body->Empresa)->get()->first();
-                $fields = array_merge($fields, [
-                    'customer_company_id' => $company ? $company->id : null,
-                ]);
-            }
-
-            $fields = array_merge($fields, [
-                'status_id' => $user_status ? $user_status->id : null,
-                'type_id' => $user_type ? $user_type->id : null,
-                'first_name' => $body->Nombre,
-                'last_name' => $body->Apellido,
-                'phone' => $body->Telefono,
-                'cellphone' => $body->Celular,
-                'email' => $body->Email,
-                'area' => $body->Area,  // Asignar el área
-                'rol' => $body->Rol   // Asignar el rol
-            ]);
-
-            if ($body->Username && !empty(trim($body->Username))) {
-                $fields = array_merge($fields, [
-                    'username' => preg_replace('/\s*/', '', strtolower($body->Username))
-                ]);
-            }
-
-            $length = 8;
-            $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            $charactersLength = strlen($characters);
-            $randomPassword = '';
-            for ($i = 0; $i < $length; $i++) {
-                $randomPassword .= $characters[rand(0, $charactersLength - 1)];
-            }
-           
-            $username_md5 = md5($body->Username);
-            
-            $part1 = substr($username_md5, 0, strlen($username_md5) / 2);
-            $part2 = substr($username_md5, strlen($username_md5) / 2);
-    
-            // Generar el hash con sha256 usando la fórmula proporcionada
-            $passwordHash = hash("sha256", $part2 . $randomPassword . $part1);
-
-
-            $fields = array_merge($fields, [
-                'password' => $passwordHash,
-                'password_confirmation' => $passwordHash
-            ]);
-            
-            $validation = $this->validate($body, $fields, $creation);
-            if ($validation->fails()) {
-                $success = false;
-                $status = 422;
-                $message = $validation->errors()->first();
-            } else {                
-                
-                if ($creation) {
-                    $user = new User($fields);
-                    $user->save();
-
-                  
-                    if ($user->is_admin) {
-                        $this->permisionAdmin($user->id);
-                    } 
-                    else if ($user->type_id === 5) {
-                        $this->permisionVisualizer($user->id);
-                    }
-                    else if($user->type_id === 8){
-                        $this ->permisionSupervisor($user->id);
-                    }
-
-                    else if ($user->type_id === 7){
-                        $this->permisionTech($user->id);
-                    }
-                    else if ($user->is_customer) {
-                        $this->permisionClient($user->id);
-                    } 
-                    else {
-                        $this->permisionOfferer($user->id);
-                    }
-                                                                
-                                       
-                } else {
-                    $user = User::find((int) $params['id']);
-                    if ($user) {
-                        $user->update($fields);
-                    }
-                }
-
-                $connection->commit();
-
-                $redirect_url = route('usuarios.serveList', ['type' => $type ?? 'client']);
-                $success = true;
-                $message = 'Usuario guardado con éxito.';
-
-                if ($creation) {
-                    $emailService = new EmailService();
-                    $subject = 'Nuevo usuario Optus';
-                    $alias = 'Optus';
-                    $template = rootPath(config('app.templates_path')) . '/email/new-user.tpl';
-                    $url = 'portal.optus.com.ar/login';
-
-                    $html = $this->fetch($template, [
-                        'title'         => $subject,
-                        'ano'           => Carbon::now()->format('Y'),
-                        'user'          => $user,
-                        'password'      => $randomPassword,
-                        'url'           => $url
-                    ]);
-
-                    $result = $emailService->send($html, $subject, array($user->email), $alias);
-                }
-            }
-
-        } catch (\Exception $e) {
-            dd($e);
-            $connection->rollBack();
-            $success = false;
-            $message = $e->getMessage();
-            $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : (method_exists($e, 'getCode') ? $e->getCode() : 500);
+        if ($user_type->code === 'admin' || $user_type->code === 'superadmin') {
+            $type = 'admin';
+        }
+        if ($user_type->code === 'customer' || $user_type->code === 'customer-approve' || $user_type->code === 'customer-read' || $user_type->code === 'supervisor') {
+            $type = 'client';
+        }
+        if ($user_type->code === 'offerer') {
+            $type = 'offerer';
         }
 
-        return $this->json($response, [
-            'success' => $success,
-            'message' => $message,
-            'data' => [
-                'redirect' => $redirect_url
-            ]
-        ], $status);
+        $company = null;
+        if ($user_type->is_offerer) {
+            $company = OffererCompany::where('id', (int) $body->Empresa)->get()->first();
+            $fields = array_merge($fields, [
+                'offerer_company_id' => $company ? $company->id : null,
+            ]);
+        } else if ($user_type->is_customer) {
+            $company = CustomerCompany::where('id', (int) $body->Empresa)->get()->first();
+            $fields = array_merge($fields, [
+                'customer_company_id' => $company ? $company->id : null,
+            ]);
+        }
+
+        $fields = array_merge($fields, [
+            'status_id' => $user_status ? $user_status->id : null,
+            'type_id' => $user_type ? $user_type->id : null,
+            'first_name' => $body->Nombre,
+            'last_name' => $body->Apellido,
+            'phone' => $body->Telefono,
+            'cellphone' => $body->Celular,
+            'email' => $body->Email,
+            'area' => $body->Area,
+            'rol' => $body->Rol
+        ]);
+
+        if ($body->Username && !empty(trim($body->Username))) {
+            $fields['username'] = preg_replace('/\s*/', '', strtolower($body->Username));
+        }
+
+        $length = 8;
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomPassword = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomPassword .= $characters[rand(0, $charactersLength - 1)];
+        }
+
+        $username_md5 = md5($body->Username);
+        $part1 = substr($username_md5, 0, strlen($username_md5) / 2);
+        $part2 = substr($username_md5, strlen($username_md5) / 2);
+        $passwordHash = hash("sha256", $part2 . $randomPassword . $part1);
+
+        $fields['password'] = $passwordHash;
+        $fields['password_confirmation'] = $passwordHash;
+
+        $validation = $this->validate($body, $fields, $creation);
+        if ($validation->fails()) {
+            $success = false;
+            $status = 422;
+            $message = $validation->errors()->first();
+        } else {
+            if ($creation) {
+                $user = new User($fields);
+                $user->save();
+
+                if ($user->is_admin) {
+                    $this->permisionAdmin($user->id);
+                } else if ($user->type_id === 5) {
+                    $this->permisionVisualizer($user->id);
+                } else if ($user->type_id === 8) {
+                    $this->permisionSupervisor($user->id);
+                } else if ($user->type_id === 7) {
+                    $this->permisionTech($user->id);
+                } else if ($user->is_customer) {
+                    $this->permisionClient($user->id);
+                } else {
+                    $this->permisionOfferer($user->id);
+                }
+
+            }  else {
+                    $user = User::find((int) $params['id']);
+                    if ($user) {
+                        $tipoAnterior = $user->type_id;
+                        $user->update($fields);
+
+                        // ✅ Si el tipo cambió, reasignar permisos
+                        if ($tipoAnterior !== $user_type->id) {
+                            if (method_exists($user, 'permissions')) {
+                                $user->permissions()->detach();
+                            }
+
+                            if ($user->is_admin) {
+                                $this->permisionAdmin($user->id);
+                            } else if ($user->type_id === 5) {
+                                $this->permisionVisualizer($user->id);
+                            } else if ($user->type_id === 8) {
+                                $this->permisionSupervisor($user->id);
+                            } else if ($user->type_id === 7) {
+                                $this->permisionTech($user->id);
+                            } else if ($user->is_customer) {
+                                $this->permisionClient($user->id);
+                            } else {
+                                $this->permisionOfferer($user->id);
+                            }
+                        }
+                    }
+                }
+
+
+            $connection->commit();
+
+            $redirect_url = route('usuarios.serveList', ['type' => $type ?? 'client']);
+            $success = true;
+            $message = 'Usuario guardado con éxito.';
+
+            if ($creation) {
+                $emailService = new EmailService();
+                $subject = 'Nuevo usuario Optus';
+                $alias = 'Optus';
+                $template = rootPath(config('app.templates_path')) . '/email/new-user.tpl';
+                $url = 'portal.optus.com.ar/login';
+
+                $html = $this->fetch($template, [
+                    'title' => $subject,
+                    'ano' => Carbon::now()->format('Y'),
+                    'user' => $user,
+                    'password' => $randomPassword,
+                    'url' => $url
+                ]);
+
+                $emailService->send($html, $subject, [$user->email], $alias);
+            }
+        }
+
+    } catch (\Exception $e) {
+        $connection->rollBack();
+        $success = false;
+        $message = $e->getMessage();
+        $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : (method_exists($e, 'getCode') ? $e->getCode() : 500);
     }
+
+    return $this->json($response, [
+        'success' => $success,
+        'message' => $message,
+        'data' => [
+            'redirect' => $redirect_url
+        ]
+    ], $status);
+}
 
     public function delete(Request $request, Response $response, $params)
     {
