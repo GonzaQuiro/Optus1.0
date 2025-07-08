@@ -663,12 +663,14 @@ class ConcursoController extends BaseController
                                 ->count(),
                             'FechaTecnica' => $fechaTecnica,
                             'HoraTecnica' => $horaTecnica,
+                            'FechaTecnicaOrden' => $concurso->ficha_tecnica_fecha_limite
+                                     ->format('Y-m-d H:i:s'),
                         ]   
                     )
                 );
             }
 
-            // PROPUESTAS ECON��MICAS
+            // PROPUESTAS ECONÓMICAS
             $concursos = collect();
             $concursos = $concursos->merge(
                 $created
@@ -679,67 +681,82 @@ class ConcursoController extends BaseController
 
             foreach ($concursos as $concurso) {
                 $oferentes = $concurso->oferentes_etapa_economica;
-                if ($concurso->is_sobrecerrado || $concurso->is_go) {
-                    $fecha = $concurso->fecha_limite_economicas->format('d-m-Y');
-                    $hora = $concurso->fecha_limite_economicas->format('H:i:s');
 
-                    // Fecha presentaci��n en curso o todav��a hay oferentes sin presentar oferta.
-                    if ($concurso->fecha_limite_economicas > Carbon::now()) {
+                // 1) Determino el objeto DateTime que usaré (puede ser null)
+                if ($concurso->is_sobrecerrado || $concurso->is_go) {
+                    $dt = $concurso->fecha_limite_economicas;
+                } elseif ($concurso->is_online) {
+                    $dt = $concurso->inicio_subasta;
+                } else {
+                    $dt = null;
+                }
+
+                // 2) Formateo fecha/hora solo si existe
+                if ($dt instanceof \DateTimeInterface) {
+                    $fecha              = $dt->format('d-m-Y');
+                    $hora               = $dt->format('H:i:s');
+                    $fechaEconomicaOrden = $dt->format('Y-m-d H:i:s');
+                } else {
+                    $fecha               = '';
+                    $hora                = '';
+                    $fechaEconomicaOrden = '';
+                }
+
+                // 3) Calculo estado y cantidad según reglas
+                if ($concurso->is_sobrecerrado || $concurso->is_go) {
+                    if ($dt instanceof \DateTimeInterface && $concurso->fecha_limite_economicas > Carbon::now()) {
                         $status_text = 'Licitando';
-                    } elseif ($concurso->adjudicacion_anticipada && $oferentes->where('has_economica_presentada', false)->count() > 0) {
+                    } elseif ($concurso->adjudicacion_anticipada
+                            && $oferentes->where('has_economica_presentada', false)->count() > 0) {
                         $status_text = 'Fin parcial';
-                        // Fecha presentaci��n vencida o todos presentaron oferta.
                     } else {
                         $status_text = 'Finalizado';
                     }
                     $cantidad = $concurso->oferentes
                         ->where('has_economica_presentada', true)
                         ->count();
-                } else if ($concurso->is_online) {
-                    $fecha = $concurso->inicio_subasta->format('d-m-Y');
-                    $hora = $concurso->inicio_subasta->format('H:i:s');
-
-                    // La subasta no inici��.
+                } elseif ($concurso->is_online) {
                     if ($concurso->timeleft) {
                         $status_text = 'No iniciado';
-                        $cantidad = 0;
-                        // La subasta est�� en curso.
+                        $cantidad    = 0;
                     } elseif ($concurso->countdown) {
                         $status_text = 'Licitando';
-                        $cantidad = 0;
-                        // La subasta termin��.
+                        $cantidad    = 0;
                     } else {
                         $status_text = 'Finalizado';
-                        $cantidad = $concurso->oferentes
+                        $cantidad    = $concurso->oferentes
                             ->where('has_economica_presentada', true)
                             ->count();
                     }
+                } else {
+                    $status_text = '';
+                    $cantidad    = 0;
                 }
 
+                // 4) Inserto al listado incluyendo el nuevo campo FechaEconomicaOrden
                 array_push(
                     $list['ListaConcursosAnalisisOfertas'],
                     array_merge(
                         $this->mapConcursoList($concurso),
                         [
-                            'CantidadOferentes' => $concurso->oferentes
-                                ->filter(
-                                    function ($item) use ($concurso) {
-                                        if ($concurso->technical_includes && !$concurso->is_go) {
-                                            return $item->has_tecnica_aprobada;
-                                        } else {
-                                            return $item->has_invitacion_aceptada;
-                                        }
+                            'CantidadOferentes'      => $concurso->oferentes
+                                ->filter(function ($item) use ($concurso) {
+                                    if ($concurso->technical_includes && !$concurso->is_go) {
+                                        return $item->has_tecnica_aprobada;
                                     }
-                                )
+                                    return $item->has_invitacion_aceptada;
+                                })
                                 ->count(),
                             'CantidadPresentaciones' => $cantidad,
-                            'Fecha' => $fecha,
-                            'Hora' => $hora,
-                            'Estado' => $status_text
+                            'Fecha'                  => $fecha,
+                            'Hora'                   => $hora,
+                            'FechaEconomicaOrden'    => $fechaEconomicaOrden,
+                            'Estado'                 => $status_text
                         ]
                     )
                 );
             }
+
 
             // EVALUACI��N
             $concursos = collect();
@@ -850,8 +867,9 @@ class ConcursoController extends BaseController
                         array_merge(
                             $this->mapConcursoList($concurso),
                             [
-                                'Fecha' => $concurso->deleted_at->format('d-m-Y'),
-                                'Hora' => $concurso->deleted_at->format('H:i:s'),
+                                'FechaCancelacion' => $concurso->deleted_at->format('d-m-Y'),
+                                'HoraCancelacion' => $concurso->deleted_at->format('H:i:s'),
+                                'FechaCancelacionOrden' => $concurso->deleted_at->format('Y-m-d H:i:s'),
                                 'Estado' => 'Cancelado'
                             ]
                         )
@@ -879,206 +897,115 @@ class ConcursoController extends BaseController
         ];
     }
 
-    // public function delete(Request $request, Response $response, $params)
-    // {
-    //     $success = false;
-    //     $message = null;
-    //     $status = 200;
-    //     $result = [];
-    //     $redirect_url = null;
-
-    //     try {
-    //         $capsule = dependency('db');
-    //         $connection = $capsule->getConnection();
-    //         $connection->beginTransaction();
-    //         $emailService = new EmailService();
-
-    //         $body = $request->getParsedBody();
-    //         $user = user();
-    //         $concurso = $user->customer_company->getAllConcursosByCompany()->find($params['id']);
-
-    //         $validator = validator(
-    //             $data = [
-    //                 'reason' => $body['Reason']
-    //             ],
-    //             $rules = [
-    //                 'reason' => 'required|string'
-    //             ],
-    //             $messages = [
-    //                 'reason.required' => 'Debe ingresar un motivo para cancelar el concurso.'
-    //             ]
-    //         );
-    //         if ($validator->fails()) {
-    //             $success = false;
-    //             $status = 422;
-    //             $message = $validator->errors()->first();
-    //         } else {
-    //             $concurso->update([
-    //                 'comentario_cancelacion' => $body['Reason'],
-    //                 'usuario_cancelacion' => $user->id
-    //             ]);
-
-    //             $concurso->delete();
-
-    //             $title = 'Concurso Cancelado';
-    //             $subject = $concurso->nombre . ' - ' . $title;
-
-    //             $template = rootPath(config('app.templates_path')) . '/email/cancellation.tpl';
-
-    //             $companiesInvited = $concurso->oferentes->pluck('id_offerer');
-    //             $companies = OffererCompany::with('users')->whereIn('id', $companiesInvited)->get();
-    //             $offerersTable = (new Participante())->getTable();
-    //             DB::table($offerersTable)->where('id_concurso', $concurso->id)->whereIn('id_offerer', $companies)->update(array('rechazado' => true));
-    //             foreach ($companies as $company) {
-    //                 $users = $company->users->pluck('email');
-    //                 $html = $this->fetch($template, [
-    //                     'title' => $title,
-    //                     'ano' => Carbon::now()->format('Y'),
-    //                     'concurso' => $concurso,
-    //                     'company_name' => $company->business_name
-    //                 ]);
-
-    //                 $result = $emailService->send($html, $subject, $users, "");
-    //                 $success = $result['success'];
-    //                 if (!$success) {
-    //                     break;
-    //                 }
-    //             }
-    //         }
-
-    //         if ($success) {
-    //             $connection->commit();
-    //             $message = 'Concurso cancelado con éxito.';
-    //             $redirect_url = route('concursos.cliente.serveList');
-    //         } else {
-    //             $connection->rollBack();
-    //             $message = $message ?? 'Han ocurrido errores al enviar las notificaciones.';
-    //         }
-    //     } catch (\Exception $e) {
-
-    //         $connection->rollBack();
-    //         $success = false;
-    //         $message = $e->getMessage();
-    //         $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : (method_exists($e, 'getCode') ? $e->getCode() : 500);
-    //     }
-
-    //     return $this->json($response, [
-    //         'success' => $success,
-    //         'message' => $message,
-    //         'data' => [
-    //             'redirect' => $redirect_url
-    //         ]
-    //     ], $status);
-    // }
 
     public function delete(Request $request, Response $response, $params)
-{
-    $success = false;
-    $message = null;
-    $status = 200;
-    $result = [];
-    $redirect_url = null;
+    {
+        $success = false;
+        $message = null;
+        $status = 200;
+        $result = [];
+        $redirect_url = null;
 
-    try {
-        $capsule = dependency('db');
-        $connection = $capsule->getConnection();
-        $connection->beginTransaction();
-        $emailService = new EmailService();
+        try {
+            $capsule = dependency('db');
+            $connection = $capsule->getConnection();
+            $connection->beginTransaction();
+            $emailService = new EmailService();
 
-        $body = $request->getParsedBody();
-        $user = user();
-        $concurso = $user->customer_company->getAllConcursosByCompany()->find($params['id']);
+            $body = $request->getParsedBody();
+            $user = user();
+            $concurso = $user->customer_company->getAllConcursosByCompany()->find($params['id']);
 
-        $validator = validator(
-            $data = [
-                'reason' => $body['Reason']
-            ],
-            $rules = [
-                'reason' => 'required|string'
-            ],
-            $messages = [
-                'reason.required' => 'Debe ingresar un motivo para cancelar el concurso.'
-            ]
-        );
+            $validator = validator(
+                $data = [
+                    'reason' => $body['Reason']
+                ],
+                $rules = [
+                    'reason' => 'required|string'
+                ],
+                $messages = [
+                    'reason.required' => 'Debe ingresar un motivo para cancelar el concurso.'
+                ]
+            );
 
-        if ($validator->fails()) {
-            $success = false;
-            $status = 422;
-            $message = $validator->errors()->first();
-        } else {
-            $concurso->update([
-                'comentario_cancelacion' => $body['Reason'],
-                'usuario_cancelacion' => $user->id
-            ]);
-
-            $concurso->delete();
-
-            // Marcar como rechazados a los oferentes
-            $companiesInvited = $concurso->oferentes->pluck('id_offerer');
-            $companies = OffererCompany::with('users')->whereIn('id', $companiesInvited)->get();
-            $offerersTable = (new Participante())->getTable();
-            DB::table($offerersTable)
-                ->where('id_concurso', $concurso->id)
-                ->whereIn('id_offerer', $companiesInvited)
-                ->update(['rechazado' => true]);
-
-            // Enviar mails a los oferentes
-            $title = 'Concurso Cancelado';
-            $subject = $concurso->nombre . ' - ' . $title;
-            $templateOferentes = rootPath(config('app.templates_path')) . '/email/cancellation.tpl';
-
-            foreach ($companies as $company) {
-                $users = $company->users->pluck('email');
-                $html = $this->fetch($templateOferentes, [
-                    'title' => $title,
-                    'ano' => Carbon::now()->format('Y'),
-                    'concurso' => $concurso,
-                    'company_name' => $company->business_name
-                ]);
-
-                $result = $emailService->send($html, $subject, $users, "");
-                $success = $result['success'];
-                if (!$success) break;
-            }
-
-            // Enviar mail al usuario que canceló el concurso
-            if ($success) {
-                $templateUsuario = rootPath(config('app.templates_path')) . '/email/delete-confirmation-client.tpl';
-
-                $htmlUser = $this->fetch($templateUsuario, [
-                    'user' => $user,
-                    'concurso' => $concurso
-                ]);
-
-                $result = $emailService->send($htmlUser, 'Confirmación de Cancelación de Concurso', [$user->email], "");
-                $success = $result['success'];
-            }
-
-            if ($success) {
-                $connection->commit();
-                $message = 'Concurso cancelado con éxito.';
-                $redirect_url = route('concursos.cliente.serveList');
+            if ($validator->fails()) {
+                $success = false;
+                $status = 422;
+                $message = $validator->errors()->first();
             } else {
-                $connection->rollBack();
-                $message = $message ?? 'Han ocurrido errores al enviar las notificaciones.';
+                $concurso->update([
+                    'comentario_cancelacion' => $body['Reason'],
+                    'usuario_cancelacion' => $user->id
+                ]);
+
+                $concurso->delete();
+
+                // Marcar como rechazados a los oferentes
+                $companiesInvited = $concurso->oferentes->pluck('id_offerer');
+                $companies = OffererCompany::with('users')->whereIn('id', $companiesInvited)->get();
+                $offerersTable = (new Participante())->getTable();
+                DB::table($offerersTable)
+                    ->where('id_concurso', $concurso->id)
+                    ->whereIn('id_offerer', $companiesInvited)
+                    ->update(['rechazado' => true]);
+
+                // Enviar mails a los oferentes
+                $title = 'Concurso Cancelado';
+                $subject = $concurso->nombre . ' - ' . $title;
+                $templateOferentes = rootPath(config('app.templates_path')) . '/email/cancellation.tpl';
+
+                foreach ($companies as $company) {
+                    $users = $company->users->pluck('email');
+                    $html = $this->fetch($templateOferentes, [
+                        'title' => $title,
+                        'ano' => Carbon::now()->format('Y'),
+                        'concurso' => $concurso,
+                        'company_name' => $company->business_name
+                    ]);
+
+                    $result = $emailService->send($html, $subject, $users, "");
+                    $success = $result['success'];
+                    if (!$success) break;
+                }
+
+                // Enviar mail al usuario que canceló el concurso
+                if ($success) {
+                    $templateUsuario = rootPath(config('app.templates_path')) . '/email/delete-confirmation-client.tpl';
+
+                    $htmlUser = $this->fetch($templateUsuario, [
+                        'user' => $user,
+                        'concurso' => $concurso
+                    ]);
+
+                    $result = $emailService->send($htmlUser, 'Confirmación de Cancelación de Concurso', [$user->email], "");
+                    $success = $result['success'];
+                }
+
+                if ($success) {
+                    $connection->commit();
+                    $message = 'Concurso cancelado con éxito.';
+                    $redirect_url = route('concursos.cliente.serveList');
+                } else {
+                    $connection->rollBack();
+                    $message = $message ?? 'Han ocurrido errores al enviar las notificaciones.';
+                }
             }
+
+        } catch (\Exception $e) {
+            $connection->rollBack();
+            $success = false;
+            $message = $e->getMessage();
+            $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : (method_exists($e, 'getCode') ? $e->getCode() : 500);
         }
 
-    } catch (\Exception $e) {
-        $connection->rollBack();
-        $success = false;
-        $message = $e->getMessage();
-        $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : (method_exists($e, 'getCode') ? $e->getCode() : 500);
+        return $this->json($response, [
+            'success' => $success,
+            'message' => $message,
+            'data' => [
+                'redirect' => $redirect_url
+            ]
+        ], $status);
     }
-
-    return $this->json($response, [
-        'success' => $success,
-        'message' => $message,
-        'data' => [
-            'redirect' => $redirect_url
-        ]
-    ], $status);
-}
 
     private function mapConcursoList($concurso)
     {
@@ -1093,6 +1020,7 @@ class ConcursoController extends BaseController
             'UsuarioSolicitante' => $concurso->cliente->full_name, //Agregado por valen 
             'NumSolicitud' => $concurso->solicitud_compra, //Agregado por el fede
             'FechaLimite' => $concurso->fecha_limite->format('d-m-Y H:i'),
+            'FechaLimiteOrden' => $concurso->fecha_limite->format('Y-m-d H:i:s'), //Agregado por benja
             'TipoConcurso' => $concurso->tipo_concurso_nombre,
             'TipoConcursoPath' => strtolower(trim($concurso->tipo_concurso))
         ];

@@ -22,8 +22,23 @@
 
 <!-- SCRIPTS PREVIOS A KNOCKOUT -->
 {block 'pre-scripts'}
-    <script src="{asset('/global/plugins/datatables/datatables.min.js')}" type="text/javascript"></script>
+    <script src="{asset('/global/plugins/datatables/datatables.min.js')}" type="text/javascript">
+    </script>
     <script src="{asset('/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js')}" type="text/javascript">
+    </script>
+    <!-- plugin de ordenamiento para fechas DD-MM-YYYY -->
+    <script 
+    src="https://cdn.datatables.net/plug-ins/1.13.6/sorting/date-eu.js" 
+    type="text/javascript">
+    </script>
+    <!-- DataTables principal -->
+    <script 
+        src="{asset('/global/plugins/datatables/datatables.min.js')}" 
+        type="text/javascript">
+    </script>
+    <script 
+        src="{asset('/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js')}" 
+        type="text/javascript">
     </script>
 {/block}
 
@@ -99,7 +114,12 @@
                             <td data-bind="text: AreaSolicitante()" class="vertical-align-middle"></td>
                             <td data-bind="text: UsuarioSolicitante()" class="vertical-align-middle"></td>
                             <td data-bind="text: NumSolicitud()" class="vertical-align-middle"></td>
-                            <td data-bind="text: FechaLimite()" class="vertical-align-middle"></td>
+                            <td class="vertical-align-middle"
+                                data-bind="
+                                text: FechaLimite(),
+                                attr: { 'data-order': FechaLimiteOrden }
+                                ">
+                            </td>
                             <td data-bind="text: TipoConcurso()" class="vertical-align-middle"></td>
                                 <td class="vertical-align-middle text-center">
                                     <a href="javascript:void(0);"
@@ -158,7 +178,12 @@
                                 <td data-bind="text: AreaSolicitante()" class="vertical-align-middle"></td>
                                 <td data-bind="text: UsuarioSolicitante()" class="vertical-align-middle"></td>
                                 <td data-bind="text: NumSolicitud()" class="vertical-align-middle"></td>
-                                <td data-bind="text: FechaLimite()" class="vertical-align-middle"></td>
+                                <td class="vertical-align-middle"
+                                        data-bind="
+                                        text: FechaLimite(),
+                                        attr: { 'data-order': FechaLimiteOrden }
+                                        ">
+                                </td>
                                 <td data-bind="text: TipoConcurso()" class="vertical-align-middle"></td>
                                 <td class="vertical-align-middle text-center">
                                     <a href="javascript:void(0);"
@@ -216,7 +241,12 @@
                                 <td data-bind="text: AreaSolicitante()" class="vertical-align-middle"></td>
                                 <td data-bind="text: UsuarioSolicitante()" class="vertical-align-middle"></td>
                                 <td data-bind="text: NumSolicitud()" class="vertical-align-middle"></td>
-                                <td data-bind="text: FechaLimite()" class="vertical-align-middle"></td>
+                                <td class="vertical-align-middle"
+                                        data-bind="
+                                        text: FechaLimite(),
+                                        attr: { 'data-order': FechaLimiteOrden }
+                                        ">
+                                </td>
                                 <td data-bind="text: TipoConcurso()" class="vertical-align-middle"></td>
                                 <td class="vertical-align-middle text-center">
                                     <a href="javascript:void(0);"
@@ -274,7 +304,12 @@
                                 <td data-bind="text: AreaSolicitante()" class="vertical-align-middle"></td>
                                 <td data-bind="text: UsuarioSolicitante()" class="vertical-align-middle"></td>
                                 <td data-bind="text: NumSolicitud()" class="vertical-align-middle"></td>
-                                <td data-bind="text: FechaLimite()" class="vertical-align-middle"></td>
+                                <td class="vertical-align-middle"
+                                        data-bind="
+                                        text: FechaLimite(),
+                                        attr: { 'data-order': FechaLimiteOrden }
+                                        ">
+                                </td>
                                 <td data-bind="text: TipoConcurso()" class="vertical-align-middle"></td>
                                 <td class="vertical-align-middle text-center">
                                     <a href="javascript:void(0);"
@@ -334,7 +369,12 @@
                                 <td data-bind="text: AreaSolicitante()" class="vertical-align-middle"></td>
                                 <td data-bind="text: UsuarioSolicitante()" class="vertical-align-middle"></td>
                                 <td data-bind="text: NumSolicitud()" class="vertical-align-middle"></td>
-                                <td data-bind="text: FechaLimite()" class="vertical-align-middle"></td>
+                                <td class="vertical-align-middle"
+                                        data-bind="
+                                        text: FechaLimite(),
+                                        attr: { 'data-order': FechaLimiteOrden }
+                                        ">
+                                </td>
                                 <td data-bind="text: TipoConcurso()" class="vertical-align-middle"></td>
                                 <td data-bind="text: EstadoAdjudicacion()" class="vertical-align-middle"></td>
                                 <td class="vertical-align-middle text-center">
@@ -365,7 +405,10 @@
             this.Nombre = ko.observable(data.Nombre);
             this.Solicitante = ko.observable(data.Solicitante);
             this.NumSolicitud = ko.observable(data.NumSolicitud);
+
             this.FechaLimite = ko.observable(data.FechaLimite);
+            this.FechaLimiteOrden = ko.observable(data.FechaLimiteOrden);
+
             this.TipoConcurso = ko.observable(data.TipoConcurso);
             this.TipoConcursoPath = ko.observable(data.TipoConcursoPath);
             this.EstadoAdjudicacion = ko.observable(data.EstadoAdjudicacion);

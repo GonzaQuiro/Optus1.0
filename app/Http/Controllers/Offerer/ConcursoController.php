@@ -406,6 +406,7 @@ class ConcursoController extends BaseController
             'Nombre' => $concurso->nombre,
             'Solicitante' => $concurso->cliente->customer_company->business_name,
             'FechaLimite' => $concurso->fecha_limite->format('d-m-Y'),
+            'FechaLimiteOrden' => $concurso->fecha_limite->format('Y-m-d H:i:s'),
             'TipoConcurso' => $concurso->tipo_concurso_nombre,
             'TipoOperacion' => $concurso->alcance->nombre,
             'TipoConcursoPath' => $concurso->tipo_concurso,
