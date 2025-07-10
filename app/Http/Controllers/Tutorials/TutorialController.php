@@ -41,21 +41,26 @@ class TutorialController extends BaseController
             $tutoriales = Tutorial::all();
 
             foreach ($tutoriales as $tutorial) {
-                $permisos = $tutorial->permisos;
-    
-                if ($type_id == 1 || $type_id == 2 ||  // Administrador
-                    ($type_id == 3 && $permisos[0] == '1') ||  // Cliente
-                    ($type_id == 4 && $permisos[1] == '1') ||  // Técnico
-                    ($type_id == 5 && $permisos[2] == '1') ||  // Visor
-                    ($type_id == 6 && $permisos[3] == '1') ||  // Proveedor
-                    ($type_id == 7 && $permisos[4] == '1')   // Evaluador
-                    ) {
+                // —————— APLICAR STR_PAD AQUÍ ——————
+                // Asegura siempre 6 caracteres (llenando con '0' a la derecha)
+                $permisos = str_pad($tutorial->permisos, 6, '0', STR_PAD_RIGHT);
+
+                if (
+                    $type_id == 1 || $type_id == 2 ||                            // Administrador
+                    ($type_id == 3 && $permisos[0] == '1') ||                    // Cliente
+                    ($type_id == 4 && $permisos[1] == '1') ||                    // Técnico
+                    ($type_id == 5 && $permisos[2] == '1') ||                    // Visor
+                    ($type_id == 6 && $permisos[3] == '1') ||                    // Proveedor
+                    ($type_id == 7 && $permisos[4] == '1') ||                    // Evaluador
+                    ($type_id == 8 && $permisos[5] == '1')                       // Supervisor
+                ) {
                     array_push($list, [
-                        'Id' => $tutorial->idtutorial,
-                        'Nombre' => $tutorial->nombre,
+                        'Id'          => $tutorial->idtutorial,
+                        'Nombre'      => $tutorial->nombre,
                         'Descripcion' => $tutorial->descripcion,
-                        'Link' => $tutorial->link,
-                        'Permisos' => $tutorial->permisos
+                        'Link'        => $tutorial->link,
+                        // Puedes enviar el string ya padded para que en front veas siempre 6 dígitos:
+                        'Permisos'    => $permisos
                     ]);
                 }
             }
@@ -69,18 +74,21 @@ class TutorialController extends BaseController
         } catch (\Exception $e) {
             $success = false;
             $message = $e->getMessage();
-            $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : (method_exists($e, 'getCode') ? $e->getCode() : 500);
+            $status = method_exists($e, 'getStatusCode')
+                ? $e->getStatusCode()
+                : (method_exists($e, 'getCode') ? $e->getCode() : 500);
         }
 
         return $this->json($response, [
             'success' => $success,
             'message' => $message,
-            'data' => [
-                'list' => $list,
+            'data'    => [
+                'list'        => $list,
                 'breadcrumbs' => $breadcrumbs,
             ]
         ], $status);
     }
+
 
     public function store(Request $request, Response $response)
     {
