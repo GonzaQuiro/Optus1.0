@@ -604,14 +604,20 @@ class ConcursoController extends BaseController
             }
 
             // PROPUESTAS T��CNICAS
-
             $etapas_tecnica = array_merge(
                 [
                     'tecnica-pendiente', 'tecnica-pendiente-2', 'tecnica-pendiente-3', 'tecnica-pendiente-4', 'tecnica-pendiente-5',
                     'tecnica-presentada', 'tecnica-presentada-2', 'tecnica-presentada-3', 'tecnica-presentada-4', 'tecnica-presentada-5',
+                    'tecnica-declinada', 'tecnica-declinada-2','tecnica-declinada-3', 'tecnica-declinada-4','tecnica-declinada-5',
                     'tecnica-rechazada', 'tecnica-rechazada-2', 'tecnica-rechazada-3', 'tecnica-rechazada-4', 'tecnica-rechazada-5'
                 ]
             );
+
+            $etapas_economica = [
+                'economica-pendiente', 'economica-presentada',
+                'economica-declinada', 'economica-rechazada',
+                'adjudicacion-aceptada', 'adjudicacion-rechazada'
+              ];
 
             $concursos = collect();
             $concursos = $concursos
@@ -636,13 +642,11 @@ class ConcursoController extends BaseController
                     // asumimos que ficha_tecnica_fecha_limite es instancia de Carbon o DateTime
                     return $concurso->ficha_tecnica_fecha_limite->greaterThan(Carbon::now());
                 })
-                ->filter(function($concurso) {
-                    foreach ($concurso->oferentes as $oferente) {
-                        if ((int) $oferente->rechazado === 1) {
-                            return false;
-                        }
-                    }
-                    return true;
+                //**Nuevo**: excluir si ANY oferente ya está en económica/adjudicación
+                ->filter(function($concurso) use ($etapas_economica) {
+                    return $concurso->oferentes
+                            ->whereIn('etapa_actual', $etapas_economica)
+                            ->isEmpty();
                 })
                 ->sortBy('id');
 
@@ -663,8 +667,6 @@ class ConcursoController extends BaseController
                                 ->count(),
                             'FechaTecnica' => $fechaTecnica,
                             'HoraTecnica' => $horaTecnica,
-                            'FechaTecnicaOrden' => $concurso->ficha_tecnica_fecha_limite
-                                     ->format('Y-m-d H:i:s'),
                         ]   
                     )
                 );
