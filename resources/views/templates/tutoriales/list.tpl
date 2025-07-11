@@ -84,6 +84,11 @@
                                 <input type="checkbox" id="evaluadorCheckbox" name="evaluador"> Evaluador
                             </label>
                         </div>
+                        <div class="form-group col-md-1">
+                            <label>
+                                <input type="checkbox" id="supervisorCheckbox" name="supervisor"> Supervisor
+                            </label>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -135,6 +140,11 @@
                                 <label>
                                     <input type="checkbox" id="evaluadorEdit" name="evaluador" data-bind="checked: Permisos[4] == '1'"> Evaluador
                                 </label>
+                                <label>
+                                    <input type="checkbox" id="supervisorEdit" name="supervisor"
+                                        data-bind="checked: Permisos[5] == '1'"> Supervisor
+                                </label>
+
                             </td>
                             <td>
                                 <a data-bind="click: $root.Editar.bind($data, Id, Nombre, Descripcion, Link)" class="btn btn-xs green" title="Editar">
@@ -181,8 +191,9 @@
                 var visorChecked = $('#visorCheckbox').is(':checked') ? '1' : '0';
                 var proveedorChecked = $('#proveedorCheckbox').is(':checked') ? '1' : '0';
                 var evaluadorChecked = $('#evaluadorCheckbox').is(':checked') ? '1' : '0';
+                var supervisorChecked  = $('#supervisorCheckbox').is(':checked') ? '1' : '0';
 
-                var permisos = clienteChecked + tecnicoChecked + visorChecked + proveedorChecked + evaluadorChecked;
+                var permisos = clienteChecked + tecnicoChecked + visorChecked + proveedorChecked + evaluadorChecked + supervisorChecked;;
 
                 if (!tutorialName || !tutorialDescription || !tutorialLink) {
                     swal('Error', 'Debe completar todos los campos', 'error');
