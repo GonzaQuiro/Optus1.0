@@ -84,7 +84,7 @@ class DashboardController extends BaseController
                             'nombre' => $concurso->nombre,
                             'fecha'  => $concurso->finalizacion_consultas->format('Y-m-d'),
                             'class'  => 'muro-color',
-                            'etapa'  => 'Finalización Muro de Consulta',
+                            'etapa'  => 'Finalizacion Muro de Consulta',
                             'tipo_concurso'  => $concurso->tipo_concurso,
                         ];
                     }
@@ -214,7 +214,7 @@ class DashboardController extends BaseController
                         'nombre' => $concurso->nombre,
                         'fecha'  => $concurso->finalizacion_consultas->format('Y-m-d'),
                         'class'  => 'muro-color',
-                        'etapa'  => 'Finalización Muro de Consulta',
+                        'etapa'  => 'Finalizacion Muro de Consulta',
                         'tipo_concurso'  => $concurso->tipo_concurso,
                     ];
                 }
