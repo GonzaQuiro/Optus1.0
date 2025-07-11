@@ -206,12 +206,19 @@ class UserController extends BaseController
                 $users = User::whereIn('type_id', [3, 4, 5, 7, 8])->get();
             
                 if (user()->is_customer) {
-                    $companyId = user()->customer_company->id;
-                    $users = User::where('customer_company_id', $companyId)
-                                 ->whereIn('type_id', [3, 4, 5, 7, 8])
-                                 ->where('id', '!=', user()->id)
-                                 ->get();
+                $companyId = user()->customer_company->id;
+
+                $query = User::where('customer_company_id', $companyId)
+                            ->whereIn('type_id', [3, 4, 5, 7, 8]);
+
+                // Excluirse solo si no sos supervisor (8)
+                if ((int) user()->type_id !== 8) {
+                    $query->where('id', '!=', user()->id);
                 }
+
+                $users = $query->get();
+            }
+
             } else if ($type == 'offerer') {
                 if (user()->is_admin) {
                     $users = User::where('type_id', 6)->get();

@@ -7,6 +7,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Models\Concurso;
 use App\Models\Participante;
+use App\Models\User;
 use Carbon\Carbon;
 
 class DashboardController extends BaseController
@@ -51,21 +52,15 @@ class DashboardController extends BaseController
                 if (isCustomer()) {
                     $id = User()->id;
                     $customercCompanyID = User()->customer_company_id;
-                    /// BEGIN CLIENT ///
-                    
-                    //INVITACION PENDIENTE
-                    $concursosInvitacionPendiente = Concurso::where([
-                        ['id_cliente', '=', $id],
-                        ['deleted_at', '=', null]
-                    ])->whereHas('oferentes', function ($oferentes) {
-                        $oferentes
-                            ->where([
-                                ['etapa_actual', '=', Participante::ETAPAS['invitacion-pendiente']],
-                            ]);
-                    })->get();
-                    
-                    foreach ($concursosInvitacionPendiente as $concurso) {
 
+                    // INVITACION PENDIENTE
+                    $concursosInvitacionPendiente = $this->getConcursoBaseQueryPorUsuario()
+                        ->whereHas('oferentes', function ($oferentes) {
+                            $oferentes->where('etapa_actual', Participante::ETAPAS['invitacion-pendiente']);
+                        })
+                        ->get();
+
+                    foreach ($concursosInvitacionPendiente as $concurso) {
                         $list['Invitaciones'][] = [
                             'id'     => $concurso->id,
                             'nombre' => $concurso->nombre,
@@ -75,20 +70,15 @@ class DashboardController extends BaseController
                             'tipo_concurso'  => $concurso->tipo_concurso,
                         ];
                     }
-                    
-                    //FINALIZA MURO CONSULTA
-                    $concursosMuroDeConsultas = Concurso::where([
-                        ['id_cliente', '=', $id],
-                        ['deleted_at', '=', null]
-                    ])->whereHas('oferentes', function ($oferentes) {
-                        $oferentes
-                            ->where([
-                                ['etapa_actual', '!=', Participante::ETAPAS['seleccionado']]
-                            ]);
-                    })->get();
+
+                    // CONSULTAS
+                    $concursosMuroDeConsultas = $this->getConcursoBaseQueryPorUsuario()
+                        ->whereHas('oferentes', function ($oferentes) {
+                            $oferentes->where('etapa_actual', '!=', Participante::ETAPAS['seleccionado']);
+                        })
+                        ->get();
 
                     foreach ($concursosMuroDeConsultas as $concurso) {
-
                         $list['Consultas'][] = [
                             'id'     => $concurso->id,
                             'nombre' => $concurso->nombre,
@@ -99,16 +89,14 @@ class DashboardController extends BaseController
                         ];
                     }
 
-
-                    //TÉCNICA PENDIENTE
-                    $concursosTecnicaPendiente = Concurso::where([
-                        ['id_cliente', '=', $id],
-                        ['deleted_at', '=', null],
-                        ['ficha_tecnica_incluye', '=' ,'si']
-                    ])->whereHas('oferentes', function ($oferentes) {
-                        $oferentes->where('etapa_actual', Participante::ETAPAS['tecnica-pendiente'])
-                                  ->where('rechazado', '=' , '0');
-                    })->get();
+                    // TECNICA
+                    $concursosTecnicaPendiente = $this->getConcursoBaseQueryPorUsuario()
+                        ->where('ficha_tecnica_incluye', 'si')
+                        ->whereHas('oferentes', function ($oferentes) {
+                            $oferentes->where('etapa_actual', Participante::ETAPAS['tecnica-pendiente'])
+                                      ->where('rechazado', '0');
+                        })
+                        ->get();
 
                     foreach ($concursosTecnicaPendiente as $concurso) {
                         $list['Tecnicas'][] = [
@@ -121,12 +109,8 @@ class DashboardController extends BaseController
                         ];
                     }
 
-
-                    //ECONOMICA PENDIENTE
-                    $concursosEconomicaPendiente = Concurso::where([
-                            ['id_cliente', $id],
-                            ['deleted_at', '=', null]
-                        ])
+                    // ECONOMICA
+                    $concursosEconomicaPendiente = $this->getConcursoBaseQueryPorUsuario()
                         ->where(function ($query) {
                             $query->where('tipo_concurso', 'sobrecerrado')
                                   ->orWhere('tipo_concurso', 'online');
@@ -141,10 +125,10 @@ class DashboardController extends BaseController
                                 'economica-pendiente-4',
                                 'economica-pendiente-5'
                             ])
-                            ->where('rechazado', '=', '0');
+                            ->where('rechazado', '0');
                         })
                         ->get();
-                    
+
                     foreach ($concursosEconomicaPendiente as $concurso) {
                         $list['Economicas'][] = [
                             'id'     => $concurso->id,
@@ -158,21 +142,19 @@ class DashboardController extends BaseController
                         ];
                     }
 
+                    // ADJUDICACION
+                    $concursoAdjudicacionPendiente = $this->getConcursoBaseQueryPorUsuario()
+                        ->whereHas('oferentes', function ($oferentes) {
+                            $oferentes->where('etapa_actual', Participante::ETAPAS['adjudicacion-pendiente'])
+                                      ->where('rechazado', '0');
+                        })
+                        ->get();
 
-                    //ADJUDICACION PENDIENTE
-                    $concursoAdjudicacionPendiente = Concurso::where([
-                        ['id_cliente', $id],
-                        ['deleted_at', '=', null]
-                    ])->whereHas('oferentes', function ($oferentes) {
-                        $oferentes->where('etapa_actual', Participante::ETAPAS['adjudicacion-pendiente'])
-                                  ->where('rechazado', '=' , '0');
-                    })->get();
-    
                     foreach ($concursoAdjudicacionPendiente as $concurso) {
                         $list['PorAdjudicar'][] = [
                             'id'     => $concurso->id,
                             'nombre' => $concurso->nombre,
-                            'fecha'  =>  $concurso->fecha_limite->format('Y-m-d'),
+                            'fecha'  => $concurso->fecha_limite->format('Y-m-d'),
                             'class'  => 'adjudicacion-color',
                             'etapa'  => Participante::ETAPAS_NOMBRES['adjudicacion-pendiente'],
                             'tipo_concurso'  => $concurso->tipo_concurso,
@@ -334,7 +316,6 @@ class DashboardController extends BaseController
 
             $success = true;
 
-            // Breadcrumbs
             $breadcrumbs = [
                 ['description' => 'Dashboard', 'url' => null]
             ];
@@ -353,5 +334,20 @@ class DashboardController extends BaseController
                 'breadcrumbs'   => $breadcrumbs
             ]
         ], $status);
+    }
+
+    private function getConcursoBaseQueryPorUsuario()
+    {
+        $user = User();
+        $query = Concurso::whereNull('deleted_at');
+
+        if ($user->type_id == 8) {
+            $idsUsuariosEmpresa = User::where('customer_company_id', $user->customer_company_id)->pluck('id');
+            $query->whereIn('id_cliente', $idsUsuariosEmpresa);
+        } else {
+            $query->where('id_cliente', $user->id);
+        }
+
+        return $query;
     }
 }

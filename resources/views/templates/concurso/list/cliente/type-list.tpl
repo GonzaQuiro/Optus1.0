@@ -71,7 +71,7 @@
             </div>
         </div>
 
-        <!-- ko if: $root.UserType() == 'customer'-->
+        <!-- ko if: $root.UserType() == 'customer' || $root.UserType() == 'supervisor'-->
         <div class="col-md-12">
             <div class="portlet box purple">
                 <div class="portlet-title">
@@ -422,7 +422,7 @@
                 </div>
             </div>
         </div>
-        <!-- ko if: $root.UserType() == 'customer'-->
+        <!-- ko if: $root.UserType() == 'customer' || $root.UserType() == 'supervisor' -->
         <div class="col-md-12">
             <div class="portlet box green-jungle">
                 <div class="portlet-title">
