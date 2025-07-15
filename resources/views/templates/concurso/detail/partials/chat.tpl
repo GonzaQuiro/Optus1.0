@@ -209,6 +209,18 @@
                 self.showListChat(true)
                 self.ActiveView('chatList')
             };
+            
+            self.searchMessage = ko.observable("");
+
+            self.filteredMessages = ko.computed(function () {
+                const query = self.searchMessage().toLowerCase();
+                return query
+                    ? ko.utils.arrayFilter(self.Messages(), function (msg) {
+                        const texto = msg.mensaje && msg.mensaje().toLowerCase();
+                        return texto && texto.includes(query);
+                    })
+                    : self.Messages();
+            });
 
             this.Chat = function(mensaje) {
                 data = {

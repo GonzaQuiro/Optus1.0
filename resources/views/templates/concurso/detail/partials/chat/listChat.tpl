@@ -54,19 +54,23 @@
 
             <div class="portlet light bordered bg-inverse">
                 <h5 class="block bold" style="margin-top: 0; padding-top: 0;">Consultas y Comentarios</h5>
-                <!-- ko if: ChatEnable() || IsClient() -->
-                <div class="row">
-                    <div class="col-md-12 text-right">
-                        <div class="inbox-sidebar">
-                        <!-- ko if: User.Tipo !== 5 -->
-                            <button data-title="Nuevo mensaje" class="btn green compose-btn"
-                                data-bind="click: NewChat.bind($data, showNewChat())">
-                                <i class="fa fa-edit"></i> Nuevo Mensaje </button>
-                        <!-- /ko -->
-                        </div>
+
+            <!-- ko if: ChatEnable() || IsClient() -->
+            <div class="row" style="margin: 15px 0;">
+                <div class="col-md-12 text-right">
+                    <div class="form-inline">
+                        <input type="text" class="form-control" placeholder="Buscar en preguntas..."
+                            data-bind="textInput: searchMessage" style="margin-right: 10px;" />
+                        <button data-title="Nuevo mensaje" class="btn green compose-btn"
+                            data-bind="click: NewChat.bind($data, showNewChat())">
+                            <i class="fa fa-edit"></i> Nuevo Mensaje
+                        </button>
                     </div>
                 </div>
-                <!-- /ko -->
+            </div>
+            <!-- /ko -->
+
+
                 <div class="row">
                     <div class="col-md-12 table-responsive">
                         <table class="table  table-striped table-advance table-hover table-condensed inbox">
@@ -86,7 +90,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- ko foreach: Messages -->
+                                <!-- 🔁 Se cambió 'Messages' por 'filteredMessages' -->
+                                <!-- ko foreach: filteredMessages -->
                                 <tr data-bind="css: !leido() || !answerLeido() ? 'unread':'', click: $parent.Chat.bind($data, id())" style="cursor: pointer">
                                     <td class="inbox-small-cells" data-bind="text: id()"></td>
                                     <td class="inbox-small-cells" data-bind="text: mensaje()"
