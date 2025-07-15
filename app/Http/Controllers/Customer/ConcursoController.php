@@ -1764,7 +1764,7 @@ class ConcursoController extends BaseController
    private function createOrEditAuction($create, $list, $user, $concurso, $is_copy)
     {
         return array_merge($list, [
-            'InicioSubasta' => $create ? Carbon::now()->addDays(4)->addHour(1)->format('d-m-Y H:i') : $concurso->inicio_subasta->format('d-m-Y H:i'),
+            'InicioSubasta' => $create ? Carbon::now()->addDays(4)->addHour(1)->minute(0)->second(0)->format('d-m-Y H:i') : $concurso->inicio_subasta->format('d-m-Y H:i'),
             'Duracion' => $create && !$is_copy ? null : ($concurso->parsed_duracion[0] . $concurso->parsed_duracion[1]),
             'TiempoAdicional' => $create && !$is_copy ? 0 : $concurso->tiempo_adicional,
             'TiposValoresOfertar' => $this->GetTiposValoresOfertar(),
