@@ -93,18 +93,35 @@
                         </div>
                         <table class="table table-striped table-bordered">
                             <tbody data-bind="foreach: documents">
-                                <!-- ko if: filename -->
-                                <tr>
-                                    <td data-bind="text: name"></td>
-                                    <td class="text-center">
-                                        <a data-bind="click: $root.downloadFile.bind($data, filename, 'oferente', $parent.oferente_id)"
-                                            download class="btn btn-xl green" title="Descargar">
-                                            Descargar
-                                            <i class="fa fa-download"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <!-- /ko -->
+                            <!-- ko if: filename -->
+                            <tr>
+                                <td data-bind="text: name"></td>
+                                <!-- alineo todo a la derecha -->
+                                <td class="text-center">
+                                <div style="display: flex; justify-content: flex-end; align-items: center; gap: 10px;">
+                                    <!-- Botón -->
+                                    <a data-bind="click: $root.downloadFile.bind($data, filename, 'oferente', $parent.oferente_id)"
+                                    download
+                                    class="btn btn-xl green"
+                                    title="Descargar">
+                                    Descargar <i class="fa fa-download"></i>
+                                    </a>
+                                    <!-- Fecha -->
+                                    <!-- ko if: $parent.fecha_envio_propuesta -->
+                                    <div style="text-align: center; font-size: 13px;">
+                                        <b>Fecha de presentación:</b><br>
+                                        <span data-bind="text: $parent.fecha_envio_propuesta"></span>
+                                    </div>
+                                    <!-- /ko -->
+                                    <!-- ko ifnot: $parent.fecha_envio_propuesta -->
+                                    <span style="font-size: 13px; color: #999;">
+                                        No hay fecha registrada de presentación
+                                    </span>
+                                    <!-- /ko -->
+                                </div>
+                                </td>
+                            </tr>
+                            <!-- /ko -->
                             </tbody>
                         </table>
                     </div>

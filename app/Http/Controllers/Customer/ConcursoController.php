@@ -151,7 +151,7 @@ class ConcursoController extends BaseController
             ], 403);
         }
 
-        // ❌ No lo eliminamos para permitir F5
+        // No lo eliminamos para permitir F5
         // unset($_SESSION['edit_token'][$id]);
 
         $concurso = user()->customer_company->getAllConcursosByCompany()->find($id);
@@ -1028,6 +1028,31 @@ class ConcursoController extends BaseController
         ];
     }
 
+    private function getFechasPropuestaTecnicaPorRonda($concurso)
+    {
+        $fechas = [];
+        foreach ($concurso->oferentes as $oferente) {
+            $fechas[$oferente->id] = [
+                1 => $oferente->fecha_primera_ronda_tecnica
+                    ? $oferente->fecha_primera_ronda_tecnica->format('d-m-Y H:i')
+                    : null,
+                2 => $oferente->fecha_segunda_ronda_tecnica
+                    ? $oferente->fecha_segunda_ronda_tecnica->format('d-m-Y H:i')
+                    : null,
+                3 => $oferente->fecha_tercera_ronda_tecnica
+                    ? $oferente->fecha_tercera_ronda_tecnica->format('d-m-Y H:i')
+                    : null,
+                4 => $oferente->fecha_cuarta_ronda_tecnica
+                    ? $oferente->fecha_cuarta_ronda_tecnica->format('d-m-Y H:i')
+                    : null,
+                5 => $oferente->fecha_quinta_ronda_tecnica
+                    ? $oferente->fecha_quinta_ronda_tecnica->format('d-m-Y H:i')
+                    : null,
+            ];
+        }
+        return $fechas;
+    }
+
     public function detail(Request $request, Response $response, $params)
     {
         date_default_timezone_set(user()->customer_company->timeZone);
@@ -1245,12 +1270,32 @@ class ConcursoController extends BaseController
 
             // ANÁLISIS TÉCNICAS
             if ($params['step'] === Step::STEPS['customer']['analisis-tecnicas']) {
+                // 1) Obtengo las evaluaciones tal cual
+                $techEvals = $concurso->technical_includes
+                    ? $this->getTechnicalEvaluations($concurso)
+                    : [];
 
-                $list = array_merge($list, array_merge($common_data, [
-                    // 'ProveedoresTecnica' => $proveedoresTecnica,
-                    'TechnicalEvaluations' => $concurso->technical_includes ? $this->getTechnicalEvaluations($concurso) : [],
-                    'TechnicalProposals' => $concurso->parsed_technical_proposals
-                ]));
+                // 2) Obtengo todas las fechas por oferente y ronda
+                $fechas = $this->getFechasPropuestaTecnicaPorRonda($concurso);
+
+                // 3) Inyecto en cada ronda su fecha correspondiente
+                foreach ($techEvals as &$eval) {
+                    // ojo con la clave: si en tu getTechnicalEvaluations usas 'OferenteId' o 'oferente_id'
+                    $oferenteId = $eval['OferenteId']; 
+                    foreach ($eval['rondasTecnicas'] as $idx => &$ronda) {
+                        $roundNum = $idx + 1; // 0→1, 1→2, etc.
+                        $ronda['fecha_envio_propuesta'] = 
+                            $fechas[$oferenteId][$roundNum] ?? null;
+                    }
+                    unset($ronda);
+                }
+                unset($eval);
+
+                // 4) Hago el merge FINAL con la propiedad ya inyectada
+                $list = array_merge($list, $common_data, [
+                    'TechnicalEvaluations' => $techEvals,
+                    'TechnicalProposals'    => $concurso->parsed_technical_proposals,
+                ]);
             }
 
             // ANÁLISIS ECONÓMICAS
