@@ -121,6 +121,18 @@
 
 <!-- VISTA -->
 {block 'concurso-detail-offerer'}
+    <div class="row margin-top-20">
+    <div class="col-md-12 text-center">
+        <h2 style="font-weight: bold; color: #555;">
+        <!-- número en azul -->
+        <span data-bind="text: '#' + IdConcurso()" style="color: #32C5D2;"></span>
+        <!-- separador y nombre en gris oscuro -->
+        <span> – </span>
+        <span data-bind="text: Nombre()"></span>
+        </h2>
+    </div>
+    </div>
+    
     <div class="row margin-top-40">
         <div class="col-md-12 text-center">
             {if $tipo neq 'chat-muro-consultas'}
