@@ -89,14 +89,29 @@ class DashboardController extends BaseController
                         ];
                     }
 
-                    // TECNICA
+                    
+                    // TECNICA (para todos los tipos de usuarios)
+                    $etapasTecnicas = [
+                        'tecnica-pendiente',
+                        'tecnica-pendiente-2',
+                        'tecnica-pendiente-3',
+                        'tecnica-pendiente-4',
+                        'tecnica-pendiente-5',
+                        'tecnica-presentada',
+                        'tecnica-presentada-2',
+                        'tecnica-presentada-3',
+                        'tecnica-presentada-4',
+                        'tecnica-presentada-5'
+                    ];
+
                     $concursosTecnicaPendiente = $this->getConcursoBaseQueryPorUsuario()
-                        ->where('ficha_tecnica_incluye', 'si')
-                        ->whereHas('oferentes', function ($oferentes) {
-                            $oferentes->where('etapa_actual', Participante::ETAPAS['tecnica-pendiente'])
-                                      ->where('rechazado', '0');
+                        ->whereRaw("LOWER(ficha_tecnica_incluye) = 'si'")
+                        ->whereHas('oferentes', function ($oferentes) use ($etapasTecnicas) {
+                            $oferentes->whereIn('etapa_actual', $etapasTecnicas)
+                                    ->where('rechazado', '0');
                         })
                         ->get();
+
 
                     foreach ($concursosTecnicaPendiente as $concurso) {
                         $list['Tecnicas'][] = [
@@ -104,10 +119,11 @@ class DashboardController extends BaseController
                             'nombre' => $concurso->nombre,
                             'fecha'  => $concurso->ficha_tecnica_fecha_limite->format('Y-m-d'),
                             'class'  => 'tecnica-color',
-                            'etapa'  => Participante::ETAPAS_NOMBRES['tecnica-pendiente'],
+                            'etapa'  => 'Evaluación Técnica',
                             'tipo_concurso'  => $concurso->tipo_concurso,
                         ];
                     }
+
 
                     // ECONOMICA
                     $concursosEconomicaPendiente = $this->getConcursoBaseQueryPorUsuario()
@@ -337,17 +353,45 @@ class DashboardController extends BaseController
     }
 
     private function getConcursoBaseQueryPorUsuario()
-    {
-        $user = User();
-        $query = Concurso::whereNull('deleted_at');
+{
+    $user = User();
+    $query = Concurso::whereNull('deleted_at');
 
-        if ($user->type_id == 8) {
-            $idsUsuariosEmpresa = User::where('customer_company_id', $user->customer_company_id)->pluck('id');
-            $query->whereIn('id_cliente', $idsUsuariosEmpresa);
-        } else {
-            $query->where('id_cliente', $user->id);
-        }
+    if ($user->type_id == 8) {
+        // Supervisor: ver todos los concursos de su empresa
+        $idsUsuariosEmpresa = User::where('customer_company_id', $user->customer_company_id)->pluck('id');
+        $query->whereIn('id_cliente', $idsUsuariosEmpresa);
 
-        return $query;
+    } else if ($user->type_id == 4) {
+        // Evaluador técnico
+        $etapasTecnicas = [
+            'tecnica-pendiente',
+            'tecnica-pendiente-2',
+            'tecnica-pendiente-3',
+            'tecnica-pendiente-4',
+            'tecnica-pendiente-5',
+            'tecnica-presentada',
+            'tecnica-presentada-2',
+            'tecnica-presentada-3',
+            'tecnica-presentada-4',
+            'tecnica-presentada-5'
+        ];
+
+        $query->where('ficha_tecnica_usuario_evalua', $user->id)
+              ->whereRaw("LOWER(ficha_tecnica_incluye) = 'si'")
+              ->whereHas('oferentes', function ($q) use ($etapasTecnicas) {
+                  $q->whereIn('etapa_actual', $etapasTecnicas)
+                    ->where('rechazado', '0');
+              });
+
+    } else {
+        // Cliente común
+        $query->where('id_cliente', $user->id);
     }
+
+    return $query;
+}
+
+
+
 }
