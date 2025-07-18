@@ -638,12 +638,9 @@ class ConcursoController extends BaseController
                         })
                 )
                 ->unique('id')
-                ->filter(function ($concurso) {
-                    // asumimos que ficha_tecnica_fecha_limite es instancia de Carbon o DateTime
-                    return $concurso->ficha_tecnica_fecha_limite->greaterThan(Carbon::now());
-                })
-                //**Nuevo**: excluir si ANY oferente ya está en económica/adjudicación
                 ->filter(function($concurso) use ($etapas_economica) {
+                    // si algún oferente ya está en etapa económica, lo excluimos;
+                    // si no, lo incluimos, sin importar la fecha técnica.
                     return $concurso->oferentes
                             ->whereIn('etapa_actual', $etapas_economica)
                             ->isEmpty();
