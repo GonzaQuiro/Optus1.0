@@ -5598,7 +5598,7 @@
         resizeIfSizeMoreThan: 0, // in KB
         minFileSize: 0,
         maxFileSize: 0,
-        maxFilePreviewSize: 25600, // 25 MB
+        maxFilePreviewSize: 100240, // 25 MB
         minFileCount: 0,
         maxFileCount: 0,
         maxTotalFileCount: 0,

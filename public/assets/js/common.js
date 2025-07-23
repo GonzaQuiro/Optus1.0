@@ -341,7 +341,7 @@ var CommonPlugins = function () {
                     language: 'es',
                     theme: 'fa',
                     uploadAsync: true,
-                    maxFileSize: 10240,
+                    maxFileSize: 100240,
                     maxTotalFileCount: 1,
                     dropZoneEnabled: false,
                     allowedFileExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'zip', 'rar', 'doc', 'docx', 'xls', 'xlsx'],
