@@ -60,40 +60,75 @@
 
 
             <!-- Elemento incluido debajo de todo -->
-            <table class="table table-striped table-bordered" id="ListaConcursosEconomicas">
+            
+            <table class="table table-striped table-bordered" id="ListaConcursosEconomicas" style="width:100%; table-layout: fixed;">
+                <!-- Colgroup para definir anchos de columna -->
+                <colgroup>
+                    <col style="width: 70%;">  <!-- Proveedor: ocupa la mayor parte -->
+                    <col style="width: 10%;">  <!-- Estado: icono pequeño -->
+                    <col style="width: 20%;">  <!-- Fecha: se ajusta al 20% -->
+             <!-- Fecha presentación: fijo a 120px -->
+                </colgroup>
                 <thead class="text-center">
                     <tr style="background: #ccc;">
-                        <th class="text-center"> Proveedor </th>
-                        <th class="text-center"> Estado </th>
+                        <th class="text-center">Proveedor</th>
+                        <th class="text-center">Estado</th>
+                        <th class="text-center" style="width:120px;">Fecha presentación</th>
                     </tr>
                 </thead>
                 <tbody>
                     <!-- ko foreach: Proveedores() -->
                     <tr style="background: #fff;">
-                        <td class="text-center vertical-align-middle" data-bind="text: $data.razonSocial"></td>
+                        <!-- Nombre del proveedor -->
+                        <td class="text-center vertical-align-middle"
+                            data-bind="text: $data.razonSocial"></td>
+                        
+                        <!-- Icono de estado -->
                         <td class="text-center vertical-align-middle">
+                            <!-- si participa -->
                             <!-- ko if: $data.participa -->
-                            <!-- ko if: $data.presento -->
-                            <span>
-                                <i class="fa fa-envelope fa-2x" aria-hidden="true" title="El proveedor ya presentó su propuesta economica" style="color:green"></i>
-                            </span>
+                                <!-- ya presentó económica -->
+                                <!-- ko if: $data.presento -->
+                                <span>
+                                    <i class="fa fa-envelope fa-2x"
+                                    aria-hidden="true"
+                                    title="El proveedor ya presentó su propuesta económica"
+                                    style="color: green"></i>
+                                </span>
+                                <!-- /ko -->
+                                <!-- no ha presentado todavía -->
+                                <!-- ko ifnot: $data.presento -->
+                                <span>
+                                    <i class="fa fa-clock-o fa-2x"
+                                    aria-hidden="true"
+                                    title="El proveedor aún no envía su propuesta económica"
+                                    style="color: rgb(45, 11, 236)"></i>
+                                </span>
+                                <!-- /ko -->
                             <!-- /ko -->
-                            <!-- ko ifnot: $data.presento -->
-                            <span>
-                                <i class="fa fa-clock-o fa-2x" aria-hidden="true" title="El proveedor aun no envia su propuesta economica" style="color:rgb(45, 11, 236)"></i>
-                            </span>
-                            <!-- /ko -->
-                            <!-- /ko -->
+
+                            <!-- si no participa -->
                             <!-- ko ifnot: $data.participa -->
                             <span>
-                                <i class="fa fa-exclamation fa-2x" aria-hidden="true" title="El proveedor declinó su participación" style="color:red"></i>
+                                <i class="fa fa-exclamation fa-2x"
+                                aria-hidden="true"
+                                title="El proveedor declinó su participación"
+                                style="color: red"></i>
                             </span>
                             <!-- /ko -->
+                        </td>
+                        
+                        <!-- Fecha de presentación o mensaje por defecto -->
+                        <td class="text-center vertical-align-middle"
+                            data-bind="text: $data.presento
+                                        ? $data.fechaPresentacion
+                                        : 'Aún no presentó propuesta económica'">
                         </td>
                     </tr>
                     <!-- /ko -->
                 </tbody>
             </table>
+
         </div>
     </div>
 </div>

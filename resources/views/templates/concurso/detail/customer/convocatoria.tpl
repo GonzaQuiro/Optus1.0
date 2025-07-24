@@ -82,7 +82,7 @@
     <!-- /ko -->
 </div>
 <div class="m-heading-1 border-default m-bordered text-left">
-    <h4 class="block bold" style="margin-top: 0; padding-top: 0;">Seguimiento de invitaciones</h4>
+    <h4 class="block bold" style="margin-top: 0; padding-top: 0;"></h4>
     <table class="table table-striped table-bordered" id="ListaConcursosEconomicas">
         <thead>
             <tr>
@@ -115,11 +115,11 @@
                 <td class="col-md-2 vertical-align-middle text-center">
                     <span 
                         class="label label-sm labelAlign" 
-                        data-bind="text: Description, css: {literal}{
-                            'label-success': HasInvitacionAceptada,
-                            'label-warning': IsInvitacionPendiente,
-                            'label-danger': IsInvitacionRechazada
-                        }{/literal}">
+                        data-bind="text: Description, css: {
+                    'label-success': Description === 'Aceptada',
+                    'label-warning': Description === 'Pendiente',
+                    'label-danger':  Description === 'Rechazada'
+                    }">
                     </span>
                 </td>
                 <td style="text-align: center;">
