@@ -1,5 +1,62 @@
  {if $tipo neq 'chat-muro-consultas'}
 <div class="row">
+    <!-- === Nueva sección: Seguimiento Invitaciones === -->
+<div class="col-sm-12">
+  <div class="m-heading-1 border-default m-bordered text-left">
+    <h4 class="block bold" style="margin-top: 0; padding-top: 0;">
+      Seguimiento Invitaciones
+    </h4>
+    <table class="table table-striped table-bordered" id="ListaSeguimientoInvitaciones">
+      <thead>
+        <tr>
+          <th class="text-center vertical-align-middle">Proveedores Invitados</th>
+          <th class="text-center vertical-align-middle">Fecha Invitación</th>
+          <th class="text-center vertical-align-middle">Fecha Aceptación / Rechazo</th>
+          <th class="text-center vertical-align-middle">Invitación</th>
+        </tr>
+      </thead>
+      <tbody data-bind="dataTablesForEach: {
+                         data: OferentesInvitados,
+                         options: {
+                           paging: false,
+                           ordering: false,
+                           info: false,
+                           searching: false,
+                           stripeClasses: ['odd','even']
+                         }
+                       }">
+        <tr>
+          <!-- 1) Proveedor -->
+          <td class="col-md-3 text-center vertical-align-middle"
+              data-bind="text: Nombre"></td>
+
+          <!-- 2) Fecha Invitación -->
+          <td class="col-md-3 text-center vertical-align-middle"
+              data-bind="text: FechaConvocatoria"></td>
+
+          <!-- 3) Fecha Aceptación / Rechazo -->
+          <td class="col-md-3 text-center vertical-align-middle"
+              data-bind="text: FechaAceptacionRechazo"></td>
+
+          <!-- 4) Invitación (color según Description) -->
+          <td class="col-md-3 text-center vertical-align-middle">
+            <span class="label label-sm"
+                  data-bind="
+                    text: Description,
+                    css: {
+                    'label-success': Description === 'Aceptada',
+                    'label-warning': Description === 'Pendiente',
+                    'label-danger':  Description === 'Rechazada'
+                    }">
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- === /Fin sección Invitaciones === -->
+
     <div class="col-sm-12">
         <div class="m-heading-1 border-default m-bordered text-left">
             <h4 class="block bold" style="margin-top: 0; padding-top: 0;">Etapas fechas</h4>

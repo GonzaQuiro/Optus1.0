@@ -34,10 +34,11 @@ class AuthMiddleware
             // Validate Token
             if (!$this->checkToken($request)) {
                 if ($request->isXhr()) {
-                    return $response->withJson([
-                        'success'   => false,
-                        'message'   => 'Sesión finalizada'
-                    ], 403);
+                    return $response
+                        ->withStatus(403)
+                        ->withHeader('Content-Type', 'text/plain; charset=utf-8')
+                        ->write('Se ha cumplido su tiempo de sesion. Por favor ingrese nuevamente');
+                    
                 } else {
                     return $response->withRedirect(route('login'));
                 }

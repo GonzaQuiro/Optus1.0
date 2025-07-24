@@ -151,7 +151,7 @@ class ConcursoController extends BaseController
             ], 403);
         }
 
-        // No lo eliminamos para permitir F5
+        //  No lo eliminamos para permitir F5
         // unset($_SESSION['edit_token'][$id]);
 
         $concurso = user()->customer_company->getAllConcursosByCompany()->find($id);
@@ -576,30 +576,31 @@ class ConcursoController extends BaseController
             }
 
             // CONVOCATORIA OFERENTES
-            $concursos = collect();
-            $concursos = $concursos->merge(
-                $created
-                    ->filter(function ($concurso) {
-                        return $concurso->oferentes_etapa_convocatoria->count() > 0;
-                    })
-            )->sortBy('id');
+            $concursos = collect($created)
+                ->filter(function ($concurso) {
+                    // Oferentes que llegaron a la etapa de convocatoria
+                    $pendientes = $concurso->oferentes_etapa_convocatoria->count();
+                    // Oferentes que ya aceptaron invitación
+                    $aceptadas = $concurso->oferentes
+                        ->where('has_invitacion_aceptada', true)
+                        ->count();
 
+                    // Sólo incluimos si hay pendientes Y cero aceptadas
+                    return $pendientes > 0 && $aceptadas === 0;
+                })
+                ->sortBy('id');
+                    
             foreach ($concursos as $concurso) {
-                $oferentes = $concurso->oferentes
-                    ->where('is_seleccionado', false);
+                $oferentes = $concurso->oferentes->where('is_seleccionado', false);
 
-                array_push(
-                    $list['ListaConcursosConvocatoriaOferentes'],
-                    array_merge(
-                        $this->mapConcursoList($concurso),
-                        [
-                            'CantidadOferentes' => $oferentes
-                                ->count(),
-                            'CantidadPresentaciones' => $oferentes
-                                ->where('has_invitacion_aceptada', true)
-                                ->count(),
-                        ]
-                    )
+                $list['ListaConcursosConvocatoriaOferentes'][] = array_merge(
+                    $this->mapConcursoList($concurso),
+                    [
+                        'CantidadOferentes'      => $oferentes->count(),
+                        'CantidadPresentaciones' => $oferentes
+                            ->where('has_invitacion_aceptada', true)
+                            ->count(),
+                    ]
                 );
             }
 
@@ -732,21 +733,22 @@ class ConcursoController extends BaseController
                     $cantidad    = 0;
                 }
 
+                $oferentesActivos = $concurso->oferentes->filter(function($oferente) {
+                    return !$oferente->is_concurso_rechazado;
+                });
+
+                $cantidadPresentaciones = $oferentesActivos
+                    ->where('has_economica_presentada', true)
+                    ->count();
+
                 // 4) Inserto al listado incluyendo el nuevo campo FechaEconomicaOrden
                 array_push(
                     $list['ListaConcursosAnalisisOfertas'],
                     array_merge(
                         $this->mapConcursoList($concurso),
                         [
-                            'CantidadOferentes'      => $concurso->oferentes
-                                ->filter(function ($item) use ($concurso) {
-                                    if ($concurso->technical_includes && !$concurso->is_go) {
-                                        return $item->has_tecnica_aprobada;
-                                    }
-                                    return $item->has_invitacion_aceptada;
-                                })
-                                ->count(),
-                            'CantidadPresentaciones' => $cantidad,
+                            'CantidadOferentes'      => $oferentesActivos->count(),
+                            'CantidadPresentaciones' => $cantidadPresentaciones,
                             'Fecha'                  => $fecha,
                             'Hora'                   => $hora,
                             'FechaEconomicaOrden'    => $fechaEconomicaOrden,
@@ -1050,6 +1052,8 @@ class ConcursoController extends BaseController
         return $fechas;
     }
 
+
+
     public function detail(Request $request, Response $response, $params)
     {
         date_default_timezone_set(user()->customer_company->timeZone);
@@ -1290,6 +1294,7 @@ class ConcursoController extends BaseController
 
                 // 4) Hago el merge FINAL con la propiedad ya inyectada
                 $list = array_merge($list, $common_data, [
+                    'OferentesInvitados' => $oferentesInvitados,
                     'TechnicalEvaluations' => $techEvals,
                     'TechnicalProposals'    => $concurso->parsed_technical_proposals,
                 ]);
@@ -1366,14 +1371,25 @@ class ConcursoController extends BaseController
 
                 $proveedoresInvitados = [];
                 foreach ($proveedores as $proveedor) {
+                    // buscas la última propuesta registrada para este participante
+                    $proposal = Proposal::where('participante_id', $proveedor->id)
+                                        ->orderBy('updated_at', 'desc')
+                                        ->first();
+
+
                     $proveedoresInvitados[] = [
-                        'razonSocial' => $proveedor->company->business_name,
-                        'participa' => $proveedor->etapa_actual == 'economica-declinada' ? false : true,
-                        'presento' => $proveedor->has_economica_presentada
+                        'razonSocial'       => $proveedor->company->business_name,
+                        'participa'         => $proveedor->etapa_actual !== 'economica-declinada',
+                        'presento'          => $proveedor->has_economica_presentada,
+                        // si hay proposal, formateas la fecha; si no, pasas null
+                        'fechaPresentacion' => $proposal
+                            ? $proposal->updated_at->format('d-m-Y H:i')
+                            : null,
                     ];
                 }
 
                 $list = array_merge($list, array_merge($common_data, [
+                    'OferentesInvitados' => $oferentesInvitados,
                     'Oferentes' => $oferentes->toArray(),
                     'TipoValorOferta' => $concurso->tipo_valor_ofertar,
                     'CantidadOferentes' => $concurso->oferentes
@@ -1461,6 +1477,7 @@ class ConcursoController extends BaseController
 
 
                 $list = array_merge($list, array_merge($common_data, [
+                    'OferentesInvitados' => $oferentesInvitados,
                     'titleEvaluaciones' => 'Evaluación de la ' . $concurso->tipo_concurso_nombre,
                     'titleResultados' => 'Resultados de la ' . $concurso->tipo_concurso_nombre,
                     'Evaluaciones' => $this->getOfferersReputation($concurso),
@@ -2973,23 +2990,39 @@ if ($result['error']) {
     {
         $result = [];
         foreach ($concurso->oferentes as $oferente) {
-            array_push($result, [
-                'IdOferente' => $oferente->id_offerer,
-                'IdConcurso' => $oferente->id_concurso,
-                'TipoConcursoPath' => $concurso->tipo_concurso,
-                'Nombre' => $oferente->company->business_name,
-                'FechaConvocatoria' => $oferente->invitation->created_at ? $oferente->invitation->created_at->format('d-m-Y') : null,
-                'FechaRecordatorio' => $oferente->invitation->reminder_date ? $oferente->invitation->reminder_date->format('d-m-Y') : null,
-                'FechaAceptacionRechazo' => ($oferente->has_invitacion_aceptada || $oferente->is_invitacion_rechazada) ? $oferente->invitation->updated_at->format('d-m-Y') : null,
-                'HasInvitacionAceptada' => $oferente->has_invitacion_aceptada,
-                'IsInvitacionPendiente' => $oferente->is_invitacion_pendiente,
-                'IsInvitacionRechazada' => $oferente->is_invitacion_rechazada,
-                'Description' => $oferente->invitation->status->description
-            ]);
-        }
+            $inv = $oferente->invitation;
+            // status
+            $statusDesc = $inv->status->description ?? null;
 
+            // la fecha de respuesta SIEMPRE que no esté "pendiente"
+            $fechaRespuesta = null;
+            if ($inv->status_id !== 0) {
+                $fechaRespuesta = $inv->updated_at
+                    ? $inv->updated_at->format('d-m-Y H:i')
+                    : null;
+            }
+
+            $result[] = [
+                'IdOferente'             => $oferente->id_offerer,
+                'IdConcurso'             => $oferente->id_concurso,
+                'TipoConcursoPath'       => $concurso->tipo_concurso,
+                'Nombre'                 => $oferente->company->business_name,
+                'FechaConvocatoria'      => $inv->created_at
+                                            ? $inv->created_at->format('d-m-Y H:i')
+                                            : null,
+                'FechaRecordatorio'      => $inv->reminder_date
+                                            ? $inv->reminder_date->format('d-m-Y H:i')
+                                            : null,
+                'FechaAceptacionRechazo' => $fechaRespuesta,
+                'HasInvitacionAceptada'  => $oferente->has_invitacion_aceptada,
+                'IsInvitacionPendiente'  => $oferente->is_invitacion_pendiente,
+                'IsInvitacionRechazada'  => $oferente->is_invitacion_rechazada,
+                'Description'            => $statusDesc,
+            ];
+        }
         return $result;
     }
+
 
     public function getTechnicalEvaluations($concurso)
     {

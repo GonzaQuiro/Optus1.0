@@ -269,6 +269,9 @@ function setOferente($concurso, $oferente, $ronda)
                     'planilla_costos' => $economic_proposal ? getCostDocument($concurso, $economicByRound) : null,
                     'analisis_apu' => $economic_proposal ? getApuDocument($concurso, $economicByRound) : null,
                     'comentarios' => $economic_proposal ? $economicByRound->comment : null,
+                    'fechaPresentacion'    => $economic_proposal
+                                ? $economicByRound->updated_at->format('d-m-Y H:i')
+                                : null,
                     'cuit' => $oferente->company->cuit,
                     'plazoPago' => Participante::PLAZOS_PAGO[$posicion]['text'],
                     'condicionPago' => Participante::CONDICIONES_PAGO[$condicionId]['text'],
@@ -296,6 +299,7 @@ function setOferente($concurso, $oferente, $ronda)
                     'planilla_costos' => null,
                     'analisis_apu' => null,
                     'comentarios' => null,
+                    'fechaPresentacion' => null,
                     'cuit' => $oferente->company->cuit,
                     'plazoPago' => null,
                     'condicionPago' => null,
@@ -324,6 +328,7 @@ function setOferente($concurso, $oferente, $ronda)
                 'planilla_costos' => null,
                 'analisis_apu' => null,
                 'comentarios' => null,
+                'fechaPresentacion' => null,
                 'cuit' => $oferente->company->cuit,
                 'plazoPago' => null,
                 'condicionPago' => null,
@@ -353,6 +358,7 @@ function setOferente($concurso, $oferente, $ronda)
             'planilla_costos' => null,
             'analisis_apu' => null,
             'comentarios' => null,
+            'fechaPresentacion' => null,
             'cuit' => $oferente->company->cuit,
             'plazoPago' => null,
             'isRechazado' => $oferente->is_concurso_rechazado
