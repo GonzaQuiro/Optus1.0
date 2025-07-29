@@ -477,7 +477,8 @@ class AuthController extends BaseController
     public function verifyCode(Request $request, Response $response)
     {
         $user_id = $_SESSION['user_id'] ?? null;
-        $input_code = $request->getQueryParams()['verification_code'] ?? null;
+        $queryParams = $request->getQueryParams();
+        $input_code = $queryParams['verification_code'] ?? null;
 
         if (!$user_id || !$input_code) {
             return $response->withStatus(400)->write('Faltan datos');
@@ -514,8 +515,11 @@ class AuthController extends BaseController
                 'requires_ip_verification' => 'N',
             ]);
 
+            // Iniciar sesión del usuario
+            $this->setUsuario($usuario, null);
+
             return $response->withRedirect(
-                $usuario->pass_change === 'S' ? '/change-password' : '/login'
+                $usuario->pass_change === 'S' ? '/change-password' : '/'
             );
         }
 
