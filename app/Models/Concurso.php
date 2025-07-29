@@ -1122,7 +1122,7 @@ class Concurso extends Model
             // Obtener el oferente
             $oferente = $this->oferentes->where('id_offerer', user()->offerer_company_id)->first();
             foreach ($this->adjudicacion_items as $adjudicacion) {
-                if ($adjudicacion['oferenteId'] == $oferente->id) {
+                if ($adjudicacion['oferenteId'] == $oferente->id_offerer) {
                     array_push($results, [
                         'nombre' => $adjudicacion['itemNombre'],
                         'valores' => [
