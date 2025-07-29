@@ -410,6 +410,7 @@ class AuthController extends BaseController
                     $connection->commit();
                     $success = true;
                     $message = 'El código de verificación ha sido enviado con éxito.';
+                    $_SESSION['user_id'] = $user->id;
                 }
             }
         } catch (\Exception $e) {
