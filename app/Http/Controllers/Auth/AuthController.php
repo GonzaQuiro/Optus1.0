@@ -410,7 +410,6 @@ class AuthController extends BaseController
                     $connection->commit();
                     $success = true;
                     $message = 'El código de verificación ha sido enviado con éxito.';
-                    $_SESSION['user_id'] = $user->id;
                 }
             }
         } catch (\Exception $e) {
@@ -477,8 +476,7 @@ class AuthController extends BaseController
     public function verifyCode(Request $request, Response $response)
     {
         $user_id = $_SESSION['user_id'] ?? null;
-        $queryParams = $request->getQueryParams();
-        $input_code = $queryParams['verification_code'] ?? null;
+        $input_code = $request->getQueryParams()['verification_code'] ?? null;
 
         if (!$user_id || !$input_code) {
             return $response->withStatus(400)->write('Faltan datos');
@@ -515,11 +513,14 @@ class AuthController extends BaseController
                 'requires_ip_verification' => 'N',
             ]);
 
-            // Iniciar sesión del usuario
-            $this->setUsuario($usuario, null);
+                // Decide a dónde irá luego del popup
+            $next = $usuario->pass_change === 'S'
+                ? '/change-password'
+                : '/login';
 
+            // Redirige de vuelta al formulario con éxito y la URL de “next”
             return $response->withRedirect(
-                $usuario->pass_change === 'S' ? '/change-password' : '/'
+                '/verify-code?success=1&next=' . urlencode($next)
             );
         }
 
@@ -533,32 +534,38 @@ class AuthController extends BaseController
 
     public function serverTwoFA(Request $request, Response $response)
     {
-        $id = $_SESSION['user_id'];
-        $usuario = User::find($id);
+        $id       = $_SESSION['user_id'];
+        $usuario  = User::find($id);
         $token_valid = false;
         $fecha_actual = Carbon::now();
 
-        if($usuario->validity_date){
+        if ($usuario->validity_date) {
             $token_valid = $fecha_actual->lessThan($usuario->validity_date);
         }
 
-        if(!$token_valid){
+        if (! $token_valid) {
             return $response->withStatus(404)->write('Not Found: Usuario not found');
         }
-        
-        else{
-            unset($_SESSION);
-            $params = $request->getQueryParams();
-            $error = isset($params['error']) && $params['error'] == 1;
-            // Envía 'two_factor_code' a la vista junto con otros valores
-            return $this->render($response, 'verify-code.tpl', array(
-                'token_valid' => $token_valid,
-                'usuario' => $usuario->id,
-                'two_factor_code' => $usuario->two_factor_code,
-                'error' => $error
-            ));
-        }
+
+        // limpia la sesión original
+        unset($_SESSION);
+
+        $params  = $request->getQueryParams();
+        $error   = isset($params['error'])   && $params['error']   == 1;
+        $success = isset($params['success']) && $params['success'] == 1;
+        // si no viene “next”, por defecto lo mandamos a /login
+        $next    = $params['next'] ?? '/login';
+
+        return $this->render($response, 'verify-code.tpl', [
+            'token_valid'     => $token_valid,
+            'usuario'         => $usuario->id,
+            'two_factor_code' => $usuario->two_factor_code,
+            'error'           => $error,
+            'success'         => $success,
+            'next'            => $next,
+        ]);
     }
+
 
     public function serverTwoFAAdvice(Request $request, Response $response)
     {
