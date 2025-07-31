@@ -151,7 +151,7 @@ class ChatController extends BaseController
         ], $status);
     }
 
-    public function check(Request $request, Response $response)
+   public function check(Request $request, Response $response)
     {
         $success = false;
         $message = null;
@@ -163,10 +163,11 @@ class ChatController extends BaseController
             $user = user();
             $concurso = Concurso::find((int) $body->IdConcurso);
 
-            $mensajes =
-                isCustomer() ?
-                $concurso->mensajes :
-                $concurso->mensajes()->userType()->get();
+            $mensajes = isCustomer()
+            ? $concurso->mensajes
+            : $concurso->mensajes->where('is_approved', true);
+
+
 
             if ($mensajes && $mensajes->count() > 0) {
                 $last_message = $mensajes->last();

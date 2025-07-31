@@ -155,7 +155,7 @@
 
             {else if $tipo eq 'chat-muro-consultas'}
 
-                <chat-component params='IdConcurso: IdConcurso(), IsClient: IsClient(), IsProv: IsProv(), ChatEnable: ChatEnable()'></chat-component>
+                <chat-component params='IdConcurso: IdConcurso(), IsClient: IsClient(), IsProv: IsProv(), ChatEnable: ChatEnable(), FechaHoy: FechaHoy(), HoraHoy: HoraHoy(), CierreMuroConsultas: CierreMuroConsultas(), CierreMuroConsultasHora: CierreMuroConsultasHora()'></chat-component>
 
             {else if $tipo eq 'tecnica'}
 

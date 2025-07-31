@@ -115,7 +115,8 @@
                         </div>
                     </div>
                     <!-- ko if: ChatEnable() || IsClient() -->
-                    <!-- ko if: User.Tipo !== 5 -->
+                    <!-- ko if: User.Tipo !== 5  -->
+                    <!--ko if : EsHoraDeEnviarMensaje() -->
                     <div class="col-md-12">
                         <div class="chat-form">
                             <textarea class="form-control msjText" placeholder="Escriba su mensaje aquí..."
@@ -140,6 +141,7 @@
                             </div>
                         </div>
                     </div>
+                     <!-- /ko -->
                      <!-- /ko -->
                      <!-- /ko -->
                 </div>

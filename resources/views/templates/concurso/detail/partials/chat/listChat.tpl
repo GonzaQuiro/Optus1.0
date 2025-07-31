@@ -56,6 +56,7 @@
                 <h5 class="block bold" style="margin-top: 0; padding-top: 0;">Consultas y Comentarios</h5>
 
             <!-- ko if: ChatEnable() || IsClient() -->
+            <!-- ko if: EsHoraDeEnviarMensaje() -->
             <div class="row" style="margin: 15px 0;">
                 <div class="col-md-12 text-right">
                     <div class="form-inline">
@@ -68,6 +69,7 @@
                     </div>
                 </div>
             </div>
+            <!-- /ko -->
             <!-- /ko -->
 
 
@@ -90,7 +92,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- 🔁 Se cambió 'Messages' por 'filteredMessages' -->
+                                <!--  Se cambió 'Messages' por 'filteredMessages' -->
                                 <!-- ko foreach: filteredMessages -->
                                 <tr data-bind="css: !leido() || !answerLeido() ? 'unread':'', click: $parent.Chat.bind($data, id())" style="cursor: pointer">
                                     <td class="inbox-small-cells" data-bind="text: id()"></td>

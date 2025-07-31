@@ -123,6 +123,38 @@
                 if (!first_time) getList();
             })
 
+            this.FechaHoy = ko.observable(params.FechaHoy())
+            this.HoraHoy = ko.observable(params.HoraHoy())
+            this.CierreMuroConsultasHora = ko.observable(params.CierreMuroConsultasHora())
+            this.CierreMuroConsultas = ko.observable(params.CierreMuroConsultas())
+            
+            this.EsHoraDeEnviarMensaje = ko.computed(() => {
+                const fechaHoyStr = this.FechaHoy(); // "28-07-2025"
+                const horaHoyStr = this.HoraHoy();   // "10:04:24"
+                const fechaCierreStr = this.CierreMuroConsultas(); // "30-07-2025"
+                const horaCierreStr = this.CierreMuroConsultasHora(); // "13:00:00"
+
+                if (!fechaHoyStr || !horaHoyStr || !fechaCierreStr || !horaCierreStr) {
+                    return false;
+                }
+
+                const fechaHoyParts = fechaHoyStr.split('-');
+                const fechaHoy = new Date(
+                    fechaHoyParts[2] + '-' + fechaHoyParts[1] + '-' + fechaHoyParts[0] + 'T' + horaHoyStr
+                );
+
+                const fechaCierreParts = fechaCierreStr.split('-');
+                const fechaCierre = new Date(
+                    fechaCierreParts[2] + '-' + fechaCierreParts[1] + '-' + fechaCierreParts[0] + 'T' + horaCierreStr
+                );
+
+                console.log("🕓 Hoy:", fechaHoy.toISOString());
+                console.log("🕓 Cierre:", fechaCierre.toISOString());
+                console.log("✅ ¿Mostrar botón?", fechaHoy < fechaCierre);
+
+                return fechaHoy < fechaCierre;
+            });
+
             var Mensaje = function(data) {
                 var self = this;
                 this.id = ko.observable(data.id);
