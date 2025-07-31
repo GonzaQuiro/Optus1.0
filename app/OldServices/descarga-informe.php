@@ -150,174 +150,131 @@ class DataInforme extends Rest
         return $d[2] . "-" . $d[1] . "-" . $d[0];
     }
 
-    private function seccionPreparacion() 
+    // 1) Sección de Preparación
+    private function seccionPreparacion()
     {
-        $fechaConvocatoria = $this->concurso->oferentes->first()->invitation->created_at->format('d/m/Y');
+        $primero = $this->concurso->oferentes->first();
+        $fechaConvocatoria = '';
+        if ($primero && isset($primero->invitation->created_at)) {
+            $fechaConvocatoria = $primero->invitation->created_at->format('d/m/Y');
+        }
 
         $archivos = [];
         foreach ($this->concurso->sheets as $sheet) {
-            // La librería de PDF no soporta target="_blank", pero lo dejo
-            // en el código por si algún día sí.
             $archivos[] = [
-                $sheet->type->description,
-                sprintf(
-                        '<a target="_blank" href="%1$s">Enlace</a>', 
-                        $sheet->filename
-                )
+                $sheet->type->description ?? '',
+                sprintf('<a target="_blank" href="%1$s">Enlace</a>', $sheet->filename)
             ];
         }
 
         return [
-            'titulo' => 'Preparación',
-            'contenido' => [
+            'titulo'   => 'Preparación',
+            'contenido'=> [
                 [
-                    'tipo' => 'parrafo',
-                    'contenido' => '<p>Fecha de envío de invitaciones: ' . $fechaConvocatoria . '</p>',
+                    'tipo'     => 'parrafo',
+                    'contenido'=> '<p>Fecha de envío de invitaciones: ' . $fechaConvocatoria . '</p>',
                 ],
                 [
-                    'tipo' => 'tabla',
-                    'cabeceras' => [
-                        [
-                            'Documento / Archivo',
-                            'URL',
-                        ]
-                    ],
-                    'contenido' => $archivos,
-                ]
+                    'tipo'     => 'tabla',
+                    'cabeceras'=> [['Documento / Archivo', 'URL']],
+                    'contenido'=> $archivos,
+                ],
             ]
         ];
     }
 
-    private function seccionParametros() 
+    // 2) Sección de Parámetros
+    private function seccionParametros()
     {
+        $c = $this->concurso;
+        // Helper para formatear fechas
+        $fmt = function($dt) {
+            if ($dt instanceof \Carbon\Carbon) {
+                return $dt->format('d/m/Y H:i:s');
+            }
+            if (is_string($dt) && trim($dt) !== '') {
+                return \Carbon\Carbon::parse($dt)->format('d/m/Y H:i:s');
+            }
+            return 'No aplica.';
+        };
+
         $contenido = [];
         $nuevasRondas = \App\Models\Concurso::NUEVAS_RONDAS;
         $fechasNuevasRondas = \App\Models\Concurso::CAMPOS_FECHA_NUEVA_RONDA;
-        
-        $tipo_convocatoria = [
-            'Tipo de convocatoria',
-            $this->concurso->alcance->nombre,
-        ];
 
-        $muro_consultas = [
-            'Fecha cierre muro consultas',
-            $this->concurso->finalizacion_consultas->format('d/m/Y H:i:s'),
-        ];
+        $contenido[] = ['Tipo de convocatoria', $c->alcance->nombre ?? ''];
+        $contenido[] = ['Fecha cierre muro consultas', $fmt($c->finalizacion_consultas)];
+        $contenido[] = ['Fecha aceptación pliegos, términos y condiciones', $fmt($c->fecha_limite)];
+        $contenido[] = ['Fecha límite oferta técnica',
+            $c->technical_includes ? $fmt($c->ficha_tecnica_fecha_limite) : 'No aplica.'];
+        $contenido[] = ['Fecha límite oferta económica',
+            $c->is_online ? $fmt($c->inicio_subasta) : $fmt($c->fecha_limite_economicas)];
+        $contenido[] = ['Cantidad de Rondas ejecutadas', (string)$c->ronda_actual];
 
-        $pliego = [
-            'Fecha aceptación pliegos, términos y condiciones',
-            $this->concurso->fecha_limite->format('d/m/Y H:i:s'),
-        ];
-
-        $tecnica = [
-            'Fecha límite oferta técnica',
-            $this->concurso->technical_includes ? 
-            $this->concurso->ficha_tecnica_fecha_limite->format('d/m/Y H:i:s') : 
-            'No aplica.',
-        ];
-
-        $economica = [
-            'Fecha límite oferta económica',
-            $this->concurso->is_online ? 
-            $this->concurso->inicio_subasta->format('d/m/Y H:i:s') :
-            $this->concurso->fecha_limite_economicas->format('d/m/Y H:i:s'),
-        ];
-
-        $rondas = [
-            'Cantidad de Rondas ejecutadas',
-            (string) $this->concurso->ronda_actual
-        ];
-        
-        $contenido [] = $tipo_convocatoria;
-        $contenido [] = $muro_consultas;
-        $contenido [] = $pliego;
-        $contenido [] = $tecnica;
-        $contenido [] = $economica;
-        $contenido [] = $rondas;
-        
-
-        if($this->rondaActualConcurso > 1){
-            for ($i = 2; $i<=$this->rondaActualConcurso; $i++){
+        if ($this->rondaActualConcurso > 1) {
+            for ($i = 2; $i <= $this->rondaActualConcurso; $i++) {
+                $campo = $fechasNuevasRondas[$i] ?? null;
                 $contenido[] = [
-                    'Fecha límite '.$nuevasRondas[$i], $this->concurso[$fechasNuevasRondas[$i]]->format('d/m/Y H:i:s')
+                    'Fecha límite ' . ($nuevasRondas[$i] ?? ''),
+                    $campo ? $fmt($c->{$campo}) : 'No aplica.'
                 ];
             }
         }
 
-        $adjAnticipada = [
-            'Adjudicación anticipada',
-            ucfirst($this->concurso->finalizar_si_oferentes_completaron_economicas),
-        ];
+        $contenido[] = ['Adjudicación anticipada', ucfirst($c->finalizar_si_oferentes_completaron_economicas)];
+        $contenido[] = ['Fecha Cancelación', $c->trashed() ? $fmt($c->deleted_at) : ''];
+        $contenido[] = ['Usuario Cancelación',
+            $c->trashed()
+                ? ($c->usuario_cancelacion->full_name ?? 'Proceso automático')
+                : ''];
 
-        $cancelacion = [
-            'Fecha Cancelación',
-            $this->concurso->trashed() ? 
-            $this->concurso->deleted_at->format('d/m/Y H:i:s') : 
-            ''
-        ];
-
-        $userCancelacion = [
-            'Usuario Cancelación',
-            $this->concurso->trashed() ? 
-            (
-                $this->concurso->usuario_cancelacion ? 
-                $this->concurso->usuario_cancelacion->full_name : 
-                'Proceso automático'
-            ) : ''
-        ];
-
-        $contenido [] = $adjAnticipada;
-        $contenido [] = $cancelacion;
-        $contenido [] = $userCancelacion;
-
-        
         return [
-
-            'titulo' => '1. Parámetros del concurso',
-            'contenido' => [
-                [
-
-                    'tipo' => 'tabla',
-                    'cabeceras' => [
-                        [
-                            'Parámetro',
-                            'Valor / Configuración',
-                        ]
-                    ],
-                    'contenido' => $contenido
-                ]
-            ]
+            'titulo'   => '1. Parámetros del concurso',
+            'contenido'=> [[
+                'tipo'      => 'tabla',
+                'cabeceras' => [['Parámetro','Valor / Configuración']],
+                'contenido' => $contenido,
+            ]]
         ];
     }
 
-    private function seccionConvocatoriaOferentes() 
+    // 3) Sección de Convocatoria de Proveedores
+    private function seccionConvocatoriaOferentes()
     {
         $filas = [];
         foreach ($this->concurso->oferentes as $oferente) {
+            // Fecha invitación
+            $fechaInvitacion = '';
+            if (isset($oferente->invitation->created_at)) {
+                $fechaInvitacion = $oferente->invitation->created_at->format('d/m/Y');
+            }
+            // Términos y condiciones
+            $terminos = $oferente->invitation->status->description ?? '';
+            // Fecha aceptación términos
+            $fechaAceptacion = '';
+            if (isset($oferente->invitation->updated_at)) {
+                $fechaAceptacion = $oferente->invitation->updated_at->format('d/m/Y');
+            }
             $filas[] = [
-                $oferente->company->business_name,
-                $oferente->invitation->created_at->format('d/m/Y'),
-                $oferente->invitation->status->description,
-                $oferente->invitation->updated_at ? $oferente->invitation->updated_at->format('d/m/Y') : '',
+                $oferente->company->business_name ?? '',
+                $fechaInvitacion,
+                $terminos,
+                $fechaAceptacion,
             ];
         }
 
         return [
-            'titulo' => '2. Convocatoria de Proveedores',
-            'contenido' => [
-                [
-                    'tipo' => 'tabla',
-                    'cabeceras' => [
-                        [
-                            'Proveedor',
-                            'Fecha invitación',
-                            'Términos y condiciones',
-                            'Fecha aceptación términos y condiciones',
-                        ]
-                    ],
-                    'contenido' => $filas,
-                ]
-            ]
+            'titulo'   => '2. Convocatoria de Proveedores',
+            'contenido'=> [[
+                'tipo'      => 'tabla',
+                'cabeceras' => [[
+                    'Proveedor',
+                    'Fecha invitación',
+                    'Términos y condiciones',
+                    'Fecha aceptación términos y condiciones',
+                ]],
+                'contenido' => $filas,
+            ]]
         ];
     }
 
@@ -356,7 +313,13 @@ class DataInforme extends Rest
         ];
 
         for ($ronda = 1; $ronda <= $rondaMaximaTecnica; $ronda++) {
-            $tabla = [];
+            $tabla          = [];
+            $estadosConEnvio = [
+                'Se le solicitó otra ronda técnica',
+                'No fue calificada',
+                'Aprobado',
+                'Reprobado',
+            ];
 
             foreach ($oferentes as $oferente) {
                 $res = $this->determinarEstadoTecnico($oferente, $ronda);
@@ -375,14 +338,7 @@ class DataInforme extends Rest
                 }
 
                 // Cálculo de fecha según estado y ronda
-                $fecha = '';
-                $estadosConEnvio = [
-                    'Se le solicitó otra ronda técnica',
-                    'No fue calificada',
-                    'Aprobado',
-                    'Reprobado',
-                ];
-
+                $fecha = 'No se registro fecha';
                 if (in_array($estado, $estadosConEnvio, true)) {
                     $camposFecha = [
                         1 => 'fecha_primera_ronda_tecnica',
@@ -392,21 +348,25 @@ class DataInforme extends Rest
                         5 => 'fecha_quinta_ronda_tecnica',
                     ];
                     $campo = $camposFecha[$ronda] ?? null;
-                    if ($campo && ! empty($oferente->$campo)) {
-                        $fecha = $oferente->$campo instanceof \Carbon\Carbon
-                            ? $oferente->$campo->format('d/m/Y H:i')
-                            : \Carbon\Carbon::parse($oferente->$campo)->format('d/m/Y H:i');
+                    if ($campo && isset($oferente->$campo)) {
+                        $valorCampo = $oferente->$campo;
+                        if ($valorCampo instanceof \Carbon\Carbon) {
+                            $fecha = $valorCampo->format('d/m/Y H:i');
+                        } elseif (is_string($valorCampo) && trim($valorCampo) !== '') {
+                            $fecha = \Carbon\Carbon::parse($valorCampo)->format('d/m/Y H:i');
+                        }
                     }
-                } elseif ($estado === 'Declinó' && ! empty($oferente->fecha_declination)) {
-                    $fecha = $oferente->fecha_declination instanceof \Carbon\Carbon
-                        ? $oferente->fecha_declination->format('d/m/Y H:i')
-                        : \Carbon\Carbon::parse($oferente->fecha_declination)->format('d/m/Y H:i');
+                } elseif ($estado === 'Declinó') {
+                    $decl = $oferente->fecha_declination ?? null;
+                    if ($decl instanceof \Carbon\Carbon) {
+                        $fecha = $decl->format('d/m/Y H:i');
+                    } elseif (is_string($decl) && trim($decl) !== '') {
+                        $fecha = \Carbon\Carbon::parse($decl)->format('d/m/Y H:i');
+                    }
                 }
-                // Si "No presentó técnica", $fecha queda vacío
 
-                // Agregar fila a la tabla
                 $tabla[] = [
-                    $oferente->company->business_name,
+                    $oferente->company->business_name ?? '',
                     $estado,
                     $fecha,
                 ];
@@ -427,9 +387,13 @@ class DataInforme extends Rest
 
         // Párrafo de declinación
         if (! empty($comentariosDeclinacion)) {
-            $lineas = array_map(function ($motivo, $prov) {
-                return 'Motivo de declinación "' . $prov . '": ' . $motivo;
-            }, $comentariosDeclinacion, array_keys($comentariosDeclinacion));
+            $lineas = array_map(
+                function ($motivo, $prov) {
+                    return 'Motivo de declinación "' . $prov . '": ' . $motivo;
+                },
+                $comentariosDeclinacion,
+                array_keys($comentariosDeclinacion)
+            );
 
             $contenido[] = [
                 'tipo'     => 'parrafo',
@@ -441,9 +405,13 @@ class DataInforme extends Rest
 
         // Párrafo de reprobación
         if (! empty($comentariosReprobacion)) {
-            $lineas = array_map(function ($motivo, $prov) {
-                return 'Motivo de reprobación "' . $prov . '": ' . $motivo;
-            }, $comentariosReprobacion, array_keys($comentariosReprobacion));
+            $lineas = array_map(
+                function ($motivo, $prov) {
+                    return 'Motivo de reprobación "' . $prov . '": ' . $motivo;
+                },
+                $comentariosReprobacion,
+                array_keys($comentariosReprobacion)
+            );
 
             $contenido[] = [
                 'tipo'     => 'parrafo',
@@ -556,35 +524,43 @@ class DataInforme extends Rest
         ];
         $contenido = [];
         
-        for ($i=1; $i <= $this->rondaActualConcurso; $i++) {
-            $contenidoTabla = [];
-            
-            foreach($oferentes as $oferente){
-                if($oferente->is_economica_pendiente){
-                    $contenidoTabla[]=[
-                        $oferente->company->business_name,
-                        'El proveedor no presentó su propuesta en la fecha establecida',
-                        $oferente->reasonDeclination
-                    ];
-                }else{
-                    $economicProposal = $oferente->economic_proposal->where('participante_id', $oferente->id)->where('numero_ronda', $i)->first();
-                    $total = $this->calcEconomics($economicProposal->values);
-                    if($oferente->is_concurso_rechazado && !$economicProposal){
-                        $contenidoTabla[]=[
-                            $oferente->company->business_name,
-                            'El proveedor declinó su participacion',
-                            $oferente->reasonDeclination
-                        ];
-                    }else{
-                        $contenidoTabla[]=[
-                            $oferente->company->business_name,
-                            $oferente->has_economica_presentada ? $economicProposal->created_at->format('d/m/Y H:i:s') : '',
-                            (string)(number_format($total,2,',', '.'))
-                        ];
-                    }
+        for ($i = 1; $i <= $this->rondaActualConcurso; $i++) {
+        $contenidoTabla = [];
+        foreach ($oferentes as $oferente) {
+            if ($oferente->is_economica_pendiente) {
+                $contenidoTabla[] = [
+                    $oferente->company->business_name ?? '',
+                    'El proveedor no presentó su propuesta en la fecha establecida',
+                    $oferente->reasonDeclination ?? '',
+                ];
+            } else {
+                $ep = $oferente->economic_proposal
+                    ->where('participante_id', $oferente->id)
+                    ->where('numero_ronda', $i)
+                    ->first();
+                $fecha = '';
+                if ($ep && isset($ep->created_at)) {
+                    $fecha = $ep->created_at->format('d/m/Y H:i:s');
                 }
-                
+                $total = $ep && isset($ep->values)
+                    ? $this->calcEconomics($ep->values)
+                    : 0;
+
+                if ($oferente->is_concurso_rechazado && ! $ep) {
+                    $contenidoTabla[] = [
+                        $oferente->company->business_name ?? '',
+                        'El proveedor declinó su participacion',
+                        $oferente->reasonDeclination ?? '',
+                    ];
+                } else {
+                    $contenidoTabla[] = [
+                        $oferente->company->business_name ?? '',
+                        $oferente->has_economica_presentada ? $fecha : '',
+                        (string)number_format($total, 2, ',', '.'),
+                    ];
+                }
             }
+        }
             $parrafo = [
                 'tipo' => 'parrafo',
                 'contenido' => '<div style="font-weight:bold">'.$rondasOfertasTitle[$i].'</div>',
