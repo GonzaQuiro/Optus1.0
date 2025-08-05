@@ -544,6 +544,8 @@
 
             if (params[3] === 'convocatoria-oferentes') {
                 this.Media = ko.observableArray(data.list.Media);
+                this.Productos = ko.observableArray(data.list.Productos);
+                this.Evaluador = ko.observable(data.list.Evaluador || '');
                 this.AceptacionInvitacion = ko.observable(data.list.AceptacionInvitacion);
                 this.OferenteAInvitar = ko.observable(data.list.OferenteAInvitar);
                 this.OferentesAInvitar = ko.observable(data.list.OferentesAInvitar);
