@@ -147,6 +147,12 @@
                         <td class="col-md-3 vertical-align-middle">Fecha y hora de envío de la solicitud</td>
                         <td class="col-md-9 vertical-align-middle" data-bind="text: FechaEnvioComprador"></td>
                     </tr>
+                    <!-- ko if: FechaFinEtapaEconomica() -->
+                    <tr>
+                        <td class="col-md-3 vertical-align-middle">Fecha de finalización de etapa económica</td>
+                        <td class="col-md-9 vertical-align-middle" data-bind="text: FechaFinEtapaEconomica"></td>
+                    </tr>
+                    <!-- /ko -->
                     <tr>
                         <td class="col-md-3 vertical-align-middle">Área Solicitante</td>
                         <td class="col-md-9 vertical-align-middle" data-bind="text: AreaSolicitante"></td>
@@ -403,6 +409,7 @@
             this.CompradorSugerido = ko.observable(data.list.CompradorSugerido);
             this.FechaCreacion = ko.observable(data.list.FechaCreacion);
             this.FechaEnvioComprador = ko.observable(data.list.FechaEnvioComprador);
+            this.FechaFinEtapaEconomica = ko.observable(data.list.FechaFinEtapaEconomica || null);
             this.UsuarioReject = ko.observable(data.list.UsuarioReject);
             this.UsuarioAccept = ko.observable(data.list.UsuarioAccept);
             this.FechaRechazo = ko.observable(data.list.FechaRechazo);

@@ -240,7 +240,7 @@
         </div>
         <div class="col-sm-6 text-right">
             <div class="form-group" style="display:inline-block; margin-left:10px;">
-                <button type="button" class="btn btn-primary" data-bind="click: store, enable: SolpedActive">
+                <button type="button" class="btn btn-primary" data-bind="click: store, enable: SolpedActive() && !IsSaving()">
                     Guardar Datos
                 </button>
             </div>
@@ -512,12 +512,34 @@
         );
 
         this.SolpedActive = ko.observable(!!solpedActiveFlag);
+        this.IsSaving = ko.observable(false);
+        this.ServerSolpedId = ko.observable(data.list.Id != null ? Number(data.list.Id) : 0);
         this.guardSolpedActive = function() {
             if (self.SolpedActive()) {
                 return true;
             }
             swal('Atención', 'El módulo de Solped está desactivado para tu empresa.', 'warning');
             return false;
+        };
+
+        this.resolveSolpedId = function () {
+            var fromEntity = Number(ko.unwrap(self.Entity && self.Entity.Id));
+            if (Number.isFinite(fromEntity) && fromEntity > 0) {
+                return fromEntity;
+            }
+
+            var fromServer = Number(ko.unwrap(self.ServerSolpedId));
+            if (Number.isFinite(fromServer) && fromServer > 0) {
+                return fromServer;
+            }
+
+            var fromWindow = Number(window.SolpedIdFromRoute || 0);
+            if (Number.isFinite(fromWindow) && fromWindow > 0) {
+                return fromWindow;
+            }
+
+            var match = String(window.location.pathname || '').match(/\/edicion\/(\d+)/i);
+            return match ? Number(match[1]) : 0;
         };
 
         this.ReadOnly = ko.observable(false);
@@ -657,9 +679,11 @@
                     if (result) {
                         $.blockUI();
                         var url = '/solped/invitations/send';
+                        var invitationId = self.resolveSolpedId ? self.resolveSolpedId() : Number(ko.unwrap(self.Entity.Id) || 0);
                         Services.Post(url, {
                                 UserToken: User.Token,
-                                IdConcurso: self.Entity.Id()
+                            IdConcurso: invitationId,
+                            IdSolicitud: invitationId
                             },
                             (response) => {
                                 swal.close();
@@ -877,6 +901,9 @@
         if (!self.guardSolpedActive()) {
             return;
         }
+        if (self.IsSaving()) {
+            return;
+        }
         // Validación en cliente con detalle de faltantes
         var entityErrors = ko.validation.group(self.Entity, { deep: true });
         var hasItems = self.Entity.Products().length > 0;
@@ -938,13 +965,21 @@
         }
 
         $.blockUI();
+        self.IsSaving(true);
+
+        var resolvedId = self.resolveSolpedId();
+        if (resolvedId > 0 && Number(ko.unwrap(self.Entity.Id) || 0) !== resolvedId) {
+            self.Entity.Id(resolvedId);
+        }
 
         var actionFromVM = ko.unwrap(self.action); 
-        var action = actionFromVM || (params[2] === 'edicion' ? 'edit' : 'create');
+        var action = actionFromVM || (resolvedId > 0 ? 'edit' : 'create');
 
-        var id = ko.unwrap(self.Entity.Id) || 0;
+        var id = resolvedId || Number(ko.unwrap(self.Entity.Id)) || 0;
 
-        var url = '/solped/save';
+        var url = (action === 'edit' && id > 0)
+            ? '/solped/save/' + id
+            : '/solped/save';
 
         // Armamos payload “limpio”
         var payload = {
@@ -957,34 +992,62 @@
             })
         };
 
-        Services.Post(
-            url,
-            payload,
-            function (response) {
-            $.unblockUI();
-            if (response && response.success) {
-                swal({
-                title: 'Hecho',
-                text: response.message || 'Guardado correctamente.',
-                type: 'success',
-                closeOnClickOutside: false,
-                closeOnConfirm: true,
-                confirmButtonText: 'Aceptar',
-                confirmButtonClass: 'btn btn-success'
-                }, function () {
-                window.history.back();
-                });
-            } else {
-                swal('Error', (response && response.message) || 'Se produjo un error inesperado.', 'error');
-            }
-            },
-            function (error) {
-            $.unblockUI();
-            swal('Error', (error && error.message) || 'Se produjo un error inesperado.', 'error');
-            },
-            null,
-            null
-        );
+        var maxRetries = 1;
+        var saveAttempt = 0;
+        var sendSave = function () {
+            saveAttempt++;
+            console.info('[SOLPED][SAVE] intento', {
+                attempt: saveAttempt,
+                action: action,
+                id: id,
+                url: url
+            });
+
+            Services.Post(
+                url,
+                payload,
+                function (response) {
+                    self.IsSaving(false);
+                    $.unblockUI();
+                    if (response && response.success) {
+                        swal({
+                            title: 'Hecho',
+                            text: response.message || 'Guardado correctamente.',
+                            type: 'success',
+                            closeOnClickOutside: false,
+                            closeOnConfirm: true,
+                            confirmButtonText: 'Aceptar',
+                            confirmButtonClass: 'btn btn-success'
+                        }, function () {
+                            window.history.back();
+                        });
+                    } else {
+                        swal('Error', (response && response.message) || 'Se produjo un error inesperado.', 'error');
+                    }
+                },
+                function (error) {
+                    var status = Number(error && (error.status || (error.responseJSON && error.responseJSON.status) || 0));
+                    var transient = status === 0 || status >= 500;
+                    if (transient && saveAttempt <= maxRetries) {
+                        console.warn('[SOLPED][SAVE] fallo transitorio, reintentando', {
+                            attempt: saveAttempt,
+                            status: status,
+                            error: error
+                        });
+                        setTimeout(sendSave, 800);
+                        return;
+                    }
+
+                    self.IsSaving(false);
+                    $.unblockUI();
+                    swal('Error', (error && error.message) || 'Se produjo un error inesperado.', 'error');
+                },
+                null,
+                null
+            );
+        };
+
+        sendSave();
         };
 
     }
@@ -1095,6 +1158,7 @@ jQuery(function () {
 
   // id inyectado por el render (serveCreate/serveEdit)
   var solpedId = {$id|json_encode}; // número o 0
+    window.SolpedIdFromRoute = Number(solpedId || 0);
 
   // si hay id > 0, vamos al endpoint de edición; si no, al de creación
   var url = (solpedId && Number(solpedId) > 0)

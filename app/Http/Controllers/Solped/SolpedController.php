@@ -129,6 +129,24 @@ class SolpedController extends BaseController
 
             fwrite($fp, "Solped encontrado: ID={$solped->id}, etapa={$solped->etapa_actual}\n");
 
+            $fechaFinEtapaEconomica = null;
+            $estadosConConversion = ['aceptada', 'aprobada', 'esperando-licitacion', 'licitando', 'licitacion-finalizada', 'adjudicada'];
+            if (in_array((string)$solped->estado_actual, $estadosConConversion, true)) {
+                $concursoRelacionado = Concurso::whereRaw("FIND_IN_SET(?, created_from_solped)", [$solped->id])
+                    ->orderBy('id', 'desc')
+                    ->first();
+
+                if ($concursoRelacionado && !empty($concursoRelacionado->fecha_limite_economicas)) {
+                    try {
+                        $fechaFinEtapaEconomica = $concursoRelacionado->fecha_limite_economicas instanceof \DateTimeInterface
+                            ? $concursoRelacionado->fecha_limite_economicas->format('d-m-Y H:i:s')
+                            : Carbon::parse($concursoRelacionado->fecha_limite_economicas)->format('d-m-Y H:i:s');
+                    } catch (\Throwable $e) {
+                        $fechaFinEtapaEconomica = null;
+                    }
+                }
+            }
+
             // Common data siempre se carga
             $common_data = [
                 'IdSolicitud'     => $solped->id,
@@ -144,6 +162,7 @@ class SolpedController extends BaseController
                 'FechaEntrega'    => $solped->fecha_entrega ? $solped->fecha_entrega->format('d-m-Y H:i:s') : null,
                 'FechaCreacion'   => $solped->fecha_alta ? $solped->fecha_alta->format('d-m-Y H:i:s') : null,
                 'FechaEnvioComprador' => $solped->fecha_envio_a_comprador ? $solped->fecha_envio_a_comprador->format('d-m-Y H:i:s') : null,
+                'FechaFinEtapaEconomica' => $fechaFinEtapaEconomica,
                 'Eliminado'       => $solped->deleted_at ? true : false,
                 'UsuarioReject'   => $solped->usuario_rechazo ?: null,
                 'UsuarioAccept'   => $solped->id_comprador_decision ?: null,
@@ -1049,7 +1068,10 @@ class SolpedController extends BaseController
         }
 
         $action = strtolower($payload['Action'] ?? (isset($params['id']) ? 'edit' : 'create'));
-        $id     = isset($payload['Id']) ? (int)$payload['Id'] : (isset($params['id']) ? (int)$params['id'] : 0);
+        $payloadId = isset($payload['Id']) ? (int)$payload['Id'] : 0;
+        $entityId = isset($payload['Entity']['Id']) ? (int)$payload['Entity']['Id'] : 0;
+        $routeId = isset($params['id']) ? (int)$params['id'] : 0;
+        $id = $payloadId > 0 ? $payloadId : ($entityId > 0 ? $entityId : $routeId);
         $entity = $payload['Entity'] ?? [];
         $user   = user();
 
@@ -1146,12 +1168,12 @@ class SolpedController extends BaseController
             $docsProvided = true;
             foreach ($entity['Sheets'] as $sheet) {
                 $filename = '';
-                $action = '';
+                $sheetAction = '';
                 if (is_array($sheet)) {
                     $filename = isset($sheet['filename']) ? (string)$sheet['filename'] : '';
-                    $action = isset($sheet['action']) ? (string)$sheet['action'] : '';
+                    $sheetAction = isset($sheet['action']) ? (string)$sheet['action'] : '';
                 }
-                if ($filename !== '' && $action !== 'delete' && $action !== 'clear') {
+                if ($filename !== '' && $sheetAction !== 'delete' && $sheetAction !== 'clear') {
                     $docs[] = $filename;
                 }
             }
@@ -1713,10 +1735,12 @@ class SolpedController extends BaseController
                 'Id' => $solped->id,
                 'Nombre' => $solped->nombre,
                 'Solicitante' => $solped->solicitante->full_name,
+                'CompradorSugerido' => $solped->comprador_sugerido ? $solped->comprador_sugerido->full_name : null,
                 'AreaSolicitante' => $solped->area_sol,
                 'CodigoInterno' => $solped->codigo_interno, 
                 'Urgencia' => $solped->tipo_compra_nombre,
                 'Estado' => $solped->estado_actual,
+                'FechaEntrega' => $solped->fecha_entrega ? $solped->fecha_entrega->format('d-m-Y') : '',
                 'Etapa' => $solped->etapa_actual,
             ];
             
