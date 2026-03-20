@@ -24,6 +24,9 @@ class MediaController extends BaseController
         ];
 
         try {
+            // Extensiones permitidas
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf', 'zip', 'rar', 'doc', 'docx', 'xls', 'xlsx', 'dwg'];
+            
             $body = $request->getParsedBody();
             $file = !empty($request->getUploadedFiles()) ? $request->getUploadedFiles()['file'][0] : null;
 
@@ -50,6 +53,11 @@ class MediaController extends BaseController
                 // Sanitizar partes
                 $originalSan = $this->sanitizeFilename($originalClientName); // mantiene ext
                 $ext = pathinfo($originalSan, PATHINFO_EXTENSION);
+                
+                // Validar extensión
+                if (!in_array(strtolower($ext), $allowedExtensions)) {
+                    throw new \Exception('Tipo de archivo no permitido. Extensión: ' . $ext . '. Permitidas: ' . implode(', ', $allowedExtensions));
+                }
                 $baseOriginal = pathinfo($originalSan, PATHINFO_FILENAME);
 
                 // ConcursoNombre en MAYÚSCULAS sin espacios (o a tu gusto)

@@ -691,6 +691,9 @@
                                 setTimeout(function() {
                                     if (response.success) {
                                         swal('Hecho', response.message, 'success');
+                                        setTimeout(function() {
+                                            window.location.href = '/solped/solicitante/monitor';
+                                        }, 1500);
                                     } else {
                                         swal('Error', response.message, 'error');
                                     }

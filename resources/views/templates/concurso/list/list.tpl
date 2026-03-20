@@ -67,9 +67,11 @@
                                 data-bind="text: Id">
                             </td>
                             <td 
-                                class="col-md-4 text-center vertical-align-middle" 
-                                data-bind="style: {literal}{backgroundImage: 'url(' + ImagePath + Portrait + ')'}{/literal}" 
-                                style="width: auto;height: 150px;background-repeat: no-repeat;background-position: center center;background-size:cover;border: 1px solid #ddd;">
+                                class="col-md-4 text-center vertical-align-middle"
+                                style="width: auto;height: 150px;border: 1px solid #ddd;">
+                                <img
+                                    style="max-width: 100%; max-height: 148px; object-fit: cover;"
+                                    data-bind="attr: {literal}{ src: encodeURI(ImagePath + (Portrait || 'default.gif')) }{/literal}">
                             </td>
                             <td 
                                 class="vertical-align-middle" 

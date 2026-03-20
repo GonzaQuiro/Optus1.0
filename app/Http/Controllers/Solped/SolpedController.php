@@ -315,7 +315,8 @@ class SolpedController extends BaseController
             'title' => $title,
             'description' => $description,
             'breadcrumbs' => $breadcrumbs,
-            'isCopy' => 0
+            'isCopy' => 0,
+            'mapboxToken' => getenv('MAPBOX_ACCESS_TOKEN') ?: ''
 
         ]);
     }
@@ -337,7 +338,8 @@ class SolpedController extends BaseController
             'title' => $title,
             'description' => $description,
             'breadcrumbs' => $breadcrumbs,
-            'isCopy' => 0
+            'isCopy' => 0,
+            'mapboxToken' => getenv('MAPBOX_ACCESS_TOKEN') ?: ''
 
         ]);
     }

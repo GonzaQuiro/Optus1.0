@@ -156,7 +156,7 @@
                             rowspan="5" 
                             class="col-md-4 vertical-align-middle text-center" 
                             data-bind="style: {literal}{
-                                backgroundImage: 'url(' + ImagePath() + Portrait() + ')'
+                                backgroundImage: 'url(\'' + encodeURI(ImagePath() + Portrait()) + '\')'
                             }{/literal}" 
                             style="width: auto; height: 300px; background-repeat: no-repeat; background-position: center center;background-size:cover;">
                         </td>
