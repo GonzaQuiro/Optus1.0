@@ -2907,7 +2907,9 @@ class ConcursoController extends BaseController
                                 'listProductsNew' => [],
                                 'listTecnicalDocuments' => [],
                                 'listDocumentsEconomica' => [],
-                                'fecha_tecnica' => $concurso->technical_includes ? $concurso->ficha_tecnica_fecha_limite->format('d-m-Y H:i') : 'No aplica',
+                                'fecha_tecnica' => ($concurso->technical_includes && $concurso->ficha_tecnica_fecha_limite)
+                                    ? $concurso->ficha_tecnica_fecha_limite->format('d-m-Y H:i')
+                                    : 'No aplica',
                                 'company_name' => null
 
                             ];
