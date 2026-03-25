@@ -5430,15 +5430,25 @@ class ConcursoController extends BaseController
 
 
             // cambio de fechas
-             $fechaInvitacionEdit =
-                 $concurso->fecha_limite->format('Y-m-d H:i:s') != $common_fields['fecha_limite'] ? true : false;
+            $fechaInvitacionAnterior = $concurso->fecha_limite
+                ? $concurso->fecha_limite->format('Y-m-d H:i:s')
+                : null;
+            $fechaInvitacionNueva = $common_fields['fecha_limite'] ?? null;
+            $fechaInvitacionEdit = $fechaInvitacionAnterior !== $fechaInvitacionNueva;
 
-            $cambio_fechas = $fecha_antigua->format('Y-m-d H:i:s') != $extra_fields['fecha_limite_economicas'] ? true : false;
+            $fechaEconomicaAnterior = $fecha_antigua
+                ? $fecha_antigua->format('Y-m-d H:i:s')
+                : null;
+            $fechaEconomicaNueva = $extra_fields['fecha_limite_economicas'] ?? null;
+            $cambio_fechas = $fechaEconomicaAnterior !== $fechaEconomicaNueva;
             
            
 
-            $fechaFinConsultasEdit =
-                $concurso->finalizacion_consultas->format('Y-m-d H:i:s') != $common_fields['finalizacion_consultas'] ? true : false;
+            $fechaFinConsultasAnterior = $concurso->finalizacion_consultas
+                ? $concurso->finalizacion_consultas->format('Y-m-d H:i:s')
+                : null;
+            $fechaFinConsultasNueva = $common_fields['finalizacion_consultas'] ?? null;
+            $fechaFinConsultasEdit = $fechaFinConsultasAnterior !== $fechaFinConsultasNueva;
 
             $ajustdate =
                 ($fechaInvitacionEdit || $fechaFinConsultasEdit || $cambio_fechas /*|| $fechaTecnicaLimitEdit || $fechaEconomicLimitEdit*/) ? true : false;
