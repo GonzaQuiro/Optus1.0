@@ -35,7 +35,7 @@
             <li class="nav-item{if $page eq 'solped'} active open{/if}">
                 <a href="#" class="nav-link nav-toggle">
                     <i class="icon-map"></i>
-                    <span class="title">Solped</span>
+                    <span class="title">Solicitud de pedido</span>
                     <span class="arrow{if $page eq 'solped'} open{/if}"></span>
                     {if $page eq 'solped'}
                         <span class="selected"></span>

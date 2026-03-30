@@ -412,7 +412,7 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label class="control-label visible-ie8 visible-ie9" style="display: block;">
-                                        Solped activo
+                                        Solicitud de pedido activa
                                     </label>
                                     <input
                                         type="checkbox"

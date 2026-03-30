@@ -2907,9 +2907,7 @@ class ConcursoController extends BaseController
                                 'listProductsNew' => [],
                                 'listTecnicalDocuments' => [],
                                 'listDocumentsEconomica' => [],
-                                'fecha_tecnica' => ($concurso->technical_includes && $concurso->ficha_tecnica_fecha_limite)
-                                    ? $concurso->ficha_tecnica_fecha_limite->format('d-m-Y H:i')
-                                    : 'No aplica',
+                                'fecha_tecnica' => $concurso->technical_includes ? $concurso->ficha_tecnica_fecha_limite->format('d-m-Y H:i') : 'No aplica',
                                 'company_name' => null
 
                             ];
@@ -3020,9 +3018,17 @@ class ConcursoController extends BaseController
                                     }
                                 }
 
-                                // si se edita y los proveedores estan en etapa economica se pasan a tecnica
+                                // si se edita la técnica y los proveedores están en etapa económica, se pasan a técnica pendiente
                                 if ($technicalAdded || $technicalChanged) {
-                                    if ($oferente->has_invitacion_aceptada && !$oferente->has_tecnica_rechazada) {
+                                    if (
+                                        $oferente->has_invitacion_aceptada &&
+                                        !$oferente->has_tecnica_rechazada &&
+                                        (
+                                            $oferente->is_economica_pendiente ||
+                                            $oferente->is_economica_presentada ||
+                                            $oferente->is_economica_revisada
+                                        )
+                                    ) {
                                         $oferente->update([
                                             'etapa_actual' => Participante::ETAPAS['tecnica-pendiente']
                                         ]);
@@ -3035,9 +3041,17 @@ class ConcursoController extends BaseController
                                     }
                                 }
 
-                                // si se edita los documentos de la tecnica y los proveedores estan en etapa economica se pasan a tecnica
+                                // si se editan documentos de la técnica y los proveedores están en etapa económica, se pasan a técnica pendiente
                                 if (count($tecnicalDocuments) > 0) {
-                                    if ($oferente->has_invitacion_aceptada && !$oferente->has_tecnica_rechazada) {
+                                    if (
+                                        $oferente->has_invitacion_aceptada &&
+                                        !$oferente->has_tecnica_rechazada &&
+                                        (
+                                            $oferente->is_economica_pendiente ||
+                                            $oferente->is_economica_presentada ||
+                                            $oferente->is_economica_revisada
+                                        )
+                                    ) {
                                         $oferente->update([
                                             'etapa_actual' => Participante::ETAPAS['tecnica-pendiente']
                                         ]);
@@ -5430,25 +5444,15 @@ class ConcursoController extends BaseController
 
 
             // cambio de fechas
-            $fechaInvitacionAnterior = $concurso->fecha_limite
-                ? $concurso->fecha_limite->format('Y-m-d H:i:s')
-                : null;
-            $fechaInvitacionNueva = $common_fields['fecha_limite'] ?? null;
-            $fechaInvitacionEdit = $fechaInvitacionAnterior !== $fechaInvitacionNueva;
+             $fechaInvitacionEdit =
+                 $concurso->fecha_limite->format('Y-m-d H:i:s') != $common_fields['fecha_limite'] ? true : false;
 
-            $fechaEconomicaAnterior = $fecha_antigua
-                ? $fecha_antigua->format('Y-m-d H:i:s')
-                : null;
-            $fechaEconomicaNueva = $extra_fields['fecha_limite_economicas'] ?? null;
-            $cambio_fechas = $fechaEconomicaAnterior !== $fechaEconomicaNueva;
+            $cambio_fechas = $fecha_antigua->format('Y-m-d H:i:s') != $extra_fields['fecha_limite_economicas'] ? true : false;
             
            
 
-            $fechaFinConsultasAnterior = $concurso->finalizacion_consultas
-                ? $concurso->finalizacion_consultas->format('Y-m-d H:i:s')
-                : null;
-            $fechaFinConsultasNueva = $common_fields['finalizacion_consultas'] ?? null;
-            $fechaFinConsultasEdit = $fechaFinConsultasAnterior !== $fechaFinConsultasNueva;
+            $fechaFinConsultasEdit =
+                $concurso->finalizacion_consultas->format('Y-m-d H:i:s') != $common_fields['finalizacion_consultas'] ? true : false;
 
             $ajustdate =
                 ($fechaInvitacionEdit || $fechaFinConsultasEdit || $cambio_fechas /*|| $fechaTecnicaLimitEdit || $fechaEconomicLimitEdit*/) ? true : false;
