@@ -198,6 +198,72 @@ class ConcursoController extends BaseController
         }
     }
 
+    private function getEvaluacionReputacionConcursos($user)
+    {
+        if (isAdmin()) {
+            $created = Concurso::all();
+        } else if ($user->type_id != 7 && $user->type_id != 3 && $user->type_id != 4 && $user->type_id != 2) {
+            $created = $user->customer_company->getAllConcursosByCompany()->get();
+        } else if ($user->type_id == 3) {
+            $created = $user->customer_company->getAllConcursosByCompany()
+                ->where('id_cliente', $user->id)
+                ->get();
+        } else {
+            $created = Concurso::where([['ficha_tecnica_usuario_evalua', '=', $user->id]])->get();
+
+            $concursosCalificaReputacion = Concurso::whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])->get();
+            $created = $created->merge($concursosCalificaReputacion)->unique('id');
+        }
+
+        if (isAdmin()) {
+            $evaluating = collect();
+        } else {
+            $evaluating = $user->concursos_evalua;
+            $concursosCalificaReputacion = Concurso::whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])->get();
+            $evaluating = collect($evaluating)->merge($concursosCalificaReputacion)->unique('id');
+        }
+
+        return collect()
+            ->merge($created->where('adjudicado', true))
+            ->merge($evaluating->where('adjudicado', true))
+            ->unique('id')
+            ->filter(function ($concurso) {
+                if ((bool)($concurso->is_online ?? false)) {
+                    return false;
+                }
+
+                return $concurso->oferentes_etapa_evaluacion->count() > 0;
+            })
+            ->sortBy('id');
+    }
+
+    private function concursoMatchesSearchTerm($concurso, $searchTerm)
+    {
+        $searchTerm = trim((string) $searchTerm);
+
+        if ($searchTerm === '') {
+            return true;
+        }
+
+        $businessName = '';
+        if (isset($concurso->cliente) && isset($concurso->cliente->customer_company) && isset($concurso->cliente->customer_company->business_name)) {
+            $businessName = (string) $concurso->cliente->customer_company->business_name;
+        }
+
+        $fullName = '';
+        if (isset($concurso->cliente) && isset($concurso->cliente->full_name)) {
+            $fullName = (string) $concurso->cliente->full_name;
+        }
+
+        return
+            !!stristr((string)($concurso->id ?? ''), $searchTerm) ||
+            !!stristr((string)($concurso->nombre ?? ''), $searchTerm) ||
+            !!stristr($businessName, $searchTerm) ||
+            !!stristr($fullName, $searchTerm) ||
+            !!stristr((string)($concurso->solicitud_compra ?? ''), $searchTerm) ||
+            !!stristr((string)($concurso->area_sol ?? ''), $searchTerm);
+    }
+
     public function serveList(Request $request, Response $response)
     {
         return $this->render($response, 'concurso/list/cliente/type-list.tpl', [
@@ -1079,8 +1145,8 @@ class ConcursoController extends BaseController
             }
 
 
-            // EVALUACIÓN - NO CARGAR EN CARGA INICIAL
-            // Se cargarán lazy cuando el usuario expanda la sección
+            // EVALUACIÓN REPUTACIÓN
+            // Se mantiene vacía en la respuesta general; se carga paginada bajo demanda.
 
 
 
@@ -1207,52 +1273,17 @@ class ConcursoController extends BaseController
     {
         $body = json_decode($request->getParsedBody()['Data'] ?? '{}');
         $page = (int)($body->page ?? 1);
+        $searchTerm = trim((string)($body->searchTerm ?? ''));
 
         try {
             $user = user();
-            
-            // CREATED - Mismo lógica que listDoFilter
-            if (isAdmin()) {
-                $created = Concurso::all();
-            } else if ($user->type_id != 7 && $user->type_id != 3 && $user->type_id != 4 && $user->type_id != 2) {
-                $created = $user->customer_company->getAllConcursosByCompany()->get();
-            } else if ($user->type_id == 3) {
-                $created = $user->customer_company->getAllConcursosByCompany()
-                    ->where('id_cliente', $user->id)
-                    ->get();
-            } else {
-                // type_id == 7 (evaluador técnico) o type_id == 4 (calificador reputación)
-                $created = Concurso::where([['ficha_tecnica_usuario_evalua', '=', $user->id]])->get();
-                
-                // Agregar concursos donde el usuario califica reputación
-                $concursosCalificaReputacion = Concurso::whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])->get();
-                $created = $created->merge($concursosCalificaReputacion)->unique('id');
-            }
+            $concursos = $this->getEvaluacionReputacionConcursos($user);
 
-            // EVALUATING
-            if (isAdmin()) {
-                $evaluating = collect();
-            } else {
-                $evaluating = $user->concursos_evalua;
-                // Agregar concursos donde el usuario califica reputación
-                $concursosCalificaReputacion = Concurso::whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])->get();
-                $evaluating = collect($evaluating)->merge($concursosCalificaReputacion)->unique('id');
+            if ($searchTerm !== '') {
+                $concursos = $concursos->filter(function ($concurso) use ($searchTerm) {
+                    return $this->concursoMatchesSearchTerm($concurso, $searchTerm);
+                });
             }
-
-            // Filtrar concursos en evaluación de reputación
-            $concursos = collect()
-                ->merge($created->where('adjudicado', true))
-                ->merge($evaluating->where('adjudicado', true))
-                ->unique('id')
-                ->filter(function ($concurso) {
-                    // Excluir concursos online usando el flag booleano
-                    if ((bool)($concurso->is_online ?? false)) {
-                        return false;
-                    }
-                    // Mantener sólo los que tienen oferentes en etapa de evaluación
-                    return $concurso->oferentes_etapa_evaluacion->count() > 0;
-                })
-                ->sortBy('id');
 
             $itemsPerPage = 30;
             $totalItems = count($concursos);
@@ -1752,7 +1783,7 @@ class ConcursoController extends BaseController
                 'emailSuper' => $concurso->concurso_fiscalizado == 'si' ? $concurso->supervisor->email : null,
                 'ProveedoresAdjudicados' => $concurso->oferentes
                     ->filter(function($p) {
-                        return str_starts_with((string)$p->etapa_actual, 'adjudicacion-aceptada');
+                        return str_starts_with((string)$p->etapa_actual, 'adjudicacion-');
                     })
                     ->map(function($p) {
                         return [

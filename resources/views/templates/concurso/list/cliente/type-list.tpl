@@ -451,17 +451,22 @@
                         </tbody>
                     </table>
 
-                    <!-- Botón cargar más -->
-                    <!-- ko if: EvaluacionReputacionHasMore() -->
-                    <div class="text-center margin-top-20 margin-bottom-20">
-                        <button type="button" class="btn btn-info"
-                            data-bind="click: loadMoreEvaluacionReputacion, 
-                                       css: { 'btn-disabled': EvaluacionReputacionLoadingMore() }"
-                            style="padding: 10px 20px; font-size: 14px;">
-                            <i class="fa fa-chevron-down" data-bind="visible: !EvaluacionReputacionLoadingMore()"></i>
-                            <i class="fa fa-spinner fa-spin" data-bind="visible: EvaluacionReputacionLoadingMore()"></i>
-                            <span data-bind="text: EvaluacionReputacionLoadingMore() ? ' Cargando...' : ' Cargar más licitaciones'"></span>
-                        </button>
+                    <!-- Paginado numerico -->
+                    <!-- ko if: EvaluacionReputacionTotalPages() > 1 -->
+                    <div class="text-center margin-top-20 margin-bottom-20" style="overflow-x: auto;">
+                        <ul class="pagination pagination-sm" style="margin: 0; white-space: nowrap; display: inline-block;">
+                            <li data-bind="css: { disabled: EvaluacionReputacionCurrentPage() === 1 || EvaluacionReputacionLoading() }">
+                                <a href="javascript:;" data-bind="click: function(_, event) { if (event) { event.preventDefault(); } if (EvaluacionReputacionCurrentPage() > 1 && !EvaluacionReputacionLoading()) { loadEvaluacionReputacionPage(EvaluacionReputacionCurrentPage() - 1); } return false; }">&laquo;</a>
+                            </li>
+                            <!-- ko foreach: EvaluacionReputacionPageNumbers -->
+                            <li data-bind="css: { active: $data === $root.EvaluacionReputacionCurrentPage(), disabled: $root.EvaluacionReputacionLoading() }">
+                                <a href="javascript:;" data-bind="text: $data, click: function(_, event) { if (event) { event.preventDefault(); } if (!$root.EvaluacionReputacionLoading()) { $root.loadEvaluacionReputacionPage($data); } return false; }"></a>
+                            </li>
+                            <!-- /ko -->
+                            <li data-bind="css: { disabled: EvaluacionReputacionCurrentPage() === EvaluacionReputacionTotalPages() || EvaluacionReputacionLoading() }">
+                                <a href="javascript:;" data-bind="click: function(_, event) { if (event) { event.preventDefault(); } if (EvaluacionReputacionCurrentPage() < EvaluacionReputacionTotalPages() && !EvaluacionReputacionLoading()) { loadEvaluacionReputacionPage(EvaluacionReputacionCurrentPage() + 1); } return false; }">&raquo;</a>
+                            </li>
+                        </ul>
                         <div style="margin-top: 10px; color: #666; font-size: 12px;">
                             <small data-bind="text: 'Mostrando ' + Lists().ListaConcursosEvaluacionReputacion().length + ' de ' + EvaluacionReputacionTotal() + ' licitaciones | Página ' + EvaluacionReputacionCurrentPage() + ' de ' + EvaluacionReputacionTotalPages()"></small>
                         </div>
@@ -734,6 +739,8 @@
             this.EvaluacionReputacionCurrentPage = ko.observable(1);
             this.EvaluacionReputacionTotalPages = ko.observable(1);
             this.EvaluacionReputacionHasMore = ko.observable(false);
+            this.EvaluacionReputacionPageNumbers = ko.observableArray([]);
+            this.EvaluacionReputacionRequestSeq = 0;
             
             this.Lists = ko.observable(new List(data.list));
             this.Conectados = ko.observable('0');
@@ -748,15 +755,35 @@
                     // Expandir y cargar si es la primera vez
                     self.EvaluacionReputacionExpanded(true);
                     if (self.Lists().ListaConcursosEvaluacionReputacion().length === 0) {
-                        self.loadEvaluacionReputacionInitial();
+                        self.loadEvaluacionReputacionPage(1);
                     }
                 }
             };
+
+            this.updateEvaluacionReputacionPagination = function(totalPages, currentPage) {
+                var pages = [];
+                var total = parseInt(totalPages || 0, 10);
+
+                for (var i = 1; i <= total; i++) {
+                    pages.push(i);
+                }
+
+                self.EvaluacionReputacionPageNumbers(pages);
+                self.EvaluacionReputacionTotalPages(total || 1);
+                self.EvaluacionReputacionCurrentPage(parseInt(currentPage || 1, 10));
+                self.EvaluacionReputacionHasMore(self.EvaluacionReputacionCurrentPage() < self.EvaluacionReputacionTotalPages());
+            };
             
-            // Cargar datos iniciales de Evaluación de Reputación
-            this.loadEvaluacionReputacionInitial = function() {
+            // Cargar una página específica de Evaluación de Reputación
+            this.loadEvaluacionReputacionPage = function(page) {
+                page = parseInt(page || 1, 10);
+                if (page < 1) {
+                    page = 1;
+                }
+
+                var requestSeq = ++self.EvaluacionReputacionRequestSeq;
                 self.EvaluacionReputacionLoading(true);
-                var data = { page: 1 };
+                var data = { page: page, searchTerm: self.Filters().searchTerm() };
                 
                 console.log('Iniciando carga de Evaluación de Reputación...');
                 
@@ -765,19 +792,20 @@
                         Data: JSON.stringify(data)
                     },
                     (response) => {
+                        if (requestSeq !== self.EvaluacionReputacionRequestSeq) {
+                            return;
+                        }
+
                         console.log('Respuesta Evaluación de Reputación:', response);
                         self.EvaluacionReputacionLoading(false);
                         if (response.success) {
-                            // Agregar items a la lista
+                            self.Lists().ListaConcursosEvaluacionReputacion.removeAll();
                             response.data.items.forEach(item => {
                                 self.Lists().ListaConcursosEvaluacionReputacion.push(new ListItem(item));
                             });
-                            
-                            // Actualizar paginación
+
                             self.EvaluacionReputacionTotal(response.data.totalItems);
-                            self.EvaluacionReputacionCurrentPage(response.data.page);
-                            self.EvaluacionReputacionTotalPages(response.data.totalPages);
-                            self.EvaluacionReputacionHasMore(response.data.hasMore);
+                            self.updateEvaluacionReputacionPagination(response.data.totalPages, response.data.page);
                             console.log('Datos cargados exitosamente. Total:', response.data.totalItems);
                         } else {
                             swal('Error', response.message || 'Error al cargar evaluaciones de reputación', 'error');
@@ -785,47 +813,12 @@
                         }
                     },
                     (error) => {
+                        if (requestSeq !== self.EvaluacionReputacionRequestSeq) {
+                            return;
+                        }
+
                         console.error('Error en Services.Post:', error);
                         self.EvaluacionReputacionLoading(false);
-                        swal('Error', error.message, 'error');
-                    },
-                    null,
-                    null
-                );
-            };
-            
-            // Cargar más Evaluación de Reputación
-            this.loadMoreEvaluacionReputacion = function() {
-                if (self.EvaluacionReputacionLoadingMore() || !self.EvaluacionReputacionHasMore()) {
-                    return;
-                }
-                
-                self.EvaluacionReputacionLoadingMore(true);
-                var nextPage = self.EvaluacionReputacionCurrentPage() + 1;
-                var data = { page: nextPage };
-                
-                Services.Post('/concursos/cliente/list/evaluacion-reputacion-lazy', {
-                        UserToken: User.Token,
-                        Data: JSON.stringify(data)
-                    },
-                    (response) => {
-                        self.EvaluacionReputacionLoadingMore(false);
-                        if (response.success) {
-                            // Agregar items a la lista
-                            response.data.items.forEach(item => {
-                                self.Lists().ListaConcursosEvaluacionReputacion.push(new ListItem(item));
-                            });
-                            
-                            // Actualizar paginación
-                            self.EvaluacionReputacionCurrentPage(response.data.page);
-                            self.EvaluacionReputacionTotalPages(response.data.totalPages);
-                            self.EvaluacionReputacionHasMore(response.data.hasMore);
-                        } else {
-                            swal('Error', response.message || 'Error al cargar más licitaciones', 'error');
-                        }
-                    },
-                    (error) => {
-                        self.EvaluacionReputacionLoadingMore(false);
                         swal('Error', error.message, 'error');
                     },
                     null,
@@ -845,6 +838,20 @@
                         (response) => {
                             if (response.success) {
                                 self.Lists(new List(response.data.list))
+
+                                if (filters && filters.searchTerm && ko.utils.unwrapObservable(filters.searchTerm)) {
+                                    self.EvaluacionReputacionExpanded(true);
+                                    self.loadEvaluacionReputacionPage(1);
+                                } else {
+                                    self.EvaluacionReputacionRequestSeq++;
+                                    self.EvaluacionReputacionExpanded(false);
+                                    self.EvaluacionReputacionTotal(0);
+                                    self.EvaluacionReputacionCurrentPage(1);
+                                    self.EvaluacionReputacionTotalPages(1);
+                                    self.EvaluacionReputacionHasMore(false);
+                                    self.EvaluacionReputacionPageNumbers([]);
+                                    self.Lists().ListaConcursosEvaluacionReputacion.removeAll();
+                                }
                             }
                             $.unblockUI();
                         },
