@@ -43,7 +43,8 @@ class CustomerCompany extends Model
         'email',
         'website',
         'comments',
-        'timeZone'
+        'timeZone',
+        'solped_active'
     ];
 
     protected $appends = [

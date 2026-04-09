@@ -46,7 +46,6 @@ class DashboardController extends BaseController
             'Economicas'   => [],
             'PorAdjudicar' => [],
             'AprobacionesPendientes' => [],
-            
         ];
         $breadcrumbs = [];
     
@@ -182,7 +181,7 @@ class DashboardController extends BaseController
                         ];
                     }
 
-                    // APROBACIONES PENDIENTES - Para usuarios que son aprobadores en la cadena
+                     // APROBACIONES PENDIENTES - Para usuarios que son aprobadores en la cadena
                     $userId = User()->id;
                     
                     // Obtener los contest_ids únicos con aprobaciones pendientes

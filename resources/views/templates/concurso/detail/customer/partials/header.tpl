@@ -156,7 +156,7 @@
                             rowspan="5" 
                             class="col-md-4 vertical-align-middle text-center" 
                             data-bind="style: {literal}{
-                                backgroundImage: 'url(' + ImagePath() + Portrait() + ')'
+                                backgroundImage: 'url(\'' + encodeURI(ImagePath() + Portrait()) + '\')'
                             }{/literal}" 
                             style="width: auto; height: 300px; background-repeat: no-repeat; background-position: center center;background-size:cover;">
                         </td>
@@ -196,5 +196,31 @@
             </table>
         </div>
     </div>
+
+    <!-- ko if: Adjudicado() && ProveedoresAdjudicados && ProveedoresAdjudicados().length > 0 -->
+    <div class="col-sm-12">
+        <div class="m-heading-1 border-default m-bordered text-left">
+            <h4 class="block bold" style="margin-top: 0; padding-top: 0;">Información del/los proveedores adjudicados</h4>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th class="text-center">Razón Social</th>
+                        <th class="text-center">Teléfono</th>
+                        <th class="text-center">Celular</th>
+                        <th class="text-center">Email</th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: ProveedoresAdjudicados">
+                    <tr>
+                        <td class="vertical-align-middle" data-bind="text: razonSocial"></td>
+                        <td class="text-center vertical-align-middle" data-bind="text: telefono || '—'"></td>
+                        <td class="text-center vertical-align-middle" data-bind="text: celular || '—'"></td>
+                        <td class="text-center vertical-align-middle" data-bind="text: email"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- /ko -->
 </div>
 {/if}

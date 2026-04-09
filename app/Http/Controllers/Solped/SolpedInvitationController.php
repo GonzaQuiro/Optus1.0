@@ -27,32 +27,49 @@ class SolpedInvitationController extends BaseController
             }
 
             // Cambiar estado de la solicitud
-            $solped->estado = 'pendiente_revision';
+            $solped->estado_actual = 'esperando-revision';
             $solped->save();
 
-            // Obtener todos los usuarios de la empresa compradora
-            $compradores = $solped->compradores; // relación hasMany User
-            $users = $compradores->pluck('email')->toArray();
+            // Obtener el comprador sugerido o todos los compradores de la empresa
+            $users = [];
+            $companyName = 'Empresa';
+
+            // Intentar obtener el comprador sugerido
+            if ($solped->id_comprador_sugerido) {
+                $comprador = $solped->comprador_sugerido;
+                if ($comprador && $comprador->email) {
+                    $users = [$comprador->email];
+                    if ($comprador->customer_company) {
+                        $companyName = $comprador->customer_company->business_name ?? 'Empresa';
+                    }
+                }
+            }
+
+            // Si no hay comprador sugerido, obtener todos los compradores de la empresa
+            if (empty($users)) {
+                $compradores = $solped->compradores;
+                $users = $compradores->pluck('email')->toArray();
+                if (!empty($compradores) && $compradores->first()) {
+                    $companyName = $compradores->first()->customer_company->business_name ?? 'Empresa';
+                }
+            }
 
             if (empty($users)) {
                 throw new \Exception('No hay usuarios disponibles para notificar.');
             }
 
-            // Tomamos el nombre de la empresa (asumimos que todos los usuarios son de la misma empresa)
-            $companyName = $compradores->first()->customer_company->business_name ?? 'Empresa';
-
             // Preparar correo
             $title = 'Nueva Solicitud de Pedido para Revisión';
             $subject = $companyName . ' - ' . $title;
-            $template = rootPath(config('app.templates_path')) . '/email/new-solped-for-customer.tpl';
+            $template = rootPath(config('app.templates_path')) . '/email/solped-sent.tpl';
 
             $emailService = new EmailService();
             $html = $this->fetch($template, [
-                'title' => $title,
-                'ano' => Carbon::now()->format('Y'),
-                'solped' => $solped,
-                'solicitante' => $solped->solicitante,
-                'company_name' => $companyName
+                'compradorNombre' => !empty($users) ? (isset($comprador) ? $comprador->full_name : 'Comprador') : 'Comprador',
+                'nombreSolicitud' => $solped->nombre,
+                'areaSolicitante' => $solped->area_sol,
+                'fechaResolucion' => $solped->fecha_resolucion ? (new \DateTime($solped->fecha_resolucion))->format('d-m-Y H:i') : '-',
+                'enlaceAcceso' => 'https://' . $_SERVER['HTTP_HOST'] . '/solped/edicion/' . $solped->id
             ]);
 
             // Enviar correo

@@ -55,6 +55,216 @@ class ConcursoController extends BaseController
 {
     protected static $description_limit = 5000;
 
+    private function buildSolpedSummaryTexts($solpeds)
+    {
+        $formatDate = function ($value, $withTime = false) {
+            if (empty($value)) {
+                return 'N/D';
+            }
+            try {
+                if ($value instanceof Carbon) {
+                    return $value->format($withTime ? 'd-m-Y H:i' : 'd-m-Y');
+                }
+                return Carbon::parse($value)->format($withTime ? 'd-m-Y H:i' : 'd-m-Y');
+            } catch (\Throwable $e) {
+                return 'N/D';
+            }
+        };
+
+        $plainLines = [];
+        $htmlLines = [];
+        foreach ($solpeds as $solped) {
+            $resolucion = $formatDate($solped->fecha_resolucion, false);
+            $entrega = $formatDate($solped->fecha_entrega, false);
+
+            $plainLines[] = 'SOLPED #' . (int)$solped->id
+                . ' - Fecha resolucion: ' . $resolucion
+                . ' - Fecha entrega: ' . $entrega;
+
+            $htmlLines[] = '<strong>SOLPED #' . (int)$solped->id . '</strong><br>'
+                . '<strong>Fecha resolucion: ' . $resolucion . '</strong><br>'
+                . '<strong>Fecha entrega: ' . $entrega . '</strong>';
+        }
+
+        $header = 'Generado automaticamente desde SOLPED(s): ' . implode(', ', $solpeds->pluck('id')->toArray());
+        $plainBody = implode("\n", $plainLines);
+        $htmlBody = implode('<br><br>', $htmlLines);
+
+        return [
+            'resena' => trim($header . "\n" . $plainBody),
+            'descripcion' => trim('<p>' . $header . '</p><p>' . $htmlBody . '</p>'),
+        ];
+    }
+
+    private function resolveSolpedLocation($solpeds, $fallbackCountry = 'Argentina', $fallbackProvince = null)
+    {
+        if (!$solpeds || $solpeds->isEmpty()) {
+            return [
+                'pais' => $fallbackCountry,
+                'provincia' => $fallbackProvince,
+                'localidad' => null,
+                'direccion' => null,
+                'cp' => null,
+                'latitud' => null,
+                'longitud' => null,
+            ];
+        }
+
+        $source = $solpeds->first(function ($solped) {
+            return !empty($solped->pais)
+                || !empty($solped->provincia)
+                || !empty($solped->localidad)
+                || !empty($solped->direccion)
+                || !empty($solped->cp)
+                || !empty($solped->latitud)
+                || !empty($solped->longitud);
+        });
+
+        if (!$source) {
+            $source = $solpeds->first();
+        }
+
+        return [
+            'pais' => !empty($source->pais) ? $source->pais : $fallbackCountry,
+            'provincia' => !empty($source->provincia) ? $source->provincia : $fallbackProvince,
+            'localidad' => !empty($source->localidad) ? $source->localidad : null,
+            'direccion' => !empty($source->direccion) ? $source->direccion : null,
+            'cp' => !empty($source->cp) ? $source->cp : null,
+            'latitud' => !empty($source->latitud) ? $source->latitud : null,
+            'longitud' => !empty($source->longitud) ? $source->longitud : null,
+        ];
+    }
+
+    private function migrateSolpedDocumentsToConcurso($solpeds, $concurso)
+    {
+        if (!$solpeds || $solpeds->isEmpty() || !$concurso) {
+            return;
+        }
+
+        $sheetTypes = SheetType::orderBy('id')->get()->values();
+        if ($sheetTypes->isEmpty()) {
+            return;
+        }
+
+        $destinationDir = rtrim(rootPath() . filePath($concurso->file_path), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        if (!is_dir($destinationDir)) {
+            @mkdir($destinationDir, 0777, true);
+        }
+
+        $usedTypeIds = [];
+        foreach ($solpeds as $solped) {
+            $docs = \App\Models\SolpedDocument::where('solped_id', $solped->id)->orderBy('id')->get()->values();
+            if ($docs->isEmpty()) {
+                continue;
+            }
+
+            foreach ($docs as $index => $doc) {
+                $sheetType = isset($sheetTypes[$index]) ? $sheetTypes[$index] : null;
+                if (!$sheetType) {
+                    continue;
+                }
+
+                $typeId = (int)$sheetType->id;
+                if (isset($usedTypeIds[$typeId])) {
+                    continue;
+                }
+
+                $sourceDir = rtrim(rootPath() . '/storage/img/' . ltrim((string)$solped->file_path, '/'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+                $sourcePath = $sourceDir . (string)$doc->filename;
+                if (!is_file($sourcePath)) {
+                    continue;
+                }
+
+                $baseFilename = basename((string)$doc->filename);
+                $targetFilename = $baseFilename;
+                $targetPath = $destinationDir . $targetFilename;
+                $collisionIdx = 1;
+                while (is_file($targetPath)) {
+                    $name = pathinfo($baseFilename, PATHINFO_FILENAME);
+                    $ext = pathinfo($baseFilename, PATHINFO_EXTENSION);
+                    $targetFilename = $name . '_' . $collisionIdx . ($ext ? '.' . $ext : '');
+                    $targetPath = $destinationDir . $targetFilename;
+                    $collisionIdx++;
+                }
+
+                if (@copy($sourcePath, $targetPath)) {
+                    Sheet::create([
+                        'concurso_id' => $concurso->id,
+                        'type_id' => $typeId,
+                        'filename' => $targetFilename,
+                    ]);
+                    $usedTypeIds[$typeId] = true;
+                }
+            }
+        }
+    }
+
+    private function getEvaluacionReputacionConcursos($user)
+    {
+        if (isAdmin()) {
+            $created = Concurso::all();
+        } else if ($user->type_id != 7 && $user->type_id != 3 && $user->type_id != 4 && $user->type_id != 2) {
+            $created = $user->customer_company->getAllConcursosByCompany()->get();
+        } else if ($user->type_id == 3) {
+            $created = $user->customer_company->getAllConcursosByCompany()
+                ->where('id_cliente', $user->id)
+                ->get();
+        } else {
+            $created = Concurso::where([['ficha_tecnica_usuario_evalua', '=', $user->id]])->get();
+
+            $concursosCalificaReputacion = Concurso::whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])->get();
+            $created = $created->merge($concursosCalificaReputacion)->unique('id');
+        }
+
+        if (isAdmin()) {
+            $evaluating = collect();
+        } else {
+            $evaluating = $user->concursos_evalua;
+            $concursosCalificaReputacion = Concurso::whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])->get();
+            $evaluating = collect($evaluating)->merge($concursosCalificaReputacion)->unique('id');
+        }
+
+        return collect()
+            ->merge($created->where('adjudicado', true))
+            ->merge($evaluating->where('adjudicado', true))
+            ->unique('id')
+            ->filter(function ($concurso) {
+                if ((bool)($concurso->is_online ?? false)) {
+                    return false;
+                }
+
+                return $concurso->oferentes_etapa_evaluacion->count() > 0;
+            })
+            ->sortBy('id');
+    }
+
+    private function concursoMatchesSearchTerm($concurso, $searchTerm)
+    {
+        $searchTerm = trim((string) $searchTerm);
+
+        if ($searchTerm === '') {
+            return true;
+        }
+
+        $businessName = '';
+        if (isset($concurso->cliente) && isset($concurso->cliente->customer_company) && isset($concurso->cliente->customer_company->business_name)) {
+            $businessName = (string) $concurso->cliente->customer_company->business_name;
+        }
+
+        $fullName = '';
+        if (isset($concurso->cliente) && isset($concurso->cliente->full_name)) {
+            $fullName = (string) $concurso->cliente->full_name;
+        }
+
+        return
+            !!stristr((string)($concurso->id ?? ''), $searchTerm) ||
+            !!stristr((string)($concurso->nombre ?? ''), $searchTerm) ||
+            !!stristr($businessName, $searchTerm) ||
+            !!stristr($fullName, $searchTerm) ||
+            !!stristr((string)($concurso->solicitud_compra ?? ''), $searchTerm) ||
+            !!stristr((string)($concurso->area_sol ?? ''), $searchTerm);
+    }
+
     public function serveList(Request $request, Response $response)
     {
         return $this->render($response, 'concurso/list/cliente/type-list.tpl', [
@@ -127,15 +337,20 @@ class ConcursoController extends BaseController
             }
         }
 
+        // No eliminamos el token para permitir F5
+        // unset($_SESSION['edit_token'][$id]);
+
         if (isAdmin()) {
             $concurso = Concurso::find($id);
         } else {
+            
             $concurso = $user->customer_company->getAllConcursosByCompany()->find($id)
                     ?? $user->concursos_evalua->find($id);
 
             if (!$concurso && ($isApprover || $isEvaluator)) {
                 $concurso = $concursoForCheck ?? Concurso::find($id);
             }
+
         }
 
         abort_if($request, $response, !$concurso, true, 404);
@@ -205,7 +420,8 @@ class ConcursoController extends BaseController
             'title' => $title,
             'description' => $description,
             'concurso_id' => null,
-            'isCopy' => 0
+            'isCopy' => 0,
+            'mapboxToken' => getenv('MAPBOX_ACCESS_TOKEN') ?: ''
         ]);
     }
 
@@ -287,7 +503,8 @@ class ConcursoController extends BaseController
             'title' => $title,
             'description' => $description,
             'concurso_id' => $concurso_id,
-            'isCopy' => $concurso_id ? 1 : 0
+            'isCopy' => $concurso_id ? 1 : 0,
+            'mapboxToken' => getenv('MAPBOX_ACCESS_TOKEN') ?: ''
         ]);
     }
 
@@ -438,7 +655,6 @@ class ConcursoController extends BaseController
         $success = false;
         $message = null;
         $status = 200;
-        $searchTerm = null;
         $list = [
             'ListaConcursosEnPreparacion' => [],
             'ListaConcursosConvocatoriaOferentes' => [],
@@ -535,35 +751,55 @@ class ConcursoController extends BaseController
 
 
             
-                //Check if Knockout has passed filters
+//Check if Knockout has passed filters
                 if ($filters) {
-                    $searchTerm = isset($filters->searchTerm) ? trim((string) $filters->searchTerm) : null;
+                    $searchTerm = $filters->searchTerm ?? null;
                     
                     //Checks for a text input to exist
-                    if (!empty($searchTerm)) {
-                        $matchesSearch = function ($item) use ($searchTerm) {
-                            $term = trim((string)$searchTerm);
-                            $isNumericTerm = is_numeric($term);
+                    if ($searchTerm) {
+                        // Buscar en todos los campos relevantes, sin importar si es numérico o no
+                        // Esto permite encontrar clientes cuyo nombre es solo números (ej: "0938")
+                        // También busca coincidencias parciales en ID (ej: "29" encuentra 529, 129, etc.)
+                        $created = $created->filter(function ($item) use ($searchTerm) {
+                            return 
+                                !!stristr((string)$item->id, trim($searchTerm)) ||
+                                !!stristr($item->nombre, trim($searchTerm)) ||
+                                !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||
+                                !!stristr($item->cliente->full_name, trim($searchTerm)) ||
+                                !!stristr($item->solicitud_compra, trim($searchTerm)) ||
+                                !!stristr($item->area_sol, trim($searchTerm));
+                                
+                        });
+                        
+                        $evaluating = $evaluating->filter(function ($item) use ($searchTerm) {
+                            return 
+                                !!stristr((string)$item->id, trim($searchTerm)) ||
+                                !!stristr($item->nombre, trim($searchTerm)) ||
+                                !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||
+                                !!stristr($item->cliente->full_name, trim($searchTerm)) ||
+                                !!stristr($item->solicitud_compra, trim($searchTerm)) ||
+                                !!stristr($item->area_sol, trim($searchTerm));
+                        });
+                        
+                        $created_with_trashed = $created_with_trashed->filter(function ($item) use ($searchTerm) {
+                            return 
+                                !!stristr((string)$item->id, trim($searchTerm)) ||
+                                !!stristr($item->nombre, trim($searchTerm)) ||
+                                !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||  
+                                !!stristr($item->cliente->full_name, trim($searchTerm)) ||
+                                !!stristr($item->solicitud_compra, trim($searchTerm)) ||  
+                                !!stristr($item->area_sol, trim($searchTerm));
+                        });
 
-                            $exactNumericMatch = $isNumericTerm && (
-                                (string)$item->id === $term ||
-                                (string)$item->solicitud_compra === $term
-                            );
-
-                            $partialMatch =
-                                !!stristr((string)$item->nombre, $term) ||
-                                !!stristr((string)$item->cliente->customer_company->business_name, $term) ||
-                                !!stristr((string)$item->cliente->full_name, $term) ||
-                                !!stristr((string)$item->solicitud_compra, $term) ||
-                                !!stristr((string)$item->area_sol, $term);
-
-                            return $exactNumericMatch || $partialMatch;
-                        };
-
-                        $created = $created->filter($matchesSearch);
-                        $evaluating = $evaluating->filter($matchesSearch);
-                        $created_with_trashed = $created_with_trashed->filter($matchesSearch);
-                        $deleted_with_trashed = $deleted_with_trashed->filter($matchesSearch);
+                        $deleted_with_trashed = $deleted_with_trashed->filter(function ($item) use ($searchTerm) {
+                            return
+                                !!stristr((string)$item->id, trim($searchTerm)) ||
+                                !!stristr($item->nombre, trim($searchTerm)) ||
+                                !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||  
+                                !!stristr($item->cliente->full_name, trim($searchTerm)) ||
+                                !!stristr($item->solicitud_compra, trim($searchTerm)) ||  
+                                !!stristr($item->area_sol, trim($searchTerm));
+                        });
                     }
                 }
 
@@ -918,8 +1154,8 @@ class ConcursoController extends BaseController
             }
 
 
-            // EVALUACIÓN - NO CARGAR EN CARGA INICIAL
-            // Se cargarán lazy cuando el usuario expanda la sección
+            // EVALUACIÓN REPUTACIÓN
+            // Se mantiene vacía en la respuesta general; se carga paginada bajo demanda.
 
 
 
@@ -969,29 +1205,6 @@ class ConcursoController extends BaseController
         foreach ($concursos as $concurso) {
             $list['ListaConcursosInformes'][] = $this->mapConcursoList($concurso);
         }
-
-            // EVALUACIÓN
-            // Se cargan lazy cuando el usuario expanda la sección.
-            // Si hay búsqueda activa, incluir resultados para que el monitor los encuentre.
-            if (!empty($searchTerm)) {
-                $concursos = collect()
-                    ->merge($created->where('adjudicado', true))
-                    ->merge($evaluating->where('adjudicado', true))
-                    ->unique('id')
-                    ->filter(function ($concurso) {
-                        if ((bool)($concurso->is_online ?? false)) {
-                            return false;
-                        }
-
-                        return $concurso->oferentes_etapa_evaluacion->count() > 0;
-                    })
-                    ->sortBy('id');
-
-                foreach ($concursos as $concurso) {
-                    $list['ListaConcursosEvaluacionReputacion'][] = $this->mapConcursoList($concurso);
-                }
-            }
-
             // CANCELADOS
                 $concursos = collect();
                if ($user->type_id == 7) {
@@ -1011,25 +1224,20 @@ class ConcursoController extends BaseController
                 }
 
                 // Aplico los mismos filtros que al principio
-                if ($filters && !empty($searchTerm)) {
-                    $concursos = $concursos->filter(function ($item) use ($searchTerm) {
-                        $term = trim((string)$searchTerm);
-                        $isNumericTerm = is_numeric($term);
+                if ($filters) {
+                    $searchTerm = $filters->searchTerm ?? null;
 
-                        $exactNumericMatch = $isNumericTerm && (
-                            (string)$item->id === $term ||
-                            (string)$item->solicitud_compra === $term
-                        );
-
-                        $partialMatch =
-                            !!stristr((string)$item->nombre, $term) ||
-                            !!stristr((string)$item->cliente->customer_company->business_name, $term) ||
-                            !!stristr((string)$item->cliente->full_name, $term) ||
-                            !!stristr((string)$item->solicitud_compra, $term) ||
-                            !!stristr((string)$item->area_sol, $term);
-
-                        return $exactNumericMatch || $partialMatch;
-                    });
+                    if ($searchTerm) {
+                        // Buscar en todos los campos relevantes, sin importar si es numérico o no
+                        // Esto permite encontrar clientes cuyo nombre es solo números (ej: "0938")
+                        // También busca coincidencias parciales en ID (ej: "29" encuentra 529, 129, etc.)
+                        $concursos = $concursos->filter(function ($item) use ($searchTerm) {
+                            return 
+                                !!stristr((string)$item->id, trim($searchTerm)) ||
+                                !!stristr($item->nombre, trim($searchTerm)) ||
+                                !!stristr($item->cliente->full_name, trim($searchTerm));
+                        });
+                    }
                 }
 
                 $concursos = $concursos->sortBy('id');
@@ -1074,78 +1282,17 @@ class ConcursoController extends BaseController
     {
         $body = json_decode($request->getParsedBody()['Data'] ?? '{}');
         $page = (int)($body->page ?? 1);
-        $searchTerm = isset($body->searchTerm) ? trim((string) $body->searchTerm) : null;
+        $searchTerm = trim((string)($body->searchTerm ?? ''));
 
         try {
             $user = user();
-            
-            // CREATED - Mismo lógica que listDoFilter
-            if (isAdmin()) {
-                $created = Concurso::all();
-            } else if ($user->type_id != 7 && $user->type_id != 3 && $user->type_id != 4 && $user->type_id != 2) {
-                $created = $user->customer_company->getAllConcursosByCompany()->get();
-            } else if ($user->type_id == 3) {
-                $created = $user->customer_company->getAllConcursosByCompany()
-                    ->where('id_cliente', $user->id)
-                    ->get();
-            } else {
-                // type_id == 7 (evaluador técnico) o type_id == 4 (calificador reputación)
-                $created = Concurso::where([['ficha_tecnica_usuario_evalua', '=', $user->id]])->get();
-                
-                // Agregar concursos donde el usuario califica reputación
-                $concursosCalificaReputacion = Concurso::whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])->get();
-                $created = $created->merge($concursosCalificaReputacion)->unique('id');
+            $concursos = $this->getEvaluacionReputacionConcursos($user);
+
+            if ($searchTerm !== '') {
+                $concursos = $concursos->filter(function ($concurso) use ($searchTerm) {
+                    return $this->concursoMatchesSearchTerm($concurso, $searchTerm);
+                });
             }
-
-            // EVALUATING
-            if (isAdmin()) {
-                $evaluating = collect();
-            } else {
-                $evaluating = $user->concursos_evalua;
-                // Agregar concursos donde el usuario califica reputación
-                $concursosCalificaReputacion = Concurso::whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])->get();
-                $evaluating = collect($evaluating)->merge($concursosCalificaReputacion)->unique('id');
-            }
-
-            // Aplicar búsqueda si existe
-            if (!empty($searchTerm)) {
-                $matchesSearch = function ($item) use ($searchTerm) {
-                    $term = trim((string)$searchTerm);
-                    $isNumericTerm = is_numeric($term);
-
-                    $exactNumericMatch = $isNumericTerm && (
-                        (string)$item->id === $term ||
-                        (string)$item->solicitud_compra === $term
-                    );
-
-                    $partialMatch =
-                        !!stristr((string)$item->nombre, $term) ||
-                        !!stristr((string)$item->cliente->customer_company->business_name, $term) ||
-                        !!stristr((string)$item->cliente->full_name, $term) ||
-                        !!stristr((string)$item->solicitud_compra, $term) ||
-                        !!stristr((string)$item->area_sol, $term);
-
-                    return $exactNumericMatch || $partialMatch;
-                };
-
-                $created = $created->filter($matchesSearch);
-                $evaluating = $evaluating->filter($matchesSearch);
-            }
-
-            // Filtrar concursos en evaluación de reputación
-            $concursos = collect()
-                ->merge($created->where('adjudicado', true))
-                ->merge($evaluating->where('adjudicado', true))
-                ->unique('id')
-                ->filter(function ($concurso) {
-                    // Excluir concursos online usando el flag booleano
-                    if ((bool)($concurso->is_online ?? false)) {
-                        return false;
-                    }
-                    // Mantener sólo los que tienen oferentes en etapa de evaluación
-                    return $concurso->oferentes_etapa_evaluacion->count() > 0;
-                })
-                ->sortBy('id');
 
             $itemsPerPage = 30;
             $totalItems = count($concursos);
@@ -1648,7 +1795,19 @@ class ConcursoController extends BaseController
                 'urlChatMuro' => route($route_name, ['type' => $concurso->tipo_concurso, 'id' => $concurso->id, 'step' => 'chat-muro-consultas']),
                 'concurso_fiscalizado' => $concurso->concurso_fiscalizado,
                 'ChatEnable' => $concurso->is_sobrecerrado ? true : ($concurso->chat == 'si' ? true : false ),
-                'emailSuper' => $concurso->concurso_fiscalizado == 'si' ? $concurso->supervisor->email : null    
+                'emailSuper' => $concurso->concurso_fiscalizado == 'si' ? $concurso->supervisor->email : null,
+                'ProveedoresAdjudicados' => $concurso->oferentes
+                    ->filter(function($p) {
+                        return str_starts_with((string)$p->etapa_actual, 'adjudicacion-');
+                    })
+                    ->map(function($p) {
+                        return [
+                            'razonSocial' => $p->company->business_name ?? '',
+                            'telefono'    => $p->company->phone ?? '',
+                            'celular'     => $p->company->cellphone ?? '',
+                            'email'       => $p->company->email ?? '',
+                        ];
+                    })->values()->toArray(),
                             
             ];
 
@@ -1854,8 +2013,7 @@ class ConcursoController extends BaseController
                     $verOfertasEnable = true;
                 }
 
-                if (!$verOfertasEnable && !$concurso->adjudicado && $concurso->adjudicacion_anticipada
-                    && ($concurso->alguno_presento_economica || $plazoVencidoEconomicas) && $fechaLimiteVencida) {
+                if (!$verOfertasEnable && !$concurso->adjudicado && $concurso->adjudicacion_anticipada) {
                     $verOfertasEnable = true;
                 }
                 if ($concurso->technical_includes) {
@@ -1978,8 +2136,7 @@ class ConcursoController extends BaseController
                     $verOfertasEnable = true;
                 }
                
-                if (!$verOfertasEnable && !$concurso->adjudicado && $concurso->adjudicacion_anticipada
-                    && ($concurso->alguno_presento_economica || $plazoVencidoEconomicas)) {
+                if (!$verOfertasEnable && !$concurso->adjudicado && $concurso->adjudicacion_anticipada) {
                     $verOfertasEnable = true;
                 }
                
@@ -2104,7 +2261,8 @@ class ConcursoController extends BaseController
                     $bloquearInvitacionOferentes = $invitacionesExistentes;
                     
                     // --- NO venció (hoy < fecha económica) ---
-                    $noVencio = false;
+                    // Si la fecha económica aún no está definida, mantenemos visible para permitir edición.
+                    $noVencio = true;
                     if (!empty($fechaEconomicaLicitacion) && !empty($fechaActual)) {
                         $noVencio = strtotime($fechaActual) < strtotime($fechaEconomicaLicitacion);
                     }
@@ -2906,9 +3064,17 @@ class ConcursoController extends BaseController
                                     }
                                 }
 
-                                // si se edita y los proveedores estan en etapa economica se pasan a tecnica
+                                // si se edita la técnica y los proveedores están en etapa económica, se pasan a técnica pendiente
                                 if ($technicalAdded || $technicalChanged) {
-                                    if ($oferente->has_invitacion_aceptada && !$oferente->has_tecnica_rechazada) {
+                                    if (
+                                        $oferente->has_invitacion_aceptada &&
+                                        !$oferente->has_tecnica_rechazada &&
+                                        (
+                                            $oferente->is_economica_pendiente ||
+                                            $oferente->is_economica_presentada ||
+                                            $oferente->is_economica_revisada
+                                        )
+                                    ) {
                                         $oferente->update([
                                             'etapa_actual' => Participante::ETAPAS['tecnica-pendiente']
                                         ]);
@@ -2921,9 +3087,17 @@ class ConcursoController extends BaseController
                                     }
                                 }
 
-                                // si se edita los documentos de la tecnica y los proveedores estan en etapa economica se pasan a tecnica
+                                // si se editan documentos de la técnica y los proveedores están en etapa económica, se pasan a técnica pendiente
                                 if (count($tecnicalDocuments) > 0) {
-                                    if ($oferente->has_invitacion_aceptada && !$oferente->has_tecnica_rechazada) {
+                                    if (
+                                        $oferente->has_invitacion_aceptada &&
+                                        !$oferente->has_tecnica_rechazada &&
+                                        (
+                                            $oferente->is_economica_pendiente ||
+                                            $oferente->is_economica_presentada ||
+                                            $oferente->is_economica_revisada
+                                        )
+                                    ) {
                                         $oferente->update([
                                             'etapa_actual' => Participante::ETAPAS['tecnica-pendiente']
                                         ]);
@@ -3754,24 +3928,24 @@ class ConcursoController extends BaseController
     }
 
     /**
-     * Agrega horas a una fecha y si cae en fin de semana, la mueve al siguiente día hábil
-     * la hora siempre queda a las 23:00
+     * Agrega horas habiles (excluyendo sabado y domingo) a una fecha.
+     * La hora final siempre queda a las 23:00 para mantener el comportamiento actual.
      * @param Carbon $fecha Fecha inicial
-     * @param int $horas Cantidad de horas a agregar
+     * @param int $horas Cantidad de horas habiles a agregar
      * @return Carbon Fecha resultante
      */
     private function addBusinessHours($fecha, $horas)
     {
-        // Primero sumamos las horas normalmente
-        $fechaResultado = $fecha->copy()->addHours($horas);
-        
-        // Si cae en sábado (6), mover a lunes a la misma hora
-        if ($fechaResultado->dayOfWeek == Carbon::SATURDAY) {
-            $fechaResultado->addDays(2);
-        }
-        // Si cae en domingo (0), mover a lunes a la misma hora
-        elseif ($fechaResultado->dayOfWeek == Carbon::SUNDAY) {
-            $fechaResultado->addDays(1);
+        $fechaResultado = $fecha->copy();
+        $horasPendientes = (int) $horas;
+
+        // Sumamos hora por hora para no contar horas de fin de semana.
+        while ($horasPendientes > 0) {
+            $fechaResultado->addHour();
+            if ($fechaResultado->isWeekend()) {
+                continue;
+            }
+            $horasPendientes--;
         }
 
         $fechaResultado->hour(23)->minute(0)->second(0);
@@ -5786,6 +5960,18 @@ class ConcursoController extends BaseController
                 throw new \Exception("No se enviaron solicitudes de compra.");
             }
 
+            $solpeds = \App\Models\Solped::whereIn('id', $idsSolpeds)->get();
+            if ($solpeds->isEmpty()) {
+                throw new \Exception("No se encontraron solicitudes de compra válidas.");
+            }
+
+            $summaryTexts = $this->buildSolpedSummaryTexts($solpeds);
+            $locationData = $this->resolveSolpedLocation(
+                $solpeds,
+                $user->customer_company->country ?? 'Argentina',
+                $user->customer_company->province ?? null
+            );
+
             // 🔹 Traer los productos vinculados a esas solpeds usando el modelo
             $productos = \App\Models\SolpedItems::whereIn('id_solped', $idsSolpeds)->get();
 
@@ -5804,10 +5990,15 @@ class ConcursoController extends BaseController
             $concurso->tipo_concurso = Concurso::TYPES['sobrecerrado']; // Licitación sobre cerrado
             $concurso->tipo_operacion = 2; // Licitación
             $concurso->nombre = "Licitación desde SOLPEDs - N° de Solped: " . implode(', ', $idsSolpeds) . " - " . date('d/m/Y H:i');
-            $concurso->resena = "";
-            $concurso->descripcion = "";
-            $concurso->pais = $user->customer_company->country ?? 'Argentina';
-            $concurso->provincia = $user->customer_company->province ?? null;
+            $concurso->resena = $summaryTexts['resena'];
+            $concurso->descripcion = nl2br($summaryTexts['descripcion']);
+            $concurso->pais = $locationData['pais'];
+            $concurso->provincia = $locationData['provincia'];
+            $concurso->localidad = $locationData['localidad'];
+            $concurso->direccion = $locationData['direccion'];
+            $concurso->cp = $locationData['cp'];
+            $concurso->latitud = $locationData['latitud'];
+            $concurso->longitud = $locationData['longitud'];
             $concurso->fecha_alta = Carbon::now();
             $concurso->finalizacion_consultas = $fechaFinalizacionConsultas;
             $concurso->fecha_limite = $fechaFinalizacionConsultas;
@@ -5821,6 +6012,9 @@ class ConcursoController extends BaseController
             $concurso->created_from_solped = implode(',', $idsSolpeds); // Guardar IDs de SOLPEDs separados por coma
             
             $concurso->save();
+
+            // 🔹 Migrar documentación de SOLPED al concurso (sheets + copia física)
+            $this->migrateSolpedDocumentsToConcurso($solpeds, $concurso);
 
             // 🔹 Insertar productos asociados al concurso recién creado
             $insertCount = 0;
@@ -5859,33 +6053,40 @@ class ConcursoController extends BaseController
             $_SESSION['edit_token'] = $_SESSION['edit_token'] ?? [];
             $_SESSION['edit_token'][$concurso->id] = $token;
 
-            // 🔹 Enviar emails a los solicitantes de las SOLPEDs
-            $emailService = new EmailService();
-            $solpeds = \App\Models\Solped::whereIn('id', $idsSolpeds)->get();
-            
-            foreach ($solpeds as $solped) {
-                try {
-                    $solicitante = $solped->solicitante;
-                    if ($solicitante && $solicitante->email) {
-                        $template = rootPath(config('app.templates_path')) . '/email/solped-concurso-creado.tpl';
-                        $subject = 'Solicitud #' . $solped->id . ' - Proceso de Licitación Iniciado';
-                        
-                        $html = $this->fetch($template, [
-                            'title' => $subject,
-                            'ano' => Carbon::now()->format('Y'),
-                            'solped' => $solped,
-                            'user' => $solicitante,
-                            'fecha_creacion' => Carbon::now()->format('d-m-Y H:i')
-                        ]);
-                        
-                        $successMail = $emailService->send(
-                            $html,
-                            $subject,
-                            [$solicitante->email],
-                            $solicitante->full_name
-                        );
+            // 🔹 Enviar emails a los solicitantes de las SOLPEDs (best-effort, no bloqueante)
+            $emailService = null;
+            try {
+                $emailService = new EmailService();
+            } catch (\Throwable $e) {
+                // No bloquear creación de concurso por error de configuración SMTP/From.
+            }
+
+            if ($emailService) {
+                foreach ($solpeds as $solped) {
+                    try {
+                        $solicitante = $solped->solicitante;
+                        if ($solicitante && $solicitante->email) {
+                            $template = rootPath(config('app.templates_path')) . '/email/solped-concurso-creado.tpl';
+                            $subject = 'Solicitud #' . $solped->id . ' - Proceso de Licitación Iniciado';
+
+                            $html = $this->fetch($template, [
+                                'title' => $subject,
+                                'ano' => Carbon::now()->format('Y'),
+                                'solped' => $solped,
+                                'user' => $solicitante,
+                                'fecha_creacion' => Carbon::now()->format('d-m-Y H:i')
+                            ]);
+
+                            $emailService->send(
+                                $html,
+                                $subject,
+                                [$solicitante->email],
+                                $solicitante->full_name
+                            );
+                        }
+                    } catch (\Throwable $e) {
+                        // No bloquear conversión por fallos de envío puntuales.
                     }
-                } catch (\Exception $e) {
                 }
             }
             
@@ -5946,6 +6147,18 @@ class ConcursoController extends BaseController
                 throw new \Exception("No se enviaron solicitudes de compra.");
             }
 
+            $solpeds = \App\Models\Solped::whereIn('id', $idsSolpeds)->get();
+            if ($solpeds->isEmpty()) {
+                throw new \Exception("No se encontraron solicitudes de compra válidas.");
+            }
+
+            $summaryTexts = $this->buildSolpedSummaryTexts($solpeds);
+            $locationData = $this->resolveSolpedLocation(
+                $solpeds,
+                $user->customer_company->country ?? 'Argentina',
+                $user->customer_company->province ?? null
+            );
+
             // 🔹 Traer los productos vinculados a esas solpeds usando el modelo
             $productos = \App\Models\SolpedItems::whereIn('id_solped', $idsSolpeds)->get();
 
@@ -5966,10 +6179,15 @@ class ConcursoController extends BaseController
             $concurso->tipo_concurso = Concurso::TYPES['online']; // Subasta online
             $concurso->tipo_operacion = 2; // Licitación
             $concurso->nombre = "Subasta desde SOLPEDs - N° de Solped: " . implode(', ', $idsSolpeds) . " - " . date('d/m/Y H:i');
-            $concurso->resena = "";
-            $concurso->descripcion = "";
-            $concurso->pais = $user->customer_company->country ?? 'Argentina';
-            $concurso->provincia = $user->customer_company->province ?? null;
+            $concurso->resena = $summaryTexts['resena'];
+            $concurso->descripcion = nl2br($summaryTexts['descripcion']);
+            $concurso->pais = $locationData['pais'];
+            $concurso->provincia = $locationData['provincia'];
+            $concurso->localidad = $locationData['localidad'];
+            $concurso->direccion = $locationData['direccion'];
+            $concurso->cp = $locationData['cp'];
+            $concurso->latitud = $locationData['latitud'];
+            $concurso->longitud = $locationData['longitud'];
             $concurso->fecha_alta = Carbon::now();
             $concurso->finalizacion_consultas = $fechaFinalizacionConsultas;
             $concurso->fecha_limite = $fechaFinalizacionConsultas;
@@ -5996,6 +6214,9 @@ class ConcursoController extends BaseController
             $concurso->created_from_solped = implode(',', $idsSolpeds); // Guardar IDs de SOLPEDs separados por coma
             
             $concurso->save();
+
+            // 🔹 Migrar documentación de SOLPED al concurso (sheets + copia física)
+            $this->migrateSolpedDocumentsToConcurso($solpeds, $concurso);
 
             // 🔹 Insertar productos asociados al concurso recién creado
             $insertCount = 0;
@@ -6034,33 +6255,40 @@ class ConcursoController extends BaseController
             $_SESSION['edit_token'] = $_SESSION['edit_token'] ?? [];
             $_SESSION['edit_token'][$concurso->id] = $token;
 
-            // 🔹 Enviar emails a los solicitantes de las SOLPEDs
-            $emailService = new EmailService();
-            $solpeds = \App\Models\Solped::whereIn('id', $idsSolpeds)->get();
-            
-            foreach ($solpeds as $solped) {
-                try {
-                    $solicitante = $solped->solicitante;
-                    if ($solicitante && $solicitante->email) {
-                        $template = rootPath(config('app.templates_path')) . '/email/solped-concurso-creado.tpl';
-                        $subject = 'Solicitud #' . $solped->id . ' - Proceso de Subasta Iniciado';
-                        
-                        $html = $this->fetch($template, [
-                            'title' => $subject,
-                            'ano' => Carbon::now()->format('Y'),
-                            'solped' => $solped,
-                            'user' => $solicitante,
-                            'fecha_creacion' => Carbon::now()->format('d-m-Y H:i')
-                        ]);
-                        
-                        $successMail = $emailService->send(
-                            $html,
-                            $subject,
-                            [$solicitante->email],
-                            $solicitante->full_name
-                        );
+            // 🔹 Enviar emails a los solicitantes de las SOLPEDs (best-effort, no bloqueante)
+            $emailService = null;
+            try {
+                $emailService = new EmailService();
+            } catch (\Throwable $e) {
+                // No bloquear creación de subasta por error de configuración SMTP/From.
+            }
+
+            if ($emailService) {
+                foreach ($solpeds as $solped) {
+                    try {
+                        $solicitante = $solped->solicitante;
+                        if ($solicitante && $solicitante->email) {
+                            $template = rootPath(config('app.templates_path')) . '/email/solped-concurso-creado.tpl';
+                            $subject = 'Solicitud #' . $solped->id . ' - Proceso de Subasta Iniciado';
+
+                            $html = $this->fetch($template, [
+                                'title' => $subject,
+                                'ano' => Carbon::now()->format('Y'),
+                                'solped' => $solped,
+                                'user' => $solicitante,
+                                'fecha_creacion' => Carbon::now()->format('d-m-Y H:i')
+                            ]);
+
+                            $emailService->send(
+                                $html,
+                                $subject,
+                                [$solicitante->email],
+                                $solicitante->full_name
+                            );
+                        }
+                    } catch (\Throwable $e) {
+                        // No bloquear conversión por fallos de envío puntuales.
                     }
-                } catch (\Exception $e) {
                 }
             }
             

@@ -83,6 +83,12 @@
                         <option value="Regularizacion">Regularizacion</option>
                     </select>
                 </div>
+
+                <div style="min-width: 240px;">
+                    <select class="form-control"
+                        data-bind="value: Filters().buyerFilter, options: Filters().buyerOptions, optionsText: 'text', optionsValue: 'id', optionsCaption: 'Todos los compradores'">
+                    </select>
+                </div>
             </div>
         </div>
 
@@ -115,6 +121,8 @@
                                 <th> Nombre del la Solicitud </th>
                                 <th> Área Solicitante </th>
                                 <th> Urgencia de Solicitud </th>
+                                <th> Estado </th>
+                                <th> Fecha de entrega </th>
                                 <th class="text-center"> Acciones </th>
                             </tr>
                         </thead>
@@ -125,6 +133,8 @@
                                 <td data-bind="text: Nombre()" class="vertical-align-middle"></td>
                                 <td data-bind="text: AreaSolicitante()" class="vertical-align-middle"></td>
                                 <td data-bind="text: Urgencia()" class="vertical-align-middle"></td>
+                                <td data-bind="text: $root.StateTranslator(Estado())" class="vertical-align-middle"></td>
+                                <td data-bind="text: FechaEntrega()" class="vertical-align-middle"></td>
 
                                 <td class="text-center vertical-align-middle">
                                     <a href="javascript:void(0);"
@@ -178,6 +188,7 @@
                                 <th> Área Solicitante </th>
                                 <th> Urgencia de Solicitud </th>
                                 <th> Estado </th>
+                                <th> Fecha de entrega </th>
                                 <th class="text-center"> Acciones </th>
                             </tr>
                         </thead>
@@ -189,6 +200,7 @@
                                 <td data-bind="text: AreaSolicitante()" class="vertical-align-middle"></td>
                                 <td data-bind="text: Urgencia()" class="vertical-align-middle"></td>
                                 <td data-bind="text: $root.StateTranslator(Estado())" class="vertical-align-middle"></td>
+                                <td data-bind="text: FechaEntrega()" class="vertical-align-middle"></td>
                                 <td class="text-center vertical-align-center">
 
                                     <a href="javascript:void(0);"
@@ -235,6 +247,7 @@
                                 <th> Área Solicitante </th>
                                 <th> Urgencia de Solicitud</th>
                                 <th> Estado </th>
+                                <th> Fecha de entrega </th>
                                 <th class="text-center"> Acciones </th>
                             </tr>
                         </thead>
@@ -247,6 +260,7 @@
                                
                                 <td data-bind="text: Urgencia()" class="vertical-align-middle"></td>
                                 <td data-bind="text: $root.StateTranslator(Estado())" class="vertical-align-middle"></td>
+                                    <td data-bind="text: FechaEntrega()" class="vertical-align-middle"></td>
 
                                 <td class="text-center vertical-align-center">
 
@@ -300,6 +314,7 @@
                                 <th> Área Solicitante </th>
                                 <th> Urgencia de Solicitud </th>
                                 <th> Estado </th>
+                                <th> Fecha de entrega </th>
                                 <th class="text-center"> Acciones </th>
                             </tr>
                         </thead>
@@ -312,6 +327,7 @@
                                 <td data-bind="text: AreaSolicitante()" class="vertical-align-middle"></td>
                                 <td data-bind="text: Urgencia()" class="vertical-align-middle"></td>
                                 <td data-bind="text: $root.StateTranslator(Estado())" class="vertical-align-middle"></td>
+                                <td data-bind="text: FechaEntrega()" class="vertical-align-middle"></td>
                                 <td class="text-center vertical-align-center">
                                     
                                     <a href="javascript:;" data-bind="click: function() { $root.goToAcceso(Id(), 'aceptada', User.Tipo) }"
@@ -364,6 +380,7 @@
                                 <th> Área Solicitante </th>
                                 <th> Urgencia de Solicitud </th>
                                 <th> Estado </th>
+                                <th> Fecha de entrega </th>
                                 <th class="text-center"> Acciones </th>
                             </tr>
                         </thead>
@@ -375,6 +392,7 @@
                                 <td data-bind="text: AreaSolicitante()" class="vertical-align-middle"></td>
                                 <td data-bind="text: Urgencia()" class="vertical-align-middle"></td>
                                 <td data-bind="text: $root.StateTranslator(Estado())" class="vertical-align-middle"></td>
+                                <td data-bind="text: FechaEntrega()" class="vertical-align-middle"></td>
                                 <td class="text-center vertical-align-center">
 
                                     <a href="javascript:;" data-bind="click: function() { $root.goToAcceso(Id(), 'rechazada', User.Tipo) }"
@@ -417,6 +435,8 @@
                                 <th> Nombre de la Solicitud </th>
                                 <th> Área Solicitante </th>
                                 <th> Urgencia de Solicitud </th>
+                                <th> Estado </th>
+                                <th> Fecha de entrega </th>
                                 <th> Empresa Adjudicada </th>
                                 <th class="text-center"> Acciones </th>
                             </tr>
@@ -428,6 +448,8 @@
                                 <td data-bind="text: Nombre()" class="vertical-align-middle"></td>
                                 <td data-bind="text: AreaSolicitante()" class="vertical-align-middle"></td>
                                 <td data-bind="text: Urgencia()" class="vertical-align-middle"></td>
+                                <td data-bind="text: $root.StateTranslator(Estado())" class="vertical-align-middle"></td>
+                                <td data-bind="text: FechaEntrega()" class="vertical-align-middle"></td>
                                 <td class="vertical-align-middle">
                                     <div data-bind="if: AdjudicacionDetalles">
                                         <strong data-bind="text: AdjudicacionDetalles.empresaAdjudicada()"></strong>
@@ -478,6 +500,7 @@
                                 <th> Área Solicitante </th>
                                 <th> Urgencia de Solicitud </th>
                                 <th> Estado </th>
+                                <th> Fecha de entrega </th>
                                 <th class="text-center"> Acciones </th>
                             </tr>
                         </thead>
@@ -489,6 +512,7 @@
                                 <td data-bind="text: AreaSolicitante()" class="vertical-align-middle"></td>
                                 <td data-bind="text: Urgencia()" class="vertical-align-middle"></td>
                                 <td data-bind="text: $root.StateTranslator(Estado())" class="vertical-align-middle"></td>
+                                <td data-bind="text: FechaEntrega()" class="vertical-align-middle"></td>
                                 <td class="text-center vertical-align-center">
                                 
                                 <a href="javascript:;" data-bind="click: function() { $root.goToAcceso(Id(), 'rechazada', User.Tipo) }"
@@ -535,11 +559,13 @@
             // this.CantidadPresentaciones = ko.observable(data.CantidadPresentaciones);
             this.HabilitaEnvioAComprador = ko.observable(data.HabilitaEnvioAComprador);
             this.Estado = ko.observable(data.Estado);
+            this.FechaEntrega = ko.observable(data.FechaEntrega || '');
             this.Urgencia = ko.observable(data.Urgencia);
 
             
             this.Nombre = ko.observable(data.Nombre);
             this.Solicitante = ko.observable(data.Solicitante);
+            this.CompradorSugerido = ko.observable(data.CompradorSugerido || '');
             this.CodigoInterno = ko.observable(data.CodigoInterno);
             this.TipoConcursoPath = ko.observable(data.TipoConcursoPath);
             //this.UsuarioSolicitante = ko.observable(data.UsuarioSolicitante);
@@ -615,6 +641,32 @@
             
             //Urgency filter observable
             this.urgencyFilter = ko.observable('');
+            this.buyerFilter = ko.observable('');
+            this.buyerOptions = ko.observableArray([]);
+
+            this.loadBuyerOptions = function() {
+                var source = parent.OriginalData || {};
+                var map = {};
+                Object.keys(source).forEach(function(key) {
+                    var rows = source[key] || [];
+                    rows.forEach(function(item) {
+                        var buyer = String(item.CompradorSugerido || '').trim();
+                        if (buyer) {
+                            map[buyer.toLowerCase()] = buyer;
+                        }
+                    });
+                });
+
+                var options = Object.keys(map)
+                    .map(function(k) {
+                        return { id: map[k], text: map[k] };
+                    })
+                    .sort(function(a, b) {
+                        return a.text.localeCompare(b.text);
+                    });
+
+                self.buyerOptions(options);
+            };
 
             //Subscribe to search term changes
             self.searchTerm.subscribe((value) => {
@@ -626,11 +678,17 @@
                 parent.applyFilters();
             });
 
+            self.buyerFilter.subscribe((value) => {
+                parent.applyFilters();
+            });
+
             //Detect if searching by ID (all digits)
             this.isIdSearch = ko.computed(function() {
                 var term = self.searchTerm();
                 return term && /^\d+$/.test(term);
             });
+
+            self.loadBuyerOptions();
         };
 
 
@@ -658,6 +716,7 @@
             this.applyFilters = function() {
                 var searchTerm = self.Filters().searchTerm();
                 var urgencyFilter = self.Filters().urgencyFilter();
+                var buyerFilter = self.Filters().buyerFilter();
                 
                 // Copiar datos originales
                 var filtered = JSON.parse(JSON.stringify(self.OriginalData));
@@ -684,6 +743,15 @@
                     for (let key in filtered) {
                         filtered[key] = filtered[key].filter(item => {
                             return item.Urgencia && item.Urgencia.toLowerCase() === urgencyFilter.toLowerCase();
+                        });
+                    }
+                }
+
+                // Aplicar filtro por comprador sugerido
+                if (buyerFilter && buyerFilter.trim() !== '') {
+                    for (let key in filtered) {
+                        filtered[key] = filtered[key].filter(item => {
+                            return String(item.CompradorSugerido || '').trim().toLowerCase() === buyerFilter.trim().toLowerCase();
                         });
                     }
                 }

@@ -205,7 +205,6 @@ class Concurso extends Model
         'actas_designacion_autoridades',
         'adjudication_pending_approval',
         'adjudication_rejected',
-
     ];
 
     protected $appends = [

@@ -129,6 +129,24 @@ class SolpedController extends BaseController
 
             fwrite($fp, "Solped encontrado: ID={$solped->id}, etapa={$solped->etapa_actual}\n");
 
+            $fechaFinEtapaEconomica = null;
+            $estadosConConversion = ['aceptada', 'aprobada', 'esperando-licitacion', 'licitando', 'licitacion-finalizada', 'adjudicada'];
+            if (in_array((string)$solped->estado_actual, $estadosConConversion, true)) {
+                $concursoRelacionado = Concurso::whereRaw("FIND_IN_SET(?, created_from_solped)", [$solped->id])
+                    ->orderBy('id', 'desc')
+                    ->first();
+
+                if ($concursoRelacionado && !empty($concursoRelacionado->fecha_limite_economicas)) {
+                    try {
+                        $fechaFinEtapaEconomica = $concursoRelacionado->fecha_limite_economicas instanceof \DateTimeInterface
+                            ? $concursoRelacionado->fecha_limite_economicas->format('d-m-Y H:i:s')
+                            : Carbon::parse($concursoRelacionado->fecha_limite_economicas)->format('d-m-Y H:i:s');
+                    } catch (\Throwable $e) {
+                        $fechaFinEtapaEconomica = null;
+                    }
+                }
+            }
+
             // Common data siempre se carga
             $common_data = [
                 'IdSolicitud'     => $solped->id,
@@ -144,6 +162,7 @@ class SolpedController extends BaseController
                 'FechaEntrega'    => $solped->fecha_entrega ? $solped->fecha_entrega->format('d-m-Y H:i:s') : null,
                 'FechaCreacion'   => $solped->fecha_alta ? $solped->fecha_alta->format('d-m-Y H:i:s') : null,
                 'FechaEnvioComprador' => $solped->fecha_envio_a_comprador ? $solped->fecha_envio_a_comprador->format('d-m-Y H:i:s') : null,
+                'FechaFinEtapaEconomica' => $fechaFinEtapaEconomica,
                 'Eliminado'       => $solped->deleted_at ? true : false,
                 'UsuarioReject'   => $solped->usuario_rechazo ?: null,
                 'UsuarioAccept'   => $solped->id_comprador_decision ?: null,
@@ -204,15 +223,30 @@ class SolpedController extends BaseController
                 ? $solped->fecha_alta->format('Y') 
                 : substr($solped->fecha_alta ?? date('Y'), 0, 4);
             $file_path = '/storage/img/solpeds/' . $cuit . '/' . $year . '/';
-            $document = SolpedDocument::where('solped_id', $solped->id)->first();
+            $documents = SolpedDocument::where('solped_id', $solped->id)->orderBy('id')->get();
+            $sheetTypes = SheetType::orderBy('id')->get()->values();
+            $documentsList = [];
+            foreach ($documents as $index => $doc) {
+                $sheetType = isset($sheetTypes[$index]) ? $sheetTypes[$index] : null;
+                $label = $sheetType && !empty($sheetType->description)
+                    ? (string)$sheetType->description
+                    : (string)($doc->filename ?? 'Documento');
+
+                $documentsList[] = [
+                    'nombre' => $label,
+                    'archivo' => (string)($doc->filename ?? ''),
+                    'imagen' => $file_path . (string)($doc->filename ?? '')
+                ];
+            }
+            $firstDocument = count($documentsList) > 0 ? $documentsList[0]['imagen'] : null;
             fwrite($fp, "FilePath base: {$file_path}\n");
-            fwrite($fp, "Document encontrado: " . ($document ? $document->filename : 'NO') . "\n");
+            fwrite($fp, "Documents encontrados: " . count($documentsList) . "\n");
 
             // Siempre llenamos $list
             $list = array_merge($common_data, [
                 'Productos'        => $productos,
-                'FilePath'         => $file_path,
-                'FilePathComplete' => $file_path && $document ? $file_path . $document->filename : null,
+                'FilePath'         => $documentsList,
+                'FilePathComplete' => $firstDocument,
                 'Etapa'            => $solped->etapa_actual,
             ]);
 
@@ -281,7 +315,8 @@ class SolpedController extends BaseController
             'title' => $title,
             'description' => $description,
             'breadcrumbs' => $breadcrumbs,
-            'isCopy' => 0
+            'isCopy' => 0,
+            'mapboxToken' => getenv('MAPBOX_ACCESS_TOKEN') ?: ''
 
         ]);
     }
@@ -303,7 +338,8 @@ class SolpedController extends BaseController
             'title' => $title,
             'description' => $description,
             'breadcrumbs' => $breadcrumbs,
-            'isCopy' => 0
+            'isCopy' => 0,
+            'mapboxToken' => getenv('MAPBOX_ACCESS_TOKEN') ?: ''
 
         ]);
     }
@@ -786,6 +822,7 @@ class SolpedController extends BaseController
             // Catálogos comunes
             $measurementList = \App\Models\Measurement::getList();
             $buyersList      = $user->getCompradoresByCompanyList();
+            $countriesList   = \App\Models\Pais::getCountries();
 
             // === DOCS - Ruta dinámica con estructura CUIT/AÑO ===
             // Construir ruta base usando CUIT del usuario y año actual
@@ -887,6 +924,19 @@ class SolpedController extends BaseController
                 $compradoresSelected = [$compradorSugeridoId];
             }
 
+            $countrySelectedCode = null;
+            $countrySelectedId = null;
+            if (!$create && $solped && !empty($solped->pais)) {
+                foreach ($countriesList as $country) {
+                    $countryName = isset($country['text']) ? (string)$country['text'] : '';
+                    if ($countryName !== '' && strcasecmp($countryName, (string)$solped->pais) === 0) {
+                        $countrySelectedCode = isset($country['code']) ? (string)$country['code'] : null;
+                        $countrySelectedId = isset($country['id']) ? (string)$country['id'] : null;
+                        break;
+                    }
+                }
+            }
+
             $LOG('BUYERS_SELECTED', ['single' => $compradorSugeridoId, 'multi' => $compradoresSelected]);
 
             // Payload para KO
@@ -898,8 +948,12 @@ class SolpedController extends BaseController
                 'TipoCompraId'            => $create ? null : (isset($solped->tipo_compra) ? (int)$solped->tipo_compra : null),
                 'AreaSolicitante'         => $create ? null : $this->getAreaIdByName($solped->area_sol ?? ''),
                 'Pais'                    => $create ? null : ($solped->pais ?? null),
+                'CountrySelectedId'       => $countrySelectedId,
+                'CountrySelected'         => $countrySelectedCode,
+                'Countries'               => is_array($countriesList) ? $countriesList : (array)$countriesList,
                 'Provincia'               => $create ? '' : (string)($solped->provincia ?? ''),
                 'Ciudad'                  => $create ? '' : (string)($solped->localidad ?? ''),
+                'Localidad'               => $create ? '' : (string)($solped->localidad ?? ''),
                 'Direccion'               => $create ? '' : (string)($solped->direccion ?? ''),
                 'Cp'                      => $create ? '' : (string)($solped->cp ?? ''),
                 'Latitud'                 => $create ? '' : (string)($solped->latitud ?? ''),
@@ -1016,7 +1070,10 @@ class SolpedController extends BaseController
         }
 
         $action = strtolower($payload['Action'] ?? (isset($params['id']) ? 'edit' : 'create'));
-        $id     = isset($payload['Id']) ? (int)$payload['Id'] : (isset($params['id']) ? (int)$params['id'] : 0);
+        $payloadId = isset($payload['Id']) ? (int)$payload['Id'] : 0;
+        $entityId = isset($payload['Entity']['Id']) ? (int)$payload['Entity']['Id'] : 0;
+        $routeId = isset($params['id']) ? (int)$params['id'] : 0;
+        $id = $payloadId > 0 ? $payloadId : ($entityId > 0 ? $entityId : $routeId);
         $entity = $payload['Entity'] ?? [];
         $user   = user();
 
@@ -1113,12 +1170,12 @@ class SolpedController extends BaseController
             $docsProvided = true;
             foreach ($entity['Sheets'] as $sheet) {
                 $filename = '';
-                $action = '';
+                $sheetAction = '';
                 if (is_array($sheet)) {
                     $filename = isset($sheet['filename']) ? (string)$sheet['filename'] : '';
-                    $action = isset($sheet['action']) ? (string)$sheet['action'] : '';
+                    $sheetAction = isset($sheet['action']) ? (string)$sheet['action'] : '';
                 }
-                if ($filename !== '' && $action !== 'delete' && $action !== 'clear') {
+                if ($filename !== '' && $sheetAction !== 'delete' && $sheetAction !== 'clear') {
                     $docs[] = $filename;
                 }
             }
@@ -1680,10 +1737,12 @@ class SolpedController extends BaseController
                 'Id' => $solped->id,
                 'Nombre' => $solped->nombre,
                 'Solicitante' => $solped->solicitante->full_name,
+                'CompradorSugerido' => $solped->comprador_sugerido ? $solped->comprador_sugerido->full_name : null,
                 'AreaSolicitante' => $solped->area_sol,
                 'CodigoInterno' => $solped->codigo_interno, 
                 'Urgencia' => $solped->tipo_compra_nombre,
                 'Estado' => $solped->estado_actual,
+                'FechaEntrega' => $solped->fecha_entrega ? $solped->fecha_entrega->format('d-m-Y') : '',
                 'Etapa' => $solped->etapa_actual,
             ];
             

@@ -110,7 +110,7 @@
                 <td data-bind="text: 'Nombre'" class="col-md-4 vertical-align-middle"></td>
                 <td data-bind="text: Nombre" class="col-md-4 vertical-align-middle"></td>
                 <td rowspan="5" class="col-md-4 text-center"
-                    data-bind="style: {literal}{backgroundImage: 'url(' + ImagePath() + Portrait() + ')'}{/literal}"
+                    data-bind="style: {literal}{backgroundImage: 'url(\'' + encodeURI(ImagePath() + Portrait()) + '\')'}{/literal}"
                     style="vertical-align: middle;width: auto;height: 300px;background-repeat: no-repeat;background-position: center center;background-size:cover;border: 1px solid #ddd;">
                 </td>
             </tr>

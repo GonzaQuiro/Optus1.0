@@ -6,6 +6,7 @@ use App\Http\Controllers\BaseController;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use App\Models\Concurso;
+use App\Models\Solped;
 use App\Models\Participante;
 use App\Models\ParticipanteGoDocument;
 use Carbon\Carbon;
@@ -23,6 +24,9 @@ class MediaController extends BaseController
         ];
 
         try {
+            // Extensiones permitidas
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf', 'zip', 'rar', 'doc', 'docx', 'xls', 'xlsx', 'dwg'];
+            
             $body = $request->getParsedBody();
             $file = !empty($request->getUploadedFiles()) ? $request->getUploadedFiles()['file'][0] : null;
 
@@ -49,6 +53,11 @@ class MediaController extends BaseController
                 // Sanitizar partes
                 $originalSan = $this->sanitizeFilename($originalClientName); // mantiene ext
                 $ext = pathinfo($originalSan, PATHINFO_EXTENSION);
+                
+                // Validar extensión
+                if (!in_array(strtolower($ext), $allowedExtensions)) {
+                    throw new \Exception('Tipo de archivo no permitido. Extensión: ' . $ext . '. Permitidas: ' . implode(', ', $allowedExtensions));
+                }
                 $baseOriginal = pathinfo($originalSan, PATHINFO_FILENAME);
 
                 // ConcursoNombre en MAYÚSCULAS sin espacios (o a tu gusto)
@@ -229,9 +238,9 @@ class MediaController extends BaseController
     public function downloadFile(Request $request, Response $response)
     {
         $body = json_decode($request->getParsedBody()['Entity'], true);
-        $path = $body['Path'];
-        $type = $body['Type'];
-        $id = $body['Id'];
+        $path = isset($body['Path']) ? (string)$body['Path'] : '';
+        $type = isset($body['Type']) ? (string)$body['Type'] : null;
+        $id = isset($body['Id']) ? (int)$body['Id'] : null;
         $success = false;
         $status = 200;
         $file_path = null;
@@ -240,6 +249,8 @@ class MediaController extends BaseController
 
         try {
             $file_name = basename($path);
+            $normalizedPath = trim(str_replace('\\', '/', $path));
+            $normalizedPath = ltrim($normalizedPath, '/');
             $user = user();
 
             switch ($type) {
@@ -265,9 +276,31 @@ class MediaController extends BaseController
                     $concurso = Concurso::find((int) $id);
                     $file_path = config('app.images_path') . $file_name;
                     break;
+                case 'solped':
+                    // Si viene una ruta relativa completa (p.ej. storage/img/S/.../file.pdf), respetarla.
+                    if ($normalizedPath !== '' && strpos($normalizedPath, '/') !== false) {
+                        $file_path = $normalizedPath;
+                    } else {
+                        // Si solo viene el nombre, reconstruir ruta desde la Solped.
+                        $solped = $id ? Solped::find((int) $id) : null;
+                        if ($solped) {
+                            $file_path = 'storage/img/' . ltrim((string)$solped->file_path, '/') . $file_name;
+                        } else {
+                            // Fallback: comportamiento previo.
+                            $file_path = $file_name;
+                        }
+                    }
+                    break;
                 default:
                     $file_path = $file_name;
                     break;
+            }
+
+            // filePath() ya antepone /storage, por lo tanto aquí debemos mantener
+            // una ruta relativa interna (ej: img/solpeds/.../archivo.pdf).
+            $file_path = ltrim((string)$file_path, '/');
+            if (stripos($file_path, 'storage/') === 0) {
+                $file_path = substr($file_path, strlen('storage/'));
             }
 
             $file_path_absolute = rootPath() . filePath('/' . $file_path);

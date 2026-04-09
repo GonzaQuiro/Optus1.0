@@ -147,6 +147,12 @@
                         <td class="col-md-3 vertical-align-middle">Fecha y hora de envío de la solicitud</td>
                         <td class="col-md-9 vertical-align-middle" data-bind="text: FechaEnvioComprador"></td>
                     </tr>
+                    <!-- ko if: FechaFinEtapaEconomica() -->
+                    <tr>
+                        <td class="col-md-3 vertical-align-middle">Fecha de finalización de etapa económica</td>
+                        <td class="col-md-9 vertical-align-middle" data-bind="text: FechaFinEtapaEconomica"></td>
+                    </tr>
+                    <!-- /ko -->
                     <tr>
                         <td class="col-md-3 vertical-align-middle">Área Solicitante</td>
                         <td class="col-md-9 vertical-align-middle" data-bind="text: AreaSolicitante"></td>
@@ -286,23 +292,25 @@
     <div class="m-heading-1 border-default m-bordered text-left">
     <h4 class="block bold">Documentación</h4>
 
-    <!-- Si hay documento -->
-    <!-- ko if: FilePathComplete() -->
-    <table class="table table-striped table-bordered">
-        <tr>
-            <td class="col-md-6 text-center" style="vertical-align: middle;">Documento</td>
-            <td class="col-md-6 text-center" style="vertical-align: middle;">
-                <a data-bind="click: $root.downloadFile.bind($data, FilePathComplete(), 'solped', null)"
-                   download class="btn btn-xl green" title="Descargar">
-                    Descargar <i class="fa fa-download"></i>
-                </a>
-            </td>
-        </tr>
+    <!-- Si hay documentos -->
+    <!-- ko if: FilePath().length > 0 -->
+    <table class="table table-striped table-bordered" id="ListaDocumentos">
+        <tbody data-bind="foreach: FilePath()">
+            <tr>
+                <td class="col-md-6 text-center" style="vertical-align: middle;" data-bind="text: nombre"></td>
+                <td class="col-md-6 text-center" style="vertical-align: middle;">
+                    <a data-bind="click: $root.downloadFile.bind($data, imagen, 'solped', $root.IdSolicitud())"
+                       download class="btn btn-xl green" title="Descargar">
+                        Descargar <i class="fa fa-download"></i>
+                    </a>
+                </td>
+            </tr>
+        </tbody>
     </table>
     <!-- /ko -->
 
-    <!-- Si no hay documento -->
-    <!-- ko ifnot: FilePathComplete() -->
+    <!-- Si no hay documentos -->
+    <!-- ko if: FilePath().length === 0 -->
     <div class="alert alert-success text-center">
         No hay documentos
     </div>
@@ -344,18 +352,18 @@
     <a href="javascript:history.back()" class="btn btn-primary">
         Volver al listado
     </a>
-    <!-- ko if: EstadoActual() !== 'aceptada' && EstadoActual() !== 'rechazada' && EstadoActual() !== 'cancelada' && EstadoActual() !== 'licitando' && EstadoActual() !== 'adjudicada' -->
+    <!-- ko if: EstadoActual() === 'borrador' || EstadoActual() === 'esperando-revision' || EstadoActual() === 'esperando-revision-2' || EstadoActual() === 'devuelta' -->
    <a data-bind="click: cancelarSolicitud, css: { disabled: !SolpedActive() }" class="btn btn-danger">
         <i class="fa fa-times"></i> Cancelar Solicitud
     </a>
     <!-- /ko -->
     <!-- ko if: EstadoActual() === 'esperando-revision' || EstadoActual() === 'esperando-revision-2' -->
-    <a data-bind="attr: { href: SolpedActive() ? '/solped/edicion/' + IdSolicitud() : 'javascript:void(0);' }, css: { disabled: !SolpedActive() }, click: function(){ if (!SolpedActive()) { guardSolpedActive(); } }" class="btn btn-success">
+    <a data-bind="attr: { href: SolpedActive() ? '/solped/edicion/' + IdSolicitud() : 'javascript:void(0);' }, css: { disabled: !SolpedActive() }, click: function(){ if (!SolpedActive()) { guardSolpedActive(); return false; } return true; }" class="btn btn-success">
         <i class="fa fa-edit"></i> Editar
     </a>
     <!-- /ko -->
     <!-- ko if: EstadoActual() === 'devuelta' -->
-    <a data-bind="attr: { href: SolpedActive() ? '/solped/edicion/' + IdSolicitud() : 'javascript:void(0);' }, css: { disabled: !SolpedActive() }, click: function(){ if (!SolpedActive()) { guardSolpedActive(); } }" class="btn btn-warning">
+    <a data-bind="attr: { href: SolpedActive() ? '/solped/edicion/' + IdSolicitud() : 'javascript:void(0);' }, css: { disabled: !SolpedActive() }, click: function(){ if (!SolpedActive()) { guardSolpedActive(); return false; } return true; }" class="btn btn-warning">
         <i class="fa fa-edit"></i> Editar
     </a>
     <a data-bind="click: enviarSolicitudCorregida, css: { disabled: !SolpedActive() }" class="btn btn-success">
@@ -401,6 +409,7 @@
             this.CompradorSugerido = ko.observable(data.list.CompradorSugerido);
             this.FechaCreacion = ko.observable(data.list.FechaCreacion);
             this.FechaEnvioComprador = ko.observable(data.list.FechaEnvioComprador);
+            this.FechaFinEtapaEconomica = ko.observable(data.list.FechaFinEtapaEconomica || null);
             this.UsuarioReject = ko.observable(data.list.UsuarioReject);
             this.UsuarioAccept = ko.observable(data.list.UsuarioAccept);
             this.FechaRechazo = ko.observable(data.list.FechaRechazo);
@@ -416,8 +425,8 @@
             this.CompradorDevolucionFecha = ko.observable(data.list.CompradorDevolucionFecha);
 
             this.Eliminado = ko.observable(data.list.eliminado);
-            this.FilePath = ko.observable(data.list.file_path);
-            this.FilePathComplete = ko.observable(data.list.FilePathComplete);
+            this.FilePath = ko.observableArray(Array.isArray(data.list.FilePath) ? data.list.FilePath : []);
+            this.FilePathComplete = ko.observable(data.list.FilePathComplete || null);
 
 
             this.Etapa = ko.observable(data.list.Etapa);

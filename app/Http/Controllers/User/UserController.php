@@ -877,7 +877,7 @@ class UserController extends BaseController
                     [
                         "id" => 7,
                         "description" => "Catálogo+de+Rubros",
-                        "active" => true
+                        "active" => false
                     ],
                     [
                         "id" => 8,
@@ -887,7 +887,7 @@ class UserController extends BaseController
                     [
                         "id" => 17,
                         "description" => "Categorías+de+Catálogo",
-                        "active" => true
+                        "active" => false
                     ],
                     [
                         "id" => 22,
