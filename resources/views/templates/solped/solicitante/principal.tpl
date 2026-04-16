@@ -246,7 +246,7 @@
             </div>
             <div class="form-group" style="display:inline-block; margin-left:10px;">
                 <button type="button" class="btn btn-success"
-                        data-bind="click: sendSolpeds, enable: SolpedActive">
+                        data-bind="click: sendSolpeds, enable: SolpedActive, visible: !IsInCorrection()">
                     Enviar Solicitud
                 </button>
             </div>
@@ -514,6 +514,11 @@
         this.SolpedActive = ko.observable(!!solpedActiveFlag);
         this.IsSaving = ko.observable(false);
         this.ServerSolpedId = ko.observable(data.list.Id != null ? Number(data.list.Id) : 0);
+        this.EtapaActual = ko.observable(String(data.list.Etapa || ''));
+        this.EstadoActual = ko.observable(String(data.list.EstadoActual || ''));
+        this.IsInCorrection = ko.pureComputed(function () {
+            return self.EtapaActual() === 'devuelta' || self.EstadoActual() === 'devuelta';
+        });
         this.guardSolpedActive = function() {
             if (self.SolpedActive()) {
                 return true;

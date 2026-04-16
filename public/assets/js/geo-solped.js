@@ -4,6 +4,10 @@
     var map = null;
     var markerMan = null;
     var defaultCenter = { lat: -31.3987552, lng: -64.1868587 };
+    var syncingFromMap = false;
+    var syncingFromReverseGeocode = false;
+    var entityWatchersBound = false;
+    var addressGeocodeTimer = null;
 
     function buildRasterStyle() {
         return {
@@ -147,6 +151,7 @@
 
         $.getJSON(url)
             .done(function (data) {
+                syncingFromReverseGeocode = true;
                 var address = (data && data.address) ? data.address : {};
                 var country = address.country || '';
                 var countryCode = address.country_code ? String(address.country_code).toUpperCase() : '';
@@ -175,6 +180,10 @@
                 setObservable(entity, 'Longitud', String(lng));
 
                 syncCountrySelectUi(resolvedCountry.code || countryCode);
+                syncingFromReverseGeocode = false;
+            })
+            .fail(function () {
+                syncingFromReverseGeocode = false;
             });
     }
 
@@ -183,9 +192,72 @@
             return;
         }
 
+        syncingFromMap = true;
         markerMan.setLngLat([lng, lat]);
         map.easeTo({ center: [lng, lat], duration: 500 });
         updateEntityFromReverseGeocode(lat, lng);
+        syncingFromMap = false;
+    }
+
+    function setMarkerOnly(lat, lng) {
+        if (!map || !markerMan) {
+            return;
+        }
+        markerMan.setLngLat([lng, lat]);
+        map.easeTo({ center: [lng, lat], duration: 500 });
+    }
+
+    function scheduleAddressGeocode() {
+        if (addressGeocodeTimer) {
+            clearTimeout(addressGeocodeTimer);
+        }
+        addressGeocodeTimer = setTimeout(function () {
+            geocodeAddressFromForm();
+        }, 450);
+    }
+
+    function bindEntityWatchers() {
+        if (entityWatchersBound) {
+            return;
+        }
+
+        var entity = getVmEntity();
+        if (!entity) {
+            return;
+        }
+
+        var syncMarkerFromCoords = function () {
+            if (syncingFromMap || syncingFromReverseGeocode) {
+                return;
+            }
+            var lat = asNumber(getObservable(entity, 'Latitud'));
+            var lng = asNumber(getObservable(entity, 'Longitud'));
+            if (lat === null || lng === null) {
+                return;
+            }
+            setMarkerOnly(lat, lng);
+        };
+
+        ['Latitud', 'Longitud'].forEach(function (field) {
+            if (typeof entity[field] === 'function' && typeof entity[field].subscribe === 'function') {
+                entity[field].subscribe(syncMarkerFromCoords);
+            }
+        });
+
+        var triggerAddressSearch = function () {
+            if (syncingFromMap || syncingFromReverseGeocode) {
+                return;
+            }
+            scheduleAddressGeocode();
+        };
+
+        ['Direccion', 'Localidad', 'Provincia', 'Pais', 'CountrySelected'].forEach(function (field) {
+            if (typeof entity[field] === 'function' && typeof entity[field].subscribe === 'function') {
+                entity[field].subscribe(triggerAddressSearch);
+            }
+        });
+
+        entityWatchersBound = true;
     }
 
     function resolveInitialCoords(cb) {
@@ -213,6 +285,10 @@
     function geocodeAddressFromForm() {
         var entity = getVmEntity();
         if (!entity) {
+            return;
+        }
+
+        if (syncingFromReverseGeocode) {
             return;
         }
 
@@ -298,12 +374,19 @@
                 .setLngLat([lng, lat])
                 .addTo(map);
 
+            bindEntityWatchers();
+            setTimeout(function () {
+                geocodeAddressFromForm();
+            }, 0);
+
             map.on('click', function (event) {
+                setObservable(getVmEntity(), 'ManOnTheMap', true);
                 setMarkerAndSync(event.lngLat.lat, event.lngLat.lng);
             });
 
             markerMan.on('dragend', function () {
                 var pos = markerMan.getLngLat();
+                setObservable(getVmEntity(), 'ManOnTheMap', true);
                 setMarkerAndSync(pos.lat, pos.lng);
             });
 

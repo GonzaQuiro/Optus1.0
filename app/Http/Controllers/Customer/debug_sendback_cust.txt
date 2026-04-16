@@ -14,3 +14,51 @@ MAIL devolucion: {"success":true,"message":"Mensaje enviado con \u00e9xito."}
 Transacción confirmada
 === sendBack FIN ===
 
+
+=== sendBack INICIO === 16-04-2026 10:42:01 ===
+Body recibido: stdClass Object
+(
+    [IdSolicitud] => 72
+    [IdUsuario] => 7
+)
+
+Reason recibido: xdeano loko
+Usuario: ID=7, type_id=3
+Solped encontrada: ID=72, estado_actual=revisada
+Solped actualizada con estado devuelta
+MAIL devolucion: {"success":true,"message":"Mensaje enviado con \u00e9xito."}
+Transacción confirmada
+=== sendBack FIN ===
+
+
+=== sendBack INICIO === 16-04-2026 10:55:37 ===
+Body recibido: stdClass Object
+(
+    [IdSolicitud] => 72
+    [IdUsuario] => 7
+)
+
+Reason recibido: xDDD
+Usuario: ID=7, type_id=3
+Solped encontrada: ID=72, estado_actual=esperando-revision
+Solped actualizada con estado devuelta
+MAIL devolucion: {"success":true,"message":"Mensaje enviado con \u00e9xito."}
+Transacción confirmada
+=== sendBack FIN ===
+
+
+=== sendBack INICIO === 16-04-2026 10:56:24 ===
+Body recibido: stdClass Object
+(
+    [IdSolicitud] => 73
+    [IdUsuario] => 7
+)
+
+Reason recibido: hola no me gusto los items
+Usuario: ID=7, type_id=3
+Solped encontrada: ID=73, estado_actual=revisada
+Solped actualizada con estado devuelta
+MAIL devolucion: {"success":true,"message":"Mensaje enviado con \u00e9xito."}
+Transacción confirmada
+=== sendBack FIN ===
+

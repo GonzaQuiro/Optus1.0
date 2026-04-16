@@ -82,3 +82,339 @@ RAW fecha_resolucion attr: 2026-02-20 00:00:00
 RAW fecha_entrega attr: 2026-02-28 00:00:00
 DB ROW: {"id":62,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"0001 Prueba 2","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"C\u00f3rdoba","direccion":"Paran\u00e1 671","cp":"X5000","latitud":"-31.4261238","longitud":"-64.1804838","clasificacion":null,"fecha_resolucion":"2026-02-20 00:00:00","fecha_entrega":"2026-02-28 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-02-20 11:49:49","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-03-12 13:19:46","fecha_first_revision":"2026-03-12 13:20:05","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
 LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 10:00:13 ===
+FECHAS => Resolucion: 19-04-2026 00:00, Entrega: 27-04-2026 00:00, Creacion: 16-04-2026 09:54:03
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 16-04-2026 10:00:12
+RAW fecha_resolucion attr: 2026-04-19 00:00:00
+RAW fecha_entrega attr: 2026-04-27 00:00:00
+DB ROW: {"id":72,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"16\/04 test","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"CORDOBA - CORDOBA CAPITAL","direccion":"Av. Poeta Lugones 284","cp":"5000","latitud":"-31.4166000","longitud":"-64.1834000","clasificacion":null,"fecha_resolucion":"2026-04-19 00:00:00","fecha_entrega":"2026-04-27 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-04-16 09:54:03","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-04-16 09:59:48","fecha_first_revision":"2026-04-16 10:00:12","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 10:04:55 ===
+FECHAS => Resolucion: 19-04-2026 00:00, Entrega: 27-04-2026 00:00, Creacion: 16-04-2026 09:54:03
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 16-04-2026 10:00:12
+RAW fecha_resolucion attr: 2026-04-19 00:00:00
+RAW fecha_entrega attr: 2026-04-27 00:00:00
+DB ROW: {"id":72,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"16\/04 test","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"CORDOBA - CORDOBA CAPITAL","direccion":"Av. Poeta Lugones 284","cp":"5000","latitud":"-31.4166000","longitud":"-64.1834000","clasificacion":null,"fecha_resolucion":"2026-04-19 00:00:00","fecha_entrega":"2026-04-27 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-04-16 09:54:03","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-04-16 09:59:48","fecha_first_revision":"2026-04-16 10:00:12","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 10:09:16 ===
+FECHAS => Resolucion: 19-04-2026 00:00, Entrega: 27-04-2026 00:00, Creacion: 16-04-2026 09:54:03
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 16-04-2026 10:00:12
+RAW fecha_resolucion attr: 2026-04-19 00:00:00
+RAW fecha_entrega attr: 2026-04-27 00:00:00
+DB ROW: {"id":72,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"16\/04 test","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"CORDOBA - CORDOBA CAPITAL","direccion":"Av. Poeta Lugones 284","cp":"5000","latitud":"-31.4166000","longitud":"-64.1834000","clasificacion":null,"fecha_resolucion":"2026-04-19 00:00:00","fecha_entrega":"2026-04-27 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-04-16 09:54:03","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-04-16 09:59:48","fecha_first_revision":"2026-04-16 10:00:12","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 10:17:07 ===
+FECHAS => Resolucion: 19-04-2026 00:00, Entrega: 27-04-2026 00:00, Creacion: 16-04-2026 09:54:03
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 16-04-2026 10:00:12
+RAW fecha_resolucion attr: 2026-04-19 00:00:00
+RAW fecha_entrega attr: 2026-04-27 00:00:00
+DB ROW: {"id":72,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"16\/04 test","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"CORDOBA - CORDOBA CAPITAL","direccion":"Av. Poeta Lugones 284","cp":"5000","latitud":"-31.4166000","longitud":"-64.1834000","clasificacion":null,"fecha_resolucion":"2026-04-19 00:00:00","fecha_entrega":"2026-04-27 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-04-16 09:54:03","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-04-16 09:59:48","fecha_first_revision":"2026-04-16 10:00:12","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 10:22:24 ===
+FECHAS => Resolucion: 19-04-2026 00:00, Entrega: 27-04-2026 00:00, Creacion: 16-04-2026 09:54:03
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 16-04-2026 10:00:12
+RAW fecha_resolucion attr: 2026-04-19 00:00:00
+RAW fecha_entrega attr: 2026-04-27 00:00:00
+DB ROW: {"id":72,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"16\/04 test","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"CORDOBA - CORDOBA CAPITAL","direccion":"Av. Poeta Lugones 284","cp":"5000","latitud":"-31.4166000","longitud":"-64.1834000","clasificacion":null,"fecha_resolucion":"2026-04-19 00:00:00","fecha_entrega":"2026-04-27 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-04-16 09:54:03","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-04-16 09:59:48","fecha_first_revision":"2026-04-16 10:00:12","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 10:22:26 ===
+FECHAS => Resolucion: 19-04-2026 00:00, Entrega: 27-04-2026 00:00, Creacion: 16-04-2026 09:54:03
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 16-04-2026 10:00:12
+RAW fecha_resolucion attr: 2026-04-19 00:00:00
+RAW fecha_entrega attr: 2026-04-27 00:00:00
+DB ROW: {"id":72,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"16\/04 test","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"CORDOBA - CORDOBA CAPITAL","direccion":"Av. Poeta Lugones 284","cp":"5000","latitud":"-31.4166000","longitud":"-64.1834000","clasificacion":null,"fecha_resolucion":"2026-04-19 00:00:00","fecha_entrega":"2026-04-27 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-04-16 09:54:03","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-04-16 09:59:48","fecha_first_revision":"2026-04-16 10:00:12","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 10:23:19 ===
+FECHAS => Resolucion: 19-04-2026 00:00, Entrega: 27-04-2026 00:00, Creacion: 16-04-2026 09:54:03
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 16-04-2026 10:00:12
+RAW fecha_resolucion attr: 2026-04-19 00:00:00
+RAW fecha_entrega attr: 2026-04-27 00:00:00
+DB ROW: {"id":72,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"16\/04 test","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"CORDOBA - CORDOBA CAPITAL","direccion":"Av. Poeta Lugones 284","cp":"5000","latitud":"-31.4166000","longitud":"-64.1834000","clasificacion":null,"fecha_resolucion":"2026-04-19 00:00:00","fecha_entrega":"2026-04-27 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-04-16 09:54:03","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-04-16 09:59:48","fecha_first_revision":"2026-04-16 10:00:12","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 10:24:52 ===
+FECHAS => Resolucion: 19-04-2026 00:00, Entrega: 27-04-2026 00:00, Creacion: 16-04-2026 09:54:03
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 16-04-2026 10:00:12
+RAW fecha_resolucion attr: 2026-04-19 00:00:00
+RAW fecha_entrega attr: 2026-04-27 00:00:00
+DB ROW: {"id":72,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"16\/04 test","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"CORDOBA - CORDOBA CAPITAL","direccion":"Av. Poeta Lugones 284","cp":"5000","latitud":"-31.4166000","longitud":"-64.1834000","clasificacion":null,"fecha_resolucion":"2026-04-19 00:00:00","fecha_entrega":"2026-04-27 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-04-16 09:54:03","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-04-16 09:59:48","fecha_first_revision":"2026-04-16 10:00:12","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 10:25:43 ===
+FECHAS => Resolucion: 19-04-2026 00:00, Entrega: 27-04-2026 00:00, Creacion: 16-04-2026 09:54:03
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 16-04-2026 10:00:12
+RAW fecha_resolucion attr: 2026-04-19 00:00:00
+RAW fecha_entrega attr: 2026-04-27 00:00:00
+DB ROW: {"id":72,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"16\/04 test","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"CORDOBA - CORDOBA CAPITAL","direccion":"Av. Poeta Lugones 284","cp":"5000","latitud":"-31.4166000","longitud":"-64.1834000","clasificacion":null,"fecha_resolucion":"2026-04-19 00:00:00","fecha_entrega":"2026-04-27 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-04-16 09:54:03","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-04-16 09:59:48","fecha_first_revision":"2026-04-16 10:00:12","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 10:27:57 ===
+FECHAS => Resolucion: 19-04-2026 00:00, Entrega: 27-04-2026 00:00, Creacion: 16-04-2026 09:54:03
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 16-04-2026 10:00:12
+RAW fecha_resolucion attr: 2026-04-19 00:00:00
+RAW fecha_entrega attr: 2026-04-27 00:00:00
+DB ROW: {"id":72,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"16\/04 test","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"CORDOBA - CORDOBA CAPITAL","direccion":"Av. Poeta Lugones 284","cp":"5000","latitud":"-31.4166000","longitud":"-64.1834000","clasificacion":null,"fecha_resolucion":"2026-04-19 00:00:00","fecha_entrega":"2026-04-27 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-04-16 09:54:03","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-04-16 09:59:48","fecha_first_revision":"2026-04-16 10:00:12","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 10:28:19 ===
+FECHAS => Resolucion: 19-04-2026 00:00, Entrega: 27-04-2026 00:00, Creacion: 16-04-2026 09:54:03
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 16-04-2026 10:00:12
+RAW fecha_resolucion attr: 2026-04-19 00:00:00
+RAW fecha_entrega attr: 2026-04-27 00:00:00
+DB ROW: {"id":72,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"16\/04 test","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"CORDOBA - CORDOBA CAPITAL","direccion":"Av. Poeta Lugones 284","cp":"5000","latitud":"-31.4166000","longitud":"-64.1834000","clasificacion":null,"fecha_resolucion":"2026-04-19 00:00:00","fecha_entrega":"2026-04-27 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-04-16 09:54:03","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-04-16 09:59:48","fecha_first_revision":"2026-04-16 10:00:12","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 10:30:34 ===
+FECHAS => Resolucion: 19-04-2026 00:00, Entrega: 27-04-2026 00:00, Creacion: 16-04-2026 09:54:03
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 16-04-2026 10:00:12
+RAW fecha_resolucion attr: 2026-04-19 00:00:00
+RAW fecha_entrega attr: 2026-04-27 00:00:00
+DB ROW: {"id":72,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"16\/04 test","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"CORDOBA - CORDOBA CAPITAL","direccion":"Av. Poeta Lugones 284","cp":"5000","latitud":"-31.4166000","longitud":"-64.1834000","clasificacion":null,"fecha_resolucion":"2026-04-19 00:00:00","fecha_entrega":"2026-04-27 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":711,"tipo_compra":1,"fecha_alta":"2026-04-16 09:54:03","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-04-16 09:59:48","fecha_first_revision":"2026-04-16 10:00:12","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 10:32:28 ===
+FECHAS => Resolucion: 19-04-2026 00:00, Entrega: 27-04-2026 00:00, Creacion: 16-04-2026 09:54:03
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 16-04-2026 10:00:12
+RAW fecha_resolucion attr: 2026-04-19 00:00:00
+RAW fecha_entrega attr: 2026-04-27 00:00:00
+DB ROW: {"id":72,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"16\/04 test","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"CORDOBA - CORDOBA CAPITAL","direccion":"Av. Poeta Lugones 284","cp":"5000","latitud":"-31.4166000","longitud":"-64.1834000","clasificacion":null,"fecha_resolucion":"2026-04-19 00:00:00","fecha_entrega":"2026-04-27 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":711,"tipo_compra":1,"fecha_alta":"2026-04-16 09:54:03","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-04-16 09:59:48","fecha_first_revision":"2026-04-16 10:00:12","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 10:32:52 ===
+FECHAS => Resolucion: 19-04-2026 00:00, Entrega: 27-04-2026 00:00, Creacion: 16-04-2026 09:54:03
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 16-04-2026 10:00:12
+RAW fecha_resolucion attr: 2026-04-19 00:00:00
+RAW fecha_entrega attr: 2026-04-27 00:00:00
+DB ROW: {"id":72,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"16\/04 test","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"CORDOBA - CORDOBA CAPITAL","direccion":"Av. Poeta Lugones 284","cp":"5000","latitud":"-31.4166000","longitud":"-64.1834000","clasificacion":null,"fecha_resolucion":"2026-04-19 00:00:00","fecha_entrega":"2026-04-27 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":7,"tipo_compra":1,"fecha_alta":"2026-04-16 09:54:03","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-04-16 09:59:48","fecha_first_revision":"2026-04-16 10:00:12","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 10:33:17 ===
+FECHAS => Resolucion: 19-04-2026 00:00, Entrega: 27-04-2026 00:00, Creacion: 16-04-2026 09:54:03
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 16-04-2026 10:00:12
+RAW fecha_resolucion attr: 2026-04-19 00:00:00
+RAW fecha_entrega attr: 2026-04-27 00:00:00
+DB ROW: {"id":72,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"16\/04 test","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"CORDOBA - CORDOBA CAPITAL","direccion":"Av. Poeta Lugones 284","cp":"5000","latitud":"-31.4166000","longitud":"-64.1834000","clasificacion":null,"fecha_resolucion":"2026-04-19 00:00:00","fecha_entrega":"2026-04-27 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":7,"tipo_compra":1,"fecha_alta":"2026-04-16 09:54:03","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-04-16 09:59:48","fecha_first_revision":"2026-04-16 10:00:12","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 10:34:28 ===
+FECHAS => Resolucion: 20-02-2026 00:00, Entrega: 28-02-2026 00:00, Creacion: 20-02-2026 12:25:33
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 16-04-2026 10:34:28
+RAW fecha_resolucion attr: 2026-02-20 00:00:00
+RAW fecha_entrega attr: 2026-02-28 00:00:00
+DB ROW: {"id":67,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci?n","nombre":"Peruebaaa","descripcion":"","pais":"","provincia":"","localidad":"","direccion":null,"cp":null,"latitud":null,"longitud":null,"clasificacion":null,"fecha_resolucion":"2026-02-20 00:00:00","fecha_entrega":"2026-02-28 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":711,"id_comprador_decision":null,"tipo_compra":2,"fecha_alta":"2026-02-20 12:25:33","etapa_actual":"en-preparacion","estado_actual":"revisada","fecha_envio_a_comprador":null,"fecha_first_revision":"2026-04-16 10:34:28","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 10:36:56 ===
+FECHAS => Resolucion: 19-04-2026 00:00, Entrega: 27-04-2026 00:00, Creacion: 16-04-2026 09:54:03
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 16-04-2026 10:00:12
+RAW fecha_resolucion attr: 2026-04-19 00:00:00
+RAW fecha_entrega attr: 2026-04-27 00:00:00
+DB ROW: {"id":72,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"16\/04 test","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"CORDOBA - CORDOBA CAPITAL","direccion":"Av. Poeta Lugones 284","cp":"5000","latitud":"-31.4166000","longitud":"-64.1834000","clasificacion":null,"fecha_resolucion":"2026-04-19 00:00:00","fecha_entrega":"2026-04-27 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":7,"tipo_compra":1,"fecha_alta":"2026-04-16 09:54:03","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-04-16 09:59:48","fecha_first_revision":"2026-04-16 10:00:12","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 10:37:36 ===
+FECHAS => Resolucion: 19-04-2026 00:00, Entrega: 27-04-2026 00:00, Creacion: 16-04-2026 09:54:03
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 16-04-2026 10:00:12
+RAW fecha_resolucion attr: 2026-04-19 00:00:00
+RAW fecha_entrega attr: 2026-04-27 00:00:00
+DB ROW: {"id":72,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"16\/04 test","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"CORDOBA - CORDOBA CAPITAL","direccion":"Av. Poeta Lugones 284","cp":"5000","latitud":"-31.4166000","longitud":"-64.1834000","clasificacion":null,"fecha_resolucion":"2026-04-19 00:00:00","fecha_entrega":"2026-04-27 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":711,"tipo_compra":1,"fecha_alta":"2026-04-16 09:54:03","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-04-16 09:59:48","fecha_first_revision":"2026-04-16 10:00:12","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 10:38:57 ===
+FECHAS => Resolucion: 19-04-2026 00:00, Entrega: 27-04-2026 00:00, Creacion: 16-04-2026 09:54:03
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 16-04-2026 10:00:12
+RAW fecha_resolucion attr: 2026-04-19 00:00:00
+RAW fecha_entrega attr: 2026-04-27 00:00:00
+DB ROW: {"id":72,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"16\/04 test","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"CORDOBA - CORDOBA CAPITAL","direccion":"Av. Poeta Lugones 284","cp":"5000","latitud":"-31.4166000","longitud":"-64.1834000","clasificacion":null,"fecha_resolucion":"2026-04-19 00:00:00","fecha_entrega":"2026-04-27 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":7,"tipo_compra":1,"fecha_alta":"2026-04-16 09:54:03","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-04-16 09:59:48","fecha_first_revision":"2026-04-16 10:00:12","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 10:41:02 ===
+FECHAS => Resolucion: 19-04-2026 00:00, Entrega: 27-04-2026 00:00, Creacion: 16-04-2026 09:54:03
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 16-04-2026 10:00:12
+RAW fecha_resolucion attr: 2026-04-19 00:00:00
+RAW fecha_entrega attr: 2026-04-27 00:00:00
+DB ROW: {"id":72,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"16\/04 test","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"CORDOBA - CORDOBA CAPITAL","direccion":"Av. Poeta Lugones 284","cp":"5000","latitud":"-31.4166000","longitud":"-64.1834000","clasificacion":null,"fecha_resolucion":"2026-04-19 00:00:00","fecha_entrega":"2026-04-27 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":7,"tipo_compra":1,"fecha_alta":"2026-04-16 09:54:03","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-04-16 09:59:48","fecha_first_revision":"2026-04-16 10:00:12","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 10:41:52 ===
+FECHAS => Resolucion: 19-04-2026 00:00, Entrega: 27-04-2026 00:00, Creacion: 16-04-2026 09:54:03
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 16-04-2026 10:00:12
+RAW fecha_resolucion attr: 2026-04-19 00:00:00
+RAW fecha_entrega attr: 2026-04-27 00:00:00
+DB ROW: {"id":72,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"16\/04 test","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"CORDOBA - CORDOBA CAPITAL","direccion":"Av. Poeta Lugones 284","cp":"5000","latitud":"-31.4166000","longitud":"-64.1834000","clasificacion":null,"fecha_resolucion":"2026-04-19 00:00:00","fecha_entrega":"2026-04-27 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":7,"tipo_compra":1,"fecha_alta":"2026-04-16 09:54:03","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-04-16 09:59:48","fecha_first_revision":"2026-04-16 10:00:12","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 10:51:44 ===
+FECHAS => Resolucion: 19-04-2026 00:00, Entrega: 27-04-2026 00:00, Creacion: 16-04-2026 09:54:03
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: 16-04-2026 10:42:02
+FECHA FIRST REVISION: 16-04-2026 10:00:12
+RAW fecha_resolucion attr: 2026-04-19 00:00:00
+RAW fecha_entrega attr: 2026-04-27 00:00:00
+DB ROW: {"id":72,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"16\/04 test","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"CORDOBA - CORDOBA CAPITAL","direccion":"Av. Poeta Lugones 284","cp":"5000","latitud":"-31.4166000","longitud":"-64.1834000","clasificacion":null,"fecha_resolucion":"2026-04-19 00:00:00","fecha_entrega":"2026-04-27 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":7,"tipo_compra":1,"fecha_alta":"2026-04-16 09:54:03","etapa_actual":"devuelta","estado_actual":"esperando-revision","fecha_envio_a_comprador":"2026-04-16 09:59:48","fecha_first_revision":"2026-04-16 10:00:12","fecha_devolucion":"2026-04-16 10:42:02","fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":"xdeano loko","fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 10:55:29 ===
+FECHAS => Resolucion: 19-04-2026 00:00, Entrega: 27-04-2026 00:00, Creacion: 16-04-2026 09:54:03
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: 16-04-2026 10:42:02
+FECHA FIRST REVISION: 16-04-2026 10:00:12
+RAW fecha_resolucion attr: 2026-04-19 00:00:00
+RAW fecha_entrega attr: 2026-04-27 00:00:00
+DB ROW: {"id":72,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"16\/04 test","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"CORDOBA - CORDOBA CAPITAL","direccion":"Av. Poeta Lugones 284","cp":"5000","latitud":"-31.4166000","longitud":"-64.1834000","clasificacion":null,"fecha_resolucion":"2026-04-19 00:00:00","fecha_entrega":"2026-04-27 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":7,"tipo_compra":1,"fecha_alta":"2026-04-16 09:54:03","etapa_actual":"devuelta","estado_actual":"esperando-revision","fecha_envio_a_comprador":"2026-04-16 09:59:48","fecha_first_revision":"2026-04-16 10:00:12","fecha_devolucion":"2026-04-16 10:42:02","fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":"xdeano loko","fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 10:56:17 ===
+FECHAS => Resolucion: 16-04-2026 00:00, Entrega: 23-04-2026 00:00, Creacion: 16-04-2026 10:55:02
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 16-04-2026 10:56:17
+RAW fecha_resolucion attr: 2026-04-16 00:00:00
+RAW fecha_entrega attr: 2026-04-23 00:00:00
+DB ROW: {"id":73,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"xDDDDDD","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"C\u00f3rdoba","direccion":"Paran\u00e1 661","cp":"X5000","latitud":"-31.4259862","longitud":"-64.1805248","clasificacion":null,"fecha_resolucion":"2026-04-16 00:00:00","fecha_entrega":"2026-04-23 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-04-16 10:55:02","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-04-16 10:55:11","fecha_first_revision":"2026-04-16 10:56:17","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 11:19:19 ===
+FECHAS => Resolucion: 19-04-2026 00:00, Entrega: 27-04-2026 00:00, Creacion: 16-04-2026 09:54:03
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 16-04-2026 10:00:12
+RAW fecha_resolucion attr: 2026-04-19 00:00:00
+RAW fecha_entrega attr: 2026-04-27 00:00:00
+DB ROW: {"id":72,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"16\/04 test","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"CORDOBA - CORDOBA CAPITAL","direccion":"Av. Poeta Lugones 284","cp":"5000","latitud":"-31.4166000","longitud":"-64.1834000","clasificacion":null,"fecha_resolucion":"2026-04-19 00:00:00","fecha_entrega":"2026-04-27 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-04-16 09:54:03","etapa_actual":"en-analisis","estado_actual":"revisada-2","fecha_envio_a_comprador":"2026-04-16 11:18:27","fecha_first_revision":"2026-04-16 10:00:12","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 11:19:53 ===
+FECHAS => Resolucion: 19-04-2026 00:00, Entrega: 27-04-2026 00:00, Creacion: 16-04-2026 09:54:03
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 16-04-2026 10:00:12
+RAW fecha_resolucion attr: 2026-04-19 00:00:00
+RAW fecha_entrega attr: 2026-04-27 00:00:00
+DB ROW: {"id":72,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"16\/04 test","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"CORDOBA - CORDOBA CAPITAL","direccion":"Av. Poeta Lugones 284","cp":"5000","latitud":"-31.4166000","longitud":"-64.1834000","clasificacion":null,"fecha_resolucion":"2026-04-19 00:00:00","fecha_entrega":"2026-04-27 00:00:00","id_comprador_sugerido":711,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-04-16 09:54:03","etapa_actual":"en-analisis","estado_actual":"revisada-2","fecha_envio_a_comprador":"2026-04-16 11:18:27","fecha_first_revision":"2026-04-16 10:00:12","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 11:30:59 ===
+FECHAS => Resolucion: 16-04-2026 00:00, Entrega: 23-04-2026 00:00, Creacion: 16-04-2026 10:55:02
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 16-04-2026 10:56:17
+RAW fecha_resolucion attr: 2026-04-16 00:00:00
+RAW fecha_entrega attr: 2026-04-23 00:00:00
+DB ROW: {"id":73,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"xDDDDDD","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"C\u00f3rdoba","direccion":"Paran\u00e1 661","cp":"X5000","latitud":"-31.4259862","longitud":"-64.1805248","clasificacion":null,"fecha_resolucion":"2026-04-16 00:00:00","fecha_entrega":"2026-04-23 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-04-16 10:55:02","etapa_actual":"en-analisis","estado_actual":"revisada-2","fecha_envio_a_comprador":"2026-04-16 11:30:36","fecha_first_revision":"2026-04-16 10:56:17","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 16-04-2026 11:31:17 ===
+FECHAS => Resolucion: 16-04-2026 00:00, Entrega: 23-04-2026 00:00, Creacion: 16-04-2026 10:55:02
+FECHA CANCELACION: null
+FECHA ACEPTACION: 16-04-2026 11:31:05
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 16-04-2026 10:56:17
+RAW fecha_resolucion attr: 2026-04-16 00:00:00
+RAW fecha_entrega attr: 2026-04-23 00:00:00
+DB ROW: {"id":73,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"xDDDDDD","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"C\u00f3rdoba","direccion":"Paran\u00e1 661","cp":"X5000","latitud":"-31.4259862","longitud":"-64.1805248","clasificacion":null,"fecha_resolucion":"2026-04-16 00:00:00","fecha_entrega":"2026-04-23 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":7,"tipo_compra":1,"fecha_alta":"2026-04-16 10:55:02","etapa_actual":"aceptada","estado_actual":"aceptada","fecha_envio_a_comprador":"2026-04-16 11:30:36","fecha_first_revision":"2026-04-16 10:56:17","fecha_devolucion":null,"fecha_aceptacion":"2026-04-16 11:31:05","fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path

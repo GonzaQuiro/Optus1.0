@@ -424,6 +424,21 @@
                                         data-bind="bootstrapSwitchOn: Entity.SolpedActive" />
                                 </div>
                             </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="control-label visible-ie8 visible-ie9" style="display: block;">
+                                        Estrategia de liberación activa
+                                    </label>
+                                    <input
+                                        type="checkbox"
+                                        data-on-color="success"
+                                        data-off-color="danger"
+                                        data-size="mini"
+                                        data-on-text="SI"
+                                        data-off-text="NO"
+                                        data-bind="bootstrapSwitchOn: Entity.EstrategiaActive" />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -499,6 +514,7 @@
             this.TimeZone = ko.observable(data.list.timeZone).extend({ required: true });
             this.TimeZones = ko.observable(data.list.timeZones);
             this.SolpedActive = ko.observable((data.list.SolpedActive || 'no') === 'si');
+            this.EstrategiaActive = ko.observable((data.list.EstrategiaActive || 'no') === 'si');
 
 
         }
@@ -730,6 +746,7 @@
                 if (!entityData.ClienteAsociado) entityData.ClienteAsociado = [];
                 if (params[1] === 'client') {
                     entityData.SolpedActive = entityData.SolpedActive ? 'si' : 'no';
+                    entityData.EstrategiaActive = entityData.EstrategiaActive ? 'si' : 'no';
                 }
                 
                 // Debug: Verificar datos de alcance antes de enviar

@@ -989,6 +989,8 @@ class SolpedController extends BaseController
                 'Products'                => $create ? [] : $products,
                 'Sheets'                  => $sheets,
                 'FilePath'                => $publicBase,
+                'Etapa'                   => $create ? 'en-preparacion' : (string)($solped->etapa_actual ?? 'en-preparacion'),
+                'EstadoActual'            => $create ? 'borrador' : (string)($solped->estado_actual ?? 'borrador'),
 
                 // Archivo (strings, nunca objetos)
                 // Archivo (strings, nunca objetos)

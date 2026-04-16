@@ -49,3 +49,20 @@ MAIL aprobacion: {"success":true,"message":"Mensaje enviado con \u00e9xito."}
 Transacción confirmada exitosamente
 === approve FIN ===
 
+
+=== approve INICIO === 16-04-2026 11:31:05 ===
+Body recibido: stdClass Object
+(
+    [IdSolicitud] => 73
+    [IdUsuario] => 7
+)
+
+Usuario: ID=7, type_id=3
+Solped encontrada: ID=73, estado_actual=revisada-2
+Solped actualizada con estado aprobada
+Fecha aceptación: 16-04-2026 11:31:05
+Comprador decisión: 7 (Ucoca Cola)
+MAIL aprobacion: {"success":true,"message":"Mensaje enviado con \u00e9xito."}
+Transacción confirmada exitosamente
+=== approve FIN ===
+

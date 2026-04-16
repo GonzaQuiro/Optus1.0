@@ -493,14 +493,19 @@ class SolpedController extends BaseController {
 
             $fechaDevolucion = Carbon::now();
             
-            // Actualizar la solped
-            $solped->update([
-                'etapa_actual' => 'devuelta',
-                'estado_actual' => 'devuelta',
-                'return_comment' => trim($reason),
-                'fecha_devolucion' => $fechaDevolucion,
-                'id_comprador_decision' => $user->id,
-            ]);
+            // Actualizar la solped directamente para evitar estados inconsistentes en la transición
+            DB::table('solpeds')
+                ->where('id', $solped->id)
+                ->update([
+                    'etapa_actual' => 'devuelta',
+                    'estado_actual' => 'devuelta',
+                    'return_comment' => trim($reason),
+                    'fecha_devolucion' => $fechaDevolucion,
+                    'id_comprador_decision' => $user->id,
+                    'updated_at' => Carbon::now(),
+                ]);
+
+            $solped->refresh();
 
             fwrite($fp, "Solped actualizada con estado devuelta\n");
 
@@ -521,7 +526,7 @@ class SolpedController extends BaseController {
 
             $success = true;
             $message = 'Solicitud devuelta correctamente.';
-            $redirect_url = '/solped/cliente/monitor';
+            $redirect_url = '/solped/cliente/monitor?ts=' . $fechaDevolucion->timestamp;
 
             $connection->commit();
             fwrite($fp, "Transacción confirmada\n");
@@ -668,5 +673,140 @@ class SolpedController extends BaseController {
                 'redirect' => $redirect_url
             ]
         ], $status);
+    }
+
+    public function delegate(Request $request, Response $response, $params) {
+        $success = false;
+        $message = null;
+        $status = 200;
+        $result = [];
+        $redirect_url = null;
+
+        if (!isSolpedActive() && !isAdmin()) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'El módulo de Solped está desactivado para tu empresa.'
+            ], 403);
+        }
+
+        try {
+            $body = json_decode($request->getParsedBody()['Entity'] ?? '{}');
+            $newCompradorId = $body->NewCompradorId ?? null;
+            
+            if (!$newCompradorId) {
+                throw new \Exception("El ID del nuevo comprador es obligatorio");
+            }
+
+            $user = user();
+
+            // Verificar que el usuario sea un comprador
+            if ($user->type_id != 3) {
+                throw new \Exception("Solo los compradores pueden delegar solicitudes");
+            }
+
+            // Obtener la solped
+            if (isAdmin()) {
+                $solped = Solped::find($body->IdSolicitud);
+            } else {
+                $solped = $user->customer_company->getAllSolpedsByCompany()->find($body->IdSolicitud);
+            }
+
+            if (!$solped) {
+                throw new \Exception("Solicitud no encontrada con ID: {$body->IdSolicitud}");
+            }
+
+            // Verificar que se pueda delegar (idealmente en estados específicos)
+            $estadosDelegables = ['esperando-revision', 'revisada', 'esperando-revision-2', 'revisada-2'];
+            if (!in_array($solped->estado_actual, $estadosDelegables)) {
+                throw new \Exception("La solicitud no se puede delegar en su estado actual: {$solped->estado_actual}");
+            }
+
+            // Verificar que el nuevo comprador existe y pertenece a la misma empresa
+            $newComprador = User::where('id', $newCompradorId)
+                ->where('type_id', 3) // Tipo comprador
+                ->where('customer_company_id', $user->customer_company_id)
+                ->first();
+
+            if (!$newComprador) {
+                throw new \Exception("El usuario comprador seleccionado no existe o no pertenece a tu empresa");
+            }
+
+            // No permitir delegar a uno mismo
+            if ($newCompradorId == $user->id) {
+                throw new \Exception("No puedes delegar la solicitud a ti mismo");
+            }
+
+            // Actualizar la solped con el nuevo comprador
+            $solped->id_comprador_sugerido = $newCompradorId;
+            $solped->save();
+
+            // Enviar email al nuevo comprador notificando la delegación
+            $emailService = new EmailService();
+            $template = rootPath(config('app.templates_path')) . '/email/solped-delegated.tpl';
+            $subject = 'Solicitud #' . $solped->id . ' delegada a tu usuario';
+            
+            if (file_exists($template)) {
+                $html = $this->fetch($template, [
+                    'title' => $subject,
+                    'ano' => Carbon::now()->format('Y'),
+                    'solped' => $solped,
+                    'delegador' => $user,
+                    'nuevo_comprador' => $newComprador
+                ]);
+                
+                $successMail = $emailService->send($html, $subject, [$newComprador->email], $newComprador->full_name);
+            }
+
+            $success = true;
+            $message = 'Solicitud delegada correctamente a ' . $newComprador->full_name;
+            $redirect_url = '/solped/cliente/monitor';
+
+        } catch (\Exception $e) {
+            $success = false;
+            $message = $e->getMessage();
+            $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : (method_exists($e, 'getCode') ? ($e->getCode() ?: 500) : 500);
+        }
+
+        return $this->json($response, [
+            'success' => $success,
+            'message' => $message,
+            'data' => [
+                'redirect' => $redirect_url
+            ]
+        ], $status);
+    }
+
+    public function getCompradores(Request $request, Response $response, $params) {
+        try {
+            $user = user();
+            
+            // Obtener todos los compradores (tipo_id = 3) de la misma empresa
+            $compradores = User::where('customer_company_id', $user->customer_company_id)
+                ->where('type_id', 3)
+                ->where('id', '!=', $user->id) // Excluir al usuario actual
+                ->orderBy('first_name')
+                ->orderBy('last_name')
+                ->get()
+                ->map(function($u) {
+                    return [
+                        'id' => $u->id,
+                        'nombre' => $u->full_name,
+                        'email' => $u->email
+                    ];
+                });
+
+            return $this->json($response, [
+                'success' => true,
+                'data' => [
+                    'compradores' => $compradores
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }

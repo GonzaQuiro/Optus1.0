@@ -279,6 +279,13 @@ class EstrategiaController extends BaseController
         $message = null;
         $status = 200;
 
+        if (!isEstrategiaActive() && !isAdmin()) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'El módulo de Estrategia de liberación está desactivado para tu empresa.'
+            ], 403);
+        }
+
         try {
             $user = user();
             $customerCompanyId = $user->customer_company_id;

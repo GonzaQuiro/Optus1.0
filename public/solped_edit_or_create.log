@@ -1,0 +1,4992 @@
+[12-03-2026 11:46:04] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/create?UserToken=h9p4B7FtTijnPlHSeXrN
+    [method] => GET
+    [params] => Array
+        (
+            [action] => create
+        )
+
+)
+
+[12-03-2026 11:46:04] ACTION/ID DATA: Array
+(
+    [action] => create
+    [create] => 1
+    [id] => 
+)
+
+[12-03-2026 11:46:04] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 11:46:04] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[12-03-2026 11:46:04] BUYERS_SELECTED DATA: Array
+(
+    [single] => 
+    [multi] => Array
+        (
+        )
+
+)
+
+[12-03-2026 11:46:04] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => Provincia
+    [8] => Ciudad
+    [9] => Direccion
+    [10] => Cp
+    [11] => Latitud
+    [12] => Longitud
+    [13] => FechaAlta
+    [14] => FechaResolucion
+    [15] => FechaEntrega
+    [16] => ProductMeasurementList
+    [17] => CompradoresSugeridos
+    [18] => CompradorSugeridoId
+    [19] => CompradoresSugeridosSelected
+    [20] => Products
+    [21] => Sheets
+    [22] => FilePath
+    [23] => DescripcionImagePath
+    [24] => DescripcionPortrait
+)
+
+[12-03-2026 11:46:04] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 0
+)
+
+[12-03-2026 11:46:04] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 
+)
+
+[12-03-2026 11:46:04] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 11:51:37] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/create?UserToken=oPe5LOVlJwicqghGBEC9
+    [method] => GET
+    [params] => Array
+        (
+            [action] => create
+        )
+
+)
+
+[12-03-2026 11:51:37] ACTION/ID DATA: Array
+(
+    [action] => create
+    [create] => 1
+    [id] => 
+)
+
+[12-03-2026 11:51:37] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 11:51:37] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[12-03-2026 11:51:37] BUYERS_SELECTED DATA: Array
+(
+    [single] => 
+    [multi] => Array
+        (
+        )
+
+)
+
+[12-03-2026 11:51:37] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => Provincia
+    [8] => Ciudad
+    [9] => Direccion
+    [10] => Cp
+    [11] => Latitud
+    [12] => Longitud
+    [13] => FechaAlta
+    [14] => FechaResolucion
+    [15] => FechaEntrega
+    [16] => ProductMeasurementList
+    [17] => CompradoresSugeridos
+    [18] => CompradorSugeridoId
+    [19] => CompradoresSugeridosSelected
+    [20] => Products
+    [21] => Sheets
+    [22] => FilePath
+    [23] => DescripcionImagePath
+    [24] => DescripcionPortrait
+)
+
+[12-03-2026 11:51:37] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 0
+)
+
+[12-03-2026 11:51:37] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 
+)
+
+[12-03-2026 11:51:37] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 12:01:14] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/create?UserToken=oPe5LOVlJwicqghGBEC9
+    [method] => GET
+    [params] => Array
+        (
+            [action] => create
+        )
+
+)
+
+[12-03-2026 12:01:14] ACTION/ID DATA: Array
+(
+    [action] => create
+    [create] => 1
+    [id] => 
+)
+
+[12-03-2026 12:01:14] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 12:01:14] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[12-03-2026 12:01:14] BUYERS_SELECTED DATA: Array
+(
+    [single] => 
+    [multi] => Array
+        (
+        )
+
+)
+
+[12-03-2026 12:01:14] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelected
+    [8] => Countries
+    [9] => Provincia
+    [10] => Ciudad
+    [11] => Localidad
+    [12] => Direccion
+    [13] => Cp
+    [14] => Latitud
+    [15] => Longitud
+    [16] => FechaAlta
+    [17] => FechaResolucion
+    [18] => FechaEntrega
+    [19] => ProductMeasurementList
+    [20] => CompradoresSugeridos
+    [21] => CompradorSugeridoId
+    [22] => CompradoresSugeridosSelected
+    [23] => Products
+    [24] => Sheets
+    [25] => FilePath
+    [26] => DescripcionImagePath
+    [27] => DescripcionPortrait
+)
+
+[12-03-2026 12:01:14] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 0
+)
+
+[12-03-2026 12:01:14] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 
+)
+
+[12-03-2026 12:01:14] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 12:04:04] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/create?UserToken=oPe5LOVlJwicqghGBEC9
+    [method] => GET
+    [params] => Array
+        (
+            [action] => create
+        )
+
+)
+
+[12-03-2026 12:04:04] ACTION/ID DATA: Array
+(
+    [action] => create
+    [create] => 1
+    [id] => 
+)
+
+[12-03-2026 12:04:04] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 12:04:04] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[12-03-2026 12:04:04] BUYERS_SELECTED DATA: Array
+(
+    [single] => 
+    [multi] => Array
+        (
+        )
+
+)
+
+[12-03-2026 12:04:04] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelected
+    [8] => Countries
+    [9] => Provincia
+    [10] => Ciudad
+    [11] => Localidad
+    [12] => Direccion
+    [13] => Cp
+    [14] => Latitud
+    [15] => Longitud
+    [16] => FechaAlta
+    [17] => FechaResolucion
+    [18] => FechaEntrega
+    [19] => ProductMeasurementList
+    [20] => CompradoresSugeridos
+    [21] => CompradorSugeridoId
+    [22] => CompradoresSugeridosSelected
+    [23] => Products
+    [24] => Sheets
+    [25] => FilePath
+    [26] => DescripcionImagePath
+    [27] => DescripcionPortrait
+)
+
+[12-03-2026 12:04:04] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 0
+)
+
+[12-03-2026 12:04:04] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 
+)
+
+[12-03-2026 12:04:04] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 12:12:15] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/create?UserToken=c5PhOdpk7GqXWT3YgLK1
+    [method] => GET
+    [params] => Array
+        (
+            [action] => create
+        )
+
+)
+
+[12-03-2026 12:12:15] ACTION/ID DATA: Array
+(
+    [action] => create
+    [create] => 1
+    [id] => 
+)
+
+[12-03-2026 12:12:15] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 12:12:15] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[12-03-2026 12:12:15] BUYERS_SELECTED DATA: Array
+(
+    [single] => 
+    [multi] => Array
+        (
+        )
+
+)
+
+[12-03-2026 12:12:15] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 12:12:15] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 0
+)
+
+[12-03-2026 12:12:15] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 
+)
+
+[12-03-2026 12:12:15] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 12:14:01] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/70?UserToken=c5PhOdpk7GqXWT3YgLK1
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 70
+        )
+
+)
+
+[12-03-2026 12:14:01] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 70
+)
+
+[12-03-2026 12:14:01] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 12:14:01] QUERY_SOLPED DATA: Array
+(
+    [id] => 70
+    [id_solicitante] => 727
+)
+
+[12-03-2026 12:14:01] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 70
+)
+
+[12-03-2026 12:14:01] ITEMS_COUNT DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:14:01] DOCS DATA: Array
+(
+    [filename] => Notas definitivas examen corregido (1).pdf
+    [url] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido (1).pdf
+)
+
+[12-03-2026 12:14:01] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[12-03-2026 12:14:01] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 12:14:01] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:14:01] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[12-03-2026 12:14:01] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 12:20:24] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/70?UserToken=rcBDMGI5vFY13KEo0HCw
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 70
+        )
+
+)
+
+[12-03-2026 12:20:24] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 70
+)
+
+[12-03-2026 12:20:24] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 12:20:24] QUERY_SOLPED DATA: Array
+(
+    [id] => 70
+    [id_solicitante] => 727
+)
+
+[12-03-2026 12:20:24] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 70
+)
+
+[12-03-2026 12:20:24] ITEMS_COUNT DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:20:24] DOCS DATA: Array
+(
+    [filename] => Notas definitivas examen corregido (1).pdf
+    [url] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido (1).pdf
+)
+
+[12-03-2026 12:20:24] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[12-03-2026 12:20:24] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 12:20:24] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:20:24] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[12-03-2026 12:20:24] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 12:25:39] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/70?UserToken=rcBDMGI5vFY13KEo0HCw
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 70
+        )
+
+)
+
+[12-03-2026 12:25:39] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 70
+)
+
+[12-03-2026 12:25:39] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 12:25:39] QUERY_SOLPED DATA: Array
+(
+    [id] => 70
+    [id_solicitante] => 727
+)
+
+[12-03-2026 12:25:39] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 70
+)
+
+[12-03-2026 12:25:39] ITEMS_COUNT DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:25:39] DOCS DATA: Array
+(
+    [filename] => Notas definitivas examen corregido (1).pdf
+    [url] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido (1).pdf
+)
+
+[12-03-2026 12:25:39] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[12-03-2026 12:25:39] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 12:25:39] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:25:39] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[12-03-2026 12:25:39] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 12:27:15] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/70?UserToken=rcBDMGI5vFY13KEo0HCw
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 70
+        )
+
+)
+
+[12-03-2026 12:27:15] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 70
+)
+
+[12-03-2026 12:27:15] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 12:27:15] QUERY_SOLPED DATA: Array
+(
+    [id] => 70
+    [id_solicitante] => 727
+)
+
+[12-03-2026 12:27:15] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 70
+)
+
+[12-03-2026 12:27:15] ITEMS_COUNT DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:27:15] DOCS DATA: Array
+(
+    [filename] => Notas definitivas examen corregido (1).pdf
+    [url] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido (1).pdf
+)
+
+[12-03-2026 12:27:15] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[12-03-2026 12:27:15] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 12:27:15] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:27:15] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[12-03-2026 12:27:15] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 12:29:24] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/70?UserToken=rcBDMGI5vFY13KEo0HCw
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 70
+        )
+
+)
+
+[12-03-2026 12:29:24] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 70
+)
+
+[12-03-2026 12:29:24] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 12:29:24] QUERY_SOLPED DATA: Array
+(
+    [id] => 70
+    [id_solicitante] => 727
+)
+
+[12-03-2026 12:29:24] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 70
+)
+
+[12-03-2026 12:29:24] ITEMS_COUNT DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:29:24] DOCS DATA: Array
+(
+    [filename] => Notas definitivas examen corregido (1).pdf
+    [url] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido (1).pdf
+)
+
+[12-03-2026 12:29:24] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[12-03-2026 12:29:24] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 12:29:24] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:29:24] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[12-03-2026 12:29:24] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 12:29:26] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/70?UserToken=rcBDMGI5vFY13KEo0HCw
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 70
+        )
+
+)
+
+[12-03-2026 12:29:26] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 70
+)
+
+[12-03-2026 12:29:26] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 12:29:26] QUERY_SOLPED DATA: Array
+(
+    [id] => 70
+    [id_solicitante] => 727
+)
+
+[12-03-2026 12:29:26] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 70
+)
+
+[12-03-2026 12:29:26] ITEMS_COUNT DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:29:26] DOCS DATA: Array
+(
+    [filename] => Notas definitivas examen corregido (1).pdf
+    [url] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido (1).pdf
+)
+
+[12-03-2026 12:29:26] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[12-03-2026 12:29:26] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 12:29:26] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:29:26] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[12-03-2026 12:29:26] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 12:31:10] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/70?UserToken=rcBDMGI5vFY13KEo0HCw
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 70
+        )
+
+)
+
+[12-03-2026 12:31:10] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 70
+)
+
+[12-03-2026 12:31:10] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 12:31:10] QUERY_SOLPED DATA: Array
+(
+    [id] => 70
+    [id_solicitante] => 727
+)
+
+[12-03-2026 12:31:10] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 70
+)
+
+[12-03-2026 12:31:10] ITEMS_COUNT DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:31:10] DOCS DATA: Array
+(
+    [filename] => Notas definitivas examen corregido (1).pdf
+    [url] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido (1).pdf
+)
+
+[12-03-2026 12:31:10] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[12-03-2026 12:31:10] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 12:31:10] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:31:10] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[12-03-2026 12:31:10] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 12:31:56] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/70?UserToken=rcBDMGI5vFY13KEo0HCw
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 70
+        )
+
+)
+
+[12-03-2026 12:31:56] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 70
+)
+
+[12-03-2026 12:31:56] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 12:31:56] QUERY_SOLPED DATA: Array
+(
+    [id] => 70
+    [id_solicitante] => 727
+)
+
+[12-03-2026 12:31:56] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 70
+)
+
+[12-03-2026 12:31:56] ITEMS_COUNT DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:31:56] DOCS DATA: Array
+(
+    [filename] => Notas definitivas examen corregido (1).pdf
+    [url] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido (1).pdf
+)
+
+[12-03-2026 12:31:56] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[12-03-2026 12:31:56] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 12:31:56] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:31:56] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[12-03-2026 12:31:56] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 12:32:53] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/70?UserToken=rcBDMGI5vFY13KEo0HCw
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 70
+        )
+
+)
+
+[12-03-2026 12:32:53] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 70
+)
+
+[12-03-2026 12:32:53] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 12:32:53] QUERY_SOLPED DATA: Array
+(
+    [id] => 70
+    [id_solicitante] => 727
+)
+
+[12-03-2026 12:32:53] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 70
+)
+
+[12-03-2026 12:32:53] ITEMS_COUNT DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:32:53] DOCS DATA: Array
+(
+    [filename] => Notas definitivas examen corregido (1).pdf
+    [url] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido (1).pdf
+)
+
+[12-03-2026 12:32:53] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[12-03-2026 12:32:53] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 12:32:53] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:32:53] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[12-03-2026 12:32:53] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 12:37:03] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/70?UserToken=rcBDMGI5vFY13KEo0HCw
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 70
+        )
+
+)
+
+[12-03-2026 12:37:03] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 70
+)
+
+[12-03-2026 12:37:03] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 12:37:03] QUERY_SOLPED DATA: Array
+(
+    [id] => 70
+    [id_solicitante] => 727
+)
+
+[12-03-2026 12:37:03] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 70
+)
+
+[12-03-2026 12:37:03] ITEMS_COUNT DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:37:03] DOCS DATA: Array
+(
+    [filename] => Notas definitivas examen corregido (1).pdf
+    [url] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido (1).pdf
+)
+
+[12-03-2026 12:37:03] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[12-03-2026 12:37:03] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 12:37:03] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:37:03] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[12-03-2026 12:37:03] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 12:39:01] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/70?UserToken=rcBDMGI5vFY13KEo0HCw
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 70
+        )
+
+)
+
+[12-03-2026 12:39:01] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 70
+)
+
+[12-03-2026 12:39:01] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 12:39:01] QUERY_SOLPED DATA: Array
+(
+    [id] => 70
+    [id_solicitante] => 727
+)
+
+[12-03-2026 12:39:01] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 70
+)
+
+[12-03-2026 12:39:01] ITEMS_COUNT DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:39:01] DOCS DATA: Array
+(
+    [filename] => Notas definitivas examen corregido (1).pdf
+    [url] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido (1).pdf
+)
+
+[12-03-2026 12:39:01] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[12-03-2026 12:39:01] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 12:39:01] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:39:01] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[12-03-2026 12:39:01] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 12:40:36] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/70?UserToken=rcBDMGI5vFY13KEo0HCw
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 70
+        )
+
+)
+
+[12-03-2026 12:40:36] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 70
+)
+
+[12-03-2026 12:40:36] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 12:40:36] QUERY_SOLPED DATA: Array
+(
+    [id] => 70
+    [id_solicitante] => 727
+)
+
+[12-03-2026 12:40:36] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 70
+)
+
+[12-03-2026 12:40:36] ITEMS_COUNT DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:40:36] DOCS DATA: Array
+(
+    [filename] => Notas definitivas examen corregido (1).pdf
+    [url] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido (1).pdf
+)
+
+[12-03-2026 12:40:36] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[12-03-2026 12:40:36] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 12:40:36] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:40:36] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[12-03-2026 12:40:36] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 12:41:19] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/70?UserToken=rcBDMGI5vFY13KEo0HCw
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 70
+        )
+
+)
+
+[12-03-2026 12:41:19] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 70
+)
+
+[12-03-2026 12:41:19] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 12:41:19] QUERY_SOLPED DATA: Array
+(
+    [id] => 70
+    [id_solicitante] => 727
+)
+
+[12-03-2026 12:41:19] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 70
+)
+
+[12-03-2026 12:41:19] ITEMS_COUNT DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:41:19] DOCS DATA: Array
+(
+    [filename] => Notas definitivas examen corregido (1).pdf
+    [url] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido (1).pdf
+)
+
+[12-03-2026 12:41:19] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[12-03-2026 12:41:19] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 12:41:19] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:41:19] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[12-03-2026 12:41:19] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 12:41:24] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/70?UserToken=rcBDMGI5vFY13KEo0HCw
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 70
+        )
+
+)
+
+[12-03-2026 12:41:24] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 70
+)
+
+[12-03-2026 12:41:24] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 12:41:24] QUERY_SOLPED DATA: Array
+(
+    [id] => 70
+    [id_solicitante] => 727
+)
+
+[12-03-2026 12:41:24] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 70
+)
+
+[12-03-2026 12:41:24] ITEMS_COUNT DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:41:24] DOCS DATA: Array
+(
+    [filename] => Notas definitivas examen corregido (1).pdf
+    [url] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido (1).pdf
+)
+
+[12-03-2026 12:41:24] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[12-03-2026 12:41:24] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 12:41:24] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 2
+)
+
+[12-03-2026 12:41:24] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[12-03-2026 12:41:24] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 12:52:09] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/create?UserToken=WejL20wCtOzruAY5oJ67
+    [method] => GET
+    [params] => Array
+        (
+            [action] => create
+        )
+
+)
+
+[12-03-2026 12:52:09] ACTION/ID DATA: Array
+(
+    [action] => create
+    [create] => 1
+    [id] => 
+)
+
+[12-03-2026 12:52:09] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 12:52:09] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[12-03-2026 12:52:09] BUYERS_SELECTED DATA: Array
+(
+    [single] => 
+    [multi] => Array
+        (
+        )
+
+)
+
+[12-03-2026 12:52:09] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 12:52:09] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 0
+)
+
+[12-03-2026 12:52:09] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 
+)
+
+[12-03-2026 12:52:09] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 13:19:32] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/62?UserToken=w7EygbY9hsAUjxQpZ8Pk
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 62
+        )
+
+)
+
+[12-03-2026 13:19:32] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 62
+)
+
+[12-03-2026 13:19:32] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 13:19:32] QUERY_SOLPED DATA: Array
+(
+    [id] => 62
+    [id_solicitante] => 727
+)
+
+[12-03-2026 13:19:32] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 62
+)
+
+[12-03-2026 13:19:32] ITEMS_COUNT DATA: Array
+(
+    [count] => 1
+)
+
+[12-03-2026 13:19:32] DOC_MISSING_ON_DISK DATA: Array
+(
+    [expected_abs] => C:\xampp\htdocs\app\Http\Controllers\Solped/../../../../storage/img/solpeds/30529135943/2026/\2do Parcial teórico_Práctico - Curso 3K1_ Revisión del intento _1_ (1).pdf
+    [filename] => 2do Parcial teórico_Práctico - Curso 3K1_ Revisión del intento _1_ (1).pdf
+)
+
+[12-03-2026 13:19:32] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[12-03-2026 13:19:32] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[12-03-2026 13:19:32] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 13:19:32] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 1
+)
+
+[12-03-2026 13:19:32] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[12-03-2026 13:19:32] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 13:30:25] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/create?UserToken=sxLEn7zO1RMGpYqebQBX
+    [method] => GET
+    [params] => Array
+        (
+            [action] => create
+        )
+
+)
+
+[12-03-2026 13:30:25] ACTION/ID DATA: Array
+(
+    [action] => create
+    [create] => 1
+    [id] => 
+)
+
+[12-03-2026 13:30:25] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 13:30:25] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[12-03-2026 13:30:25] BUYERS_SELECTED DATA: Array
+(
+    [single] => 
+    [multi] => Array
+        (
+        )
+
+)
+
+[12-03-2026 13:30:25] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 13:30:25] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 0
+)
+
+[12-03-2026 13:30:25] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 
+)
+
+[12-03-2026 13:30:25] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 13:33:15] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/create?UserToken=sxLEn7zO1RMGpYqebQBX
+    [method] => GET
+    [params] => Array
+        (
+            [action] => create
+        )
+
+)
+
+[12-03-2026 13:33:15] ACTION/ID DATA: Array
+(
+    [action] => create
+    [create] => 1
+    [id] => 
+)
+
+[12-03-2026 13:33:15] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 13:33:15] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[12-03-2026 13:33:15] BUYERS_SELECTED DATA: Array
+(
+    [single] => 
+    [multi] => Array
+        (
+        )
+
+)
+
+[12-03-2026 13:33:15] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 13:33:15] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 0
+)
+
+[12-03-2026 13:33:15] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 
+)
+
+[12-03-2026 13:33:15] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 13:36:05] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/create?UserToken=sxLEn7zO1RMGpYqebQBX
+    [method] => GET
+    [params] => Array
+        (
+            [action] => create
+        )
+
+)
+
+[12-03-2026 13:36:05] ACTION/ID DATA: Array
+(
+    [action] => create
+    [create] => 1
+    [id] => 
+)
+
+[12-03-2026 13:36:05] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 13:36:05] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[12-03-2026 13:36:05] BUYERS_SELECTED DATA: Array
+(
+    [single] => 
+    [multi] => Array
+        (
+        )
+
+)
+
+[12-03-2026 13:36:05] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 13:36:05] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 0
+)
+
+[12-03-2026 13:36:05] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 
+)
+
+[12-03-2026 13:36:05] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 13:38:45] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/create?UserToken=sxLEn7zO1RMGpYqebQBX
+    [method] => GET
+    [params] => Array
+        (
+            [action] => create
+        )
+
+)
+
+[12-03-2026 13:38:45] ACTION/ID DATA: Array
+(
+    [action] => create
+    [create] => 1
+    [id] => 
+)
+
+[12-03-2026 13:38:45] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 13:38:45] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[12-03-2026 13:38:45] BUYERS_SELECTED DATA: Array
+(
+    [single] => 
+    [multi] => Array
+        (
+        )
+
+)
+
+[12-03-2026 13:38:45] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 13:38:45] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 0
+)
+
+[12-03-2026 13:38:45] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 
+)
+
+[12-03-2026 13:38:45] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 13:44:28] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/create?UserToken=sxLEn7zO1RMGpYqebQBX
+    [method] => GET
+    [params] => Array
+        (
+            [action] => create
+        )
+
+)
+
+[12-03-2026 13:44:28] ACTION/ID DATA: Array
+(
+    [action] => create
+    [create] => 1
+    [id] => 
+)
+
+[12-03-2026 13:44:28] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 13:44:28] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[12-03-2026 13:44:28] BUYERS_SELECTED DATA: Array
+(
+    [single] => 
+    [multi] => Array
+        (
+        )
+
+)
+
+[12-03-2026 13:44:28] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 13:44:28] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 0
+)
+
+[12-03-2026 13:44:28] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 
+)
+
+[12-03-2026 13:44:28] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 13:44:39] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/create?UserToken=sxLEn7zO1RMGpYqebQBX
+    [method] => GET
+    [params] => Array
+        (
+            [action] => create
+        )
+
+)
+
+[12-03-2026 13:44:39] ACTION/ID DATA: Array
+(
+    [action] => create
+    [create] => 1
+    [id] => 
+)
+
+[12-03-2026 13:44:39] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 13:44:39] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[12-03-2026 13:44:39] BUYERS_SELECTED DATA: Array
+(
+    [single] => 
+    [multi] => Array
+        (
+        )
+
+)
+
+[12-03-2026 13:44:39] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 13:44:39] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 0
+)
+
+[12-03-2026 13:44:39] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 
+)
+
+[12-03-2026 13:44:39] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 13:47:09] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/create?UserToken=sxLEn7zO1RMGpYqebQBX
+    [method] => GET
+    [params] => Array
+        (
+            [action] => create
+        )
+
+)
+
+[12-03-2026 13:47:09] ACTION/ID DATA: Array
+(
+    [action] => create
+    [create] => 1
+    [id] => 
+)
+
+[12-03-2026 13:47:10] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 13:47:10] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[12-03-2026 13:47:10] BUYERS_SELECTED DATA: Array
+(
+    [single] => 
+    [multi] => Array
+        (
+        )
+
+)
+
+[12-03-2026 13:47:10] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 13:47:10] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 0
+)
+
+[12-03-2026 13:47:10] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 
+)
+
+[12-03-2026 13:47:10] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 13:47:26] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/create?UserToken=sxLEn7zO1RMGpYqebQBX
+    [method] => GET
+    [params] => Array
+        (
+            [action] => create
+        )
+
+)
+
+[12-03-2026 13:47:26] ACTION/ID DATA: Array
+(
+    [action] => create
+    [create] => 1
+    [id] => 
+)
+
+[12-03-2026 13:47:26] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 13:47:26] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[12-03-2026 13:47:26] BUYERS_SELECTED DATA: Array
+(
+    [single] => 
+    [multi] => Array
+        (
+        )
+
+)
+
+[12-03-2026 13:47:26] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 13:47:26] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 0
+)
+
+[12-03-2026 13:47:26] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 
+)
+
+[12-03-2026 13:47:26] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 13:50:25] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/create?UserToken=sxLEn7zO1RMGpYqebQBX
+    [method] => GET
+    [params] => Array
+        (
+            [action] => create
+        )
+
+)
+
+[12-03-2026 13:50:25] ACTION/ID DATA: Array
+(
+    [action] => create
+    [create] => 1
+    [id] => 
+)
+
+[12-03-2026 13:50:25] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 13:50:25] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[12-03-2026 13:50:25] BUYERS_SELECTED DATA: Array
+(
+    [single] => 
+    [multi] => Array
+        (
+        )
+
+)
+
+[12-03-2026 13:50:25] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 13:50:25] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 0
+)
+
+[12-03-2026 13:50:25] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 
+)
+
+[12-03-2026 13:50:25] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[12-03-2026 13:51:36] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/create?UserToken=sxLEn7zO1RMGpYqebQBX
+    [method] => GET
+    [params] => Array
+        (
+            [action] => create
+        )
+
+)
+
+[12-03-2026 13:51:36] ACTION/ID DATA: Array
+(
+    [action] => create
+    [create] => 1
+    [id] => 
+)
+
+[12-03-2026 13:51:36] USER DATA: Array
+(
+    [id] => 727
+)
+
+[12-03-2026 13:51:36] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[12-03-2026 13:51:36] BUYERS_SELECTED DATA: Array
+(
+    [single] => 
+    [multi] => Array
+        (
+        )
+
+)
+
+[12-03-2026 13:51:36] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[12-03-2026 13:51:36] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 0
+)
+
+[12-03-2026 13:51:36] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 
+)
+
+[12-03-2026 13:51:36] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[17-03-2026 12:30:27] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/67?UserToken=cB3YAQpvDsZKGalxhw08
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 67
+        )
+
+)
+
+[17-03-2026 12:30:27] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 67
+)
+
+[17-03-2026 12:30:27] USER DATA: Array
+(
+    [id] => 727
+)
+
+[17-03-2026 12:30:27] QUERY_SOLPED DATA: Array
+(
+    [id] => 67
+    [id_solicitante] => 727
+)
+
+[17-03-2026 12:30:27] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 67
+)
+
+[17-03-2026 12:30:27] ITEMS_COUNT DATA: Array
+(
+    [count] => 1
+)
+
+[17-03-2026 12:30:27] DOC_MISSING_ON_DISK DATA: Array
+(
+    [expected_abs] => C:\xampp\htdocs\app\Http\Controllers\Solped/../../../../storage/img/solpeds/30529135943/2026/\2_ Parcial tema 1 _1_.pdf
+    [filename] => 2_ Parcial tema 1 _1_.pdf
+)
+
+[17-03-2026 12:30:27] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[17-03-2026 12:30:27] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[17-03-2026 12:30:27] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[17-03-2026 12:30:27] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 1
+)
+
+[17-03-2026 12:30:27] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[17-03-2026 12:30:27] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[20-03-2026 10:48:11] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/70?UserToken=PqRh30zGyEBASm81FLpW
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 70
+        )
+
+)
+
+[20-03-2026 10:48:11] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 70
+)
+
+[20-03-2026 10:48:11] USER DATA: Array
+(
+    [id] => 727
+)
+
+[20-03-2026 10:48:11] QUERY_SOLPED DATA: Array
+(
+    [id] => 70
+    [id_solicitante] => 727
+)
+
+[20-03-2026 10:48:11] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 70
+)
+
+[20-03-2026 10:48:11] ITEMS_COUNT DATA: Array
+(
+    [count] => 2
+)
+
+[20-03-2026 10:48:12] DOCS DATA: Array
+(
+    [filename] => Notas definitivas examen corregido (1).pdf
+    [url] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido (1).pdf
+)
+
+[20-03-2026 10:48:12] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[20-03-2026 10:48:12] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[20-03-2026 10:48:12] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 2
+)
+
+[20-03-2026 10:48:12] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[20-03-2026 10:48:12] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[20-03-2026 10:56:35] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/70?UserToken=PqRh30zGyEBASm81FLpW
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 70
+        )
+
+)
+
+[20-03-2026 10:56:35] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 70
+)
+
+[20-03-2026 10:56:35] USER DATA: Array
+(
+    [id] => 727
+)
+
+[20-03-2026 10:56:35] QUERY_SOLPED DATA: Array
+(
+    [id] => 70
+    [id_solicitante] => 727
+)
+
+[20-03-2026 10:56:35] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 70
+)
+
+[20-03-2026 10:56:36] ITEMS_COUNT DATA: Array
+(
+    [count] => 2
+)
+
+[20-03-2026 10:56:36] DOCS DATA: Array
+(
+    [filename] => Notas definitivas examen corregido (1).pdf
+    [url] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido (1).pdf
+)
+
+[20-03-2026 10:56:36] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[20-03-2026 10:56:36] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[20-03-2026 10:56:36] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 2
+)
+
+[20-03-2026 10:56:36] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[20-03-2026 10:56:36] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[20-03-2026 11:01:43] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/71?UserToken=PqRh30zGyEBASm81FLpW
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 71
+        )
+
+)
+
+[20-03-2026 11:01:43] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 71
+)
+
+[20-03-2026 11:01:43] USER DATA: Array
+(
+    [id] => 727
+)
+
+[20-03-2026 11:01:43] QUERY_SOLPED DATA: Array
+(
+    [id] => 71
+    [id_solicitante] => 727
+)
+
+[20-03-2026 11:01:43] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 71
+)
+
+[20-03-2026 11:01:43] ITEMS_COUNT DATA: Array
+(
+    [count] => 1
+)
+
+[20-03-2026 11:01:43] DOCS DATA: Array
+(
+    [filename] => Anexo AC 1127 Notas Entrevista.pdf
+    [url] => /storage/img/solpeds/30529135943/2026/Anexo AC 1127 Notas Entrevista.pdf
+)
+
+[20-03-2026 11:01:43] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[20-03-2026 11:01:43] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[20-03-2026 11:01:43] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 1
+)
+
+[20-03-2026 11:01:43] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[20-03-2026 11:01:43] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[20-03-2026 11:01:54] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/67?UserToken=PqRh30zGyEBASm81FLpW
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 67
+        )
+
+)
+
+[20-03-2026 11:01:54] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 67
+)
+
+[20-03-2026 11:01:54] USER DATA: Array
+(
+    [id] => 727
+)
+
+[20-03-2026 11:01:54] QUERY_SOLPED DATA: Array
+(
+    [id] => 67
+    [id_solicitante] => 727
+)
+
+[20-03-2026 11:01:54] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 67
+)
+
+[20-03-2026 11:01:54] ITEMS_COUNT DATA: Array
+(
+    [count] => 1
+)
+
+[20-03-2026 11:01:54] DOC_MISSING_ON_DISK DATA: Array
+(
+    [expected_abs] => C:\xampp\htdocs\app\Http\Controllers\Solped/../../../../storage/img/solpeds/30529135943/2026/\2_ Parcial tema 1 _1_.pdf
+    [filename] => 2_ Parcial tema 1 _1_.pdf
+)
+
+[20-03-2026 11:01:54] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[20-03-2026 11:01:54] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[20-03-2026 11:01:54] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[20-03-2026 11:01:54] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 1
+)
+
+[20-03-2026 11:01:54] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[20-03-2026 11:01:54] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[20-03-2026 11:27:54] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/create?UserToken=jRBH85cVf9EIyXWwpa1t
+    [method] => GET
+    [params] => Array
+        (
+            [action] => create
+        )
+
+)
+
+[20-03-2026 11:27:54] ACTION/ID DATA: Array
+(
+    [action] => create
+    [create] => 1
+    [id] => 
+)
+
+[20-03-2026 11:27:54] USER DATA: Array
+(
+    [id] => 727
+)
+
+[20-03-2026 11:27:54] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[20-03-2026 11:27:54] BUYERS_SELECTED DATA: Array
+(
+    [single] => 
+    [multi] => Array
+        (
+        )
+
+)
+
+[20-03-2026 11:27:54] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[20-03-2026 11:27:54] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 0
+)
+
+[20-03-2026 11:27:54] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 
+)
+
+[20-03-2026 11:27:54] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[10-04-2026 10:59:26] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/create?UserToken=rMgLW1uSaRthE5xsZHUD
+    [method] => GET
+    [params] => Array
+        (
+            [action] => create
+        )
+
+)
+
+[10-04-2026 10:59:26] ACTION/ID DATA: Array
+(
+    [action] => create
+    [create] => 1
+    [id] => 
+)
+
+[10-04-2026 10:59:26] USER DATA: Array
+(
+    [id] => 727
+)
+
+[10-04-2026 10:59:26] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[10-04-2026 10:59:26] BUYERS_SELECTED DATA: Array
+(
+    [single] => 
+    [multi] => Array
+        (
+        )
+
+)
+
+[10-04-2026 10:59:26] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[10-04-2026 10:59:26] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 0
+)
+
+[10-04-2026 10:59:26] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 
+)
+
+[10-04-2026 10:59:26] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[16-04-2026 09:51:54] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/create?UserToken=7GIetxb5l19zdvNY2fWo
+    [method] => GET
+    [params] => Array
+        (
+            [action] => create
+        )
+
+)
+
+[16-04-2026 09:51:54] ACTION/ID DATA: Array
+(
+    [action] => create
+    [create] => 1
+    [id] => 
+)
+
+[16-04-2026 09:51:54] USER DATA: Array
+(
+    [id] => 727
+)
+
+[16-04-2026 09:51:54] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[16-04-2026 09:51:54] BUYERS_SELECTED DATA: Array
+(
+    [single] => 
+    [multi] => Array
+        (
+        )
+
+)
+
+[16-04-2026 09:51:54] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[16-04-2026 09:51:54] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 0
+)
+
+[16-04-2026 09:51:54] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 
+)
+
+[16-04-2026 09:51:54] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[16-04-2026 09:54:20] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/72?UserToken=7GIetxb5l19zdvNY2fWo
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 72
+        )
+
+)
+
+[16-04-2026 09:54:20] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 72
+)
+
+[16-04-2026 09:54:20] USER DATA: Array
+(
+    [id] => 727
+)
+
+[16-04-2026 09:54:20] QUERY_SOLPED DATA: Array
+(
+    [id] => 72
+    [id_solicitante] => 727
+)
+
+[16-04-2026 09:54:20] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 72
+)
+
+[16-04-2026 09:54:20] ITEMS_COUNT DATA: Array
+(
+    [count] => 2
+)
+
+[16-04-2026 09:54:20] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[16-04-2026 09:54:20] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[16-04-2026 09:54:20] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[16-04-2026 09:54:20] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 2
+)
+
+[16-04-2026 09:54:20] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[16-04-2026 09:54:20] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[16-04-2026 09:56:12] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/72?UserToken=7GIetxb5l19zdvNY2fWo
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 72
+        )
+
+)
+
+[16-04-2026 09:56:12] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 72
+)
+
+[16-04-2026 09:56:12] USER DATA: Array
+(
+    [id] => 727
+)
+
+[16-04-2026 09:56:12] QUERY_SOLPED DATA: Array
+(
+    [id] => 72
+    [id_solicitante] => 727
+)
+
+[16-04-2026 09:56:12] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 72
+)
+
+[16-04-2026 09:56:12] ITEMS_COUNT DATA: Array
+(
+    [count] => 2
+)
+
+[16-04-2026 09:56:12] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[16-04-2026 09:56:12] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[16-04-2026 09:56:12] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[16-04-2026 09:56:12] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 2
+)
+
+[16-04-2026 09:56:12] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[16-04-2026 09:56:12] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[16-04-2026 10:01:56] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/72?UserToken=vLBouK8AN7zQV9xfqpmi
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 72
+        )
+
+)
+
+[16-04-2026 10:01:56] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 72
+)
+
+[16-04-2026 10:01:56] USER DATA: Array
+(
+    [id] => 727
+)
+
+[16-04-2026 10:01:56] QUERY_SOLPED DATA: Array
+(
+    [id] => 72
+    [id_solicitante] => 727
+)
+
+[16-04-2026 10:01:56] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 72
+)
+
+[16-04-2026 10:01:56] ITEMS_COUNT DATA: Array
+(
+    [count] => 2
+)
+
+[16-04-2026 10:01:56] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[16-04-2026 10:01:56] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[16-04-2026 10:01:56] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[16-04-2026 10:01:56] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 2
+)
+
+[16-04-2026 10:01:56] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[16-04-2026 10:01:56] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[16-04-2026 10:03:36] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/63?UserToken=vLBouK8AN7zQV9xfqpmi
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 63
+        )
+
+)
+
+[16-04-2026 10:03:36] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 63
+)
+
+[16-04-2026 10:03:36] USER DATA: Array
+(
+    [id] => 727
+)
+
+[16-04-2026 10:03:36] QUERY_SOLPED DATA: Array
+(
+    [id] => 63
+    [id_solicitante] => 727
+)
+
+[16-04-2026 10:03:36] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 63
+)
+
+[16-04-2026 10:03:36] ITEMS_COUNT DATA: Array
+(
+    [count] => 1
+)
+
+[16-04-2026 10:03:36] DOC_MISSING_ON_DISK DATA: Array
+(
+    [expected_abs] => C:\xampp\htdocs\app\Http\Controllers\Solped/../../../../storage/img/solpeds/30529135943/2026/\2_ Parcial tema 1.pdf
+    [filename] => 2_ Parcial tema 1.pdf
+)
+
+[16-04-2026 10:03:36] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[16-04-2026 10:03:36] BUYERS_SELECTED DATA: Array
+(
+    [single] => 
+    [multi] => Array
+        (
+        )
+
+)
+
+[16-04-2026 10:03:36] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[16-04-2026 10:03:36] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 1
+)
+
+[16-04-2026 10:03:36] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 
+)
+
+[16-04-2026 10:03:36] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[16-04-2026 10:03:48] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/create?UserToken=vLBouK8AN7zQV9xfqpmi
+    [method] => GET
+    [params] => Array
+        (
+            [action] => create
+        )
+
+)
+
+[16-04-2026 10:03:48] ACTION/ID DATA: Array
+(
+    [action] => create
+    [create] => 1
+    [id] => 
+)
+
+[16-04-2026 10:03:48] USER DATA: Array
+(
+    [id] => 727
+)
+
+[16-04-2026 10:03:48] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[16-04-2026 10:03:48] BUYERS_SELECTED DATA: Array
+(
+    [single] => 
+    [multi] => Array
+        (
+        )
+
+)
+
+[16-04-2026 10:03:48] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[16-04-2026 10:03:48] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 0
+)
+
+[16-04-2026 10:03:48] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 
+)
+
+[16-04-2026 10:03:48] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[16-04-2026 10:47:44] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/72?UserToken=80jnIdMtewp5vqoCEfGb
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 72
+        )
+
+)
+
+[16-04-2026 10:47:44] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 72
+)
+
+[16-04-2026 10:47:44] USER DATA: Array
+(
+    [id] => 727
+)
+
+[16-04-2026 10:47:44] QUERY_SOLPED DATA: Array
+(
+    [id] => 72
+    [id_solicitante] => 727
+)
+
+[16-04-2026 10:47:44] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 72
+)
+
+[16-04-2026 10:47:44] ITEMS_COUNT DATA: Array
+(
+    [count] => 2
+)
+
+[16-04-2026 10:47:44] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[16-04-2026 10:47:44] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[16-04-2026 10:47:44] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[16-04-2026 10:47:44] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 2
+)
+
+[16-04-2026 10:47:44] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[16-04-2026 10:47:44] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[16-04-2026 10:53:31] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/72?UserToken=OIDCaRMSjHhVUsymTEKd
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 72
+        )
+
+)
+
+[16-04-2026 10:53:31] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 72
+)
+
+[16-04-2026 10:53:31] USER DATA: Array
+(
+    [id] => 727
+)
+
+[16-04-2026 10:53:31] QUERY_SOLPED DATA: Array
+(
+    [id] => 72
+    [id_solicitante] => 727
+)
+
+[16-04-2026 10:53:31] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 72
+)
+
+[16-04-2026 10:53:31] ITEMS_COUNT DATA: Array
+(
+    [count] => 2
+)
+
+[16-04-2026 10:53:31] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[16-04-2026 10:53:31] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[16-04-2026 10:53:31] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[16-04-2026 10:53:31] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 2
+)
+
+[16-04-2026 10:53:31] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[16-04-2026 10:53:31] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[16-04-2026 10:54:42] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/create?UserToken=IYzeAlwHmJxnMKDkBcv5
+    [method] => GET
+    [params] => Array
+        (
+            [action] => create
+        )
+
+)
+
+[16-04-2026 10:54:42] ACTION/ID DATA: Array
+(
+    [action] => create
+    [create] => 1
+    [id] => 
+)
+
+[16-04-2026 10:54:42] USER DATA: Array
+(
+    [id] => 727
+)
+
+[16-04-2026 10:54:42] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[16-04-2026 10:54:42] BUYERS_SELECTED DATA: Array
+(
+    [single] => 
+    [multi] => Array
+        (
+        )
+
+)
+
+[16-04-2026 10:54:42] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[16-04-2026 10:54:42] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 0
+)
+
+[16-04-2026 10:54:42] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 
+)
+
+[16-04-2026 10:54:42] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[16-04-2026 11:17:53] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/72?UserToken=RS3ZyqKfehBwaO16bA9I
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 72
+        )
+
+)
+
+[16-04-2026 11:17:53] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 72
+)
+
+[16-04-2026 11:17:53] USER DATA: Array
+(
+    [id] => 727
+)
+
+[16-04-2026 11:17:53] QUERY_SOLPED DATA: Array
+(
+    [id] => 72
+    [id_solicitante] => 727
+)
+
+[16-04-2026 11:17:53] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 72
+)
+
+[16-04-2026 11:17:53] ITEMS_COUNT DATA: Array
+(
+    [count] => 2
+)
+
+[16-04-2026 11:17:53] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[16-04-2026 11:17:53] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[16-04-2026 11:17:53] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[16-04-2026 11:17:53] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 2
+)
+
+[16-04-2026 11:17:53] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[16-04-2026 11:17:53] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[16-04-2026 11:21:26] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/73?UserToken=OqVRSLlH9p8WnPGDar6N
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 73
+        )
+
+)
+
+[16-04-2026 11:21:26] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 73
+)
+
+[16-04-2026 11:21:26] USER DATA: Array
+(
+    [id] => 727
+)
+
+[16-04-2026 11:21:26] QUERY_SOLPED DATA: Array
+(
+    [id] => 73
+    [id_solicitante] => 727
+)
+
+[16-04-2026 11:21:26] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 73
+)
+
+[16-04-2026 11:21:26] ITEMS_COUNT DATA: Array
+(
+    [count] => 1
+)
+
+[16-04-2026 11:21:26] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[16-04-2026 11:21:26] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[16-04-2026 11:21:26] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[16-04-2026 11:21:26] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 1
+)
+
+[16-04-2026 11:21:26] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[16-04-2026 11:21:26] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[16-04-2026 11:21:58] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/73?UserToken=OqVRSLlH9p8WnPGDar6N
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 73
+        )
+
+)
+
+[16-04-2026 11:21:58] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 73
+)
+
+[16-04-2026 11:21:58] USER DATA: Array
+(
+    [id] => 727
+)
+
+[16-04-2026 11:21:58] QUERY_SOLPED DATA: Array
+(
+    [id] => 73
+    [id_solicitante] => 727
+)
+
+[16-04-2026 11:21:58] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 73
+)
+
+[16-04-2026 11:21:58] ITEMS_COUNT DATA: Array
+(
+    [count] => 2
+)
+
+[16-04-2026 11:21:58] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[16-04-2026 11:21:58] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[16-04-2026 11:21:58] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => DescripcionImagePath
+    [28] => DescripcionPortrait
+)
+
+[16-04-2026 11:21:58] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 2
+)
+
+[16-04-2026 11:21:58] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[16-04-2026 11:21:58] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+
+[16-04-2026 11:30:16] START DATA: Array
+(
+    [uri] => https://optus.dev/solped/edit/73?UserToken=OqVRSLlH9p8WnPGDar6N
+    [method] => GET
+    [params] => Array
+        (
+            [action] => edit
+            [id] => 73
+        )
+
+)
+
+[16-04-2026 11:30:16] ACTION/ID DATA: Array
+(
+    [action] => edit
+    [create] => 
+    [id] => 73
+)
+
+[16-04-2026 11:30:16] USER DATA: Array
+(
+    [id] => 727
+)
+
+[16-04-2026 11:30:16] QUERY_SOLPED DATA: Array
+(
+    [id] => 73
+    [id_solicitante] => 727
+)
+
+[16-04-2026 11:30:16] QUERY_ITEMS DATA: Array
+(
+    [id_solped] => 73
+)
+
+[16-04-2026 11:30:16] ITEMS_COUNT DATA: Array
+(
+    [count] => 2
+)
+
+[16-04-2026 11:30:16] DOCS DATA: Array
+(
+    [filename] => 
+    [url] => 
+)
+
+[16-04-2026 11:30:16] BUYERS_SELECTED DATA: Array
+(
+    [single] => 7
+    [multi] => Array
+        (
+            [0] => 7
+        )
+
+)
+
+[16-04-2026 11:30:16] LIST_KEYS DATA: Array
+(
+    [0] => Id
+    [1] => Nombre
+    [2] => Descripcion
+    [3] => CodigoInterno
+    [4] => TipoCompraId
+    [5] => AreaSolicitante
+    [6] => Pais
+    [7] => CountrySelectedId
+    [8] => CountrySelected
+    [9] => Countries
+    [10] => Provincia
+    [11] => Ciudad
+    [12] => Localidad
+    [13] => Direccion
+    [14] => Cp
+    [15] => Latitud
+    [16] => Longitud
+    [17] => FechaAlta
+    [18] => FechaResolucion
+    [19] => FechaEntrega
+    [20] => ProductMeasurementList
+    [21] => CompradoresSugeridos
+    [22] => CompradorSugeridoId
+    [23] => CompradoresSugeridosSelected
+    [24] => Products
+    [25] => Sheets
+    [26] => FilePath
+    [27] => Etapa
+    [28] => EstadoActual
+    [29] => DescripcionImagePath
+    [30] => DescripcionPortrait
+)
+
+[16-04-2026 11:30:16] PRODUCTS_PREVIEW DATA: Array
+(
+    [count] => 2
+)
+
+[16-04-2026 11:30:16] DEBUG_SINGLE_RETURN DATA: Array
+(
+    [CompradorSugeridoId] => 7
+)
+
+[16-04-2026 11:30:16] END DATA: Array
+(
+    [success] => 1
+    [status] => 200
+)
+

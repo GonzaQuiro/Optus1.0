@@ -683,6 +683,9 @@ class CompanyController extends BaseController
             $solpedActive = $role === 'client'
                 ? ($creation ? 'no' : (isset($company->solped_active) ? $company->solped_active : 'no'))
                 : null;
+            $estrategiaActive = $role === 'client'
+                ? ($creation ? 'no' : (isset($company->estrategia_active) ? $company->estrategia_active : 'no'))
+                : null;
 
             $statusId = $creation ? null : ($company && $company->status ? $company->status->id : null);
 
@@ -708,7 +711,8 @@ class CompanyController extends BaseController
                 'SitioWeb' => $creation ? null : $company->website,
                 'Observaciones' => $creation ? null : $company->comments,
                 'timeZone' => $creation ? null : $company->timeZone,
-                'SolpedActive' => $solpedActive
+                'SolpedActive' => $solpedActive,
+                'EstrategiaActive' => $estrategiaActive
             ];
 
             if ($role == 'offerer') {
@@ -1345,11 +1349,27 @@ class CompanyController extends BaseController
             }
         }
 
+        $estrategiaActive = 'no';
+        if (isset($body->EstrategiaActive)) {
+            if (is_bool($body->EstrategiaActive)) {
+                $estrategiaActive = $body->EstrategiaActive ? 'si' : 'no';
+            } else {
+                $value = strtolower(trim((string) $body->EstrategiaActive));
+                $estrategiaActive = ($value === 'si' || $value === '1' || $value === 'true') ? 'si' : 'no';
+            }
+        } elseif (!$creation) {
+            $existingCompany = CustomerCompany::find((int) $params['id']);
+            if ($existingCompany && isset($existingCompany->estrategia_active)) {
+                $estrategiaActive = $existingCompany->estrategia_active;
+            }
+        }
+
         $fields = array_merge($fields, [
             'status_id' => $company_status ? $company_status->id : 1,
             'rate_system_id' => $rate_system ? $rate_system->id : null,
             'timeZone' => $body->TimeZone,
-            'solped_active' => $solpedActive
+            'solped_active' => $solpedActive,
+            'estrategia_active' => $estrategiaActive
         ]);
 
         $validator = $this->validate($fields, $role);

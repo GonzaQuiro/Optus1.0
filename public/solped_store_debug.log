@@ -1,0 +1,342 @@
+[12-03-2026 12:13:40] normalized Array
+(
+    [action] => 
+    [id] => 0
+    [nombre] => Fix errores
+    [area_sol] => Administración
+    [tipoCompra] => 1
+    [id_comprador_sugerido] => 7
+    [items] => 2
+    [docs] => 2
+)
+
+[12-03-2026 12:13:40] tx-start
+[12-03-2026 12:13:40] file-not-found Array
+(
+    [filename] => Notas definitivas examen corregido.pdf
+    [searched] => Array
+        (
+            [0] => C:\xampp\htdocs/storage/temp/Notas definitivas examen corregido.pdf
+            [1] => C:\xampp\htdocs/uploads/Notas definitivas examen corregido.pdf
+            [2] => C:\xampp\htdocs/storage/uploads/Notas definitivas examen corregido.pdf
+        )
+
+)
+
+[12-03-2026 12:13:40] file-not-found Array
+(
+    [filename] => Notas definitivas examen corregido (1).pdf
+    [searched] => Array
+        (
+            [0] => C:\xampp\htdocs/storage/temp/Notas definitivas examen corregido (1).pdf
+            [1] => C:\xampp\htdocs/uploads/Notas definitivas examen corregido (1).pdf
+            [2] => C:\xampp\htdocs/storage/uploads/Notas definitivas examen corregido (1).pdf
+        )
+
+)
+
+[12-03-2026 12:13:40] create-ok Array
+(
+    [id] => 70
+    [items] => 2
+    [docs] => 2
+)
+
+[12-03-2026 12:14:04] normalized Array
+(
+    [action] => 
+    [id] => 70
+    [nombre] => Fix errores
+    [area_sol] => Administración
+    [tipoCompra] => 1
+    [id_comprador_sugerido] => 7
+    [items] => 2
+    [docs] => 2
+)
+
+[12-03-2026 12:14:04] tx-start
+[12-03-2026 12:14:04] item-updated Array
+(
+    [item_id] => 91
+    [nombre] => Hola
+)
+
+[12-03-2026 12:14:04] item-updated Array
+(
+    [item_id] => 92
+    [nombre] => sfsdf
+)
+
+[12-03-2026 12:14:04] file-not-found Array
+(
+    [filename] => Notas definitivas examen corregido.pdf
+    [searched] => Array
+        (
+            [0] => C:\xampp\htdocs/storage/temp/Notas definitivas examen corregido.pdf
+            [1] => C:\xampp\htdocs/uploads/Notas definitivas examen corregido.pdf
+            [2] => C:\xampp\htdocs/storage/uploads/Notas definitivas examen corregido.pdf
+        )
+
+)
+
+[12-03-2026 12:14:04] file-not-found Array
+(
+    [filename] => Notas definitivas examen corregido (1).pdf
+    [searched] => Array
+        (
+            [0] => C:\xampp\htdocs/storage/temp/Notas definitivas examen corregido (1).pdf
+            [1] => C:\xampp\htdocs/uploads/Notas definitivas examen corregido (1).pdf
+            [2] => C:\xampp\htdocs/storage/uploads/Notas definitivas examen corregido (1).pdf
+        )
+
+)
+
+[12-03-2026 12:14:04] edit-ok Array
+(
+    [id] => 70
+    [items_processed] => 2
+    [comprador_sugerido] => 7
+)
+
+[12-03-2026 12:31:36] normalized Array
+(
+    [action] => 
+    [id] => 70
+    [nombre] => Fix errores
+    [area_sol] => Administración
+    [tipoCompra] => 1
+    [id_comprador_sugerido] => 7
+    [items] => 2
+    [docs] => 2
+)
+
+[12-03-2026 12:31:36] tx-start
+[12-03-2026 12:31:36] item-updated Array
+(
+    [item_id] => 91
+    [nombre] => Hola
+)
+
+[12-03-2026 12:31:36] item-updated Array
+(
+    [item_id] => 92
+    [nombre] => sfsdf
+)
+
+[12-03-2026 12:31:36] file-not-found Array
+(
+    [filename] => Notas definitivas examen corregido.pdf
+    [searched] => Array
+        (
+            [0] => C:\xampp\htdocs/storage/temp/Notas definitivas examen corregido.pdf
+            [1] => C:\xampp\htdocs/uploads/Notas definitivas examen corregido.pdf
+            [2] => C:\xampp\htdocs/storage/uploads/Notas definitivas examen corregido.pdf
+        )
+
+)
+
+[12-03-2026 12:31:36] file-not-found Array
+(
+    [filename] => Notas definitivas examen corregido (1).pdf
+    [searched] => Array
+        (
+            [0] => C:\xampp\htdocs/storage/temp/Notas definitivas examen corregido (1).pdf
+            [1] => C:\xampp\htdocs/uploads/Notas definitivas examen corregido (1).pdf
+            [2] => C:\xampp\htdocs/storage/uploads/Notas definitivas examen corregido (1).pdf
+        )
+
+)
+
+[12-03-2026 12:31:36] edit-ok Array
+(
+    [id] => 70
+    [items_processed] => 2
+    [comprador_sugerido] => 7
+)
+
+[12-03-2026 12:52:43] normalized Array
+(
+    [action] => 
+    [id] => 0
+    [nombre] => Prueba de conversion fix errores
+    [area_sol] => Administración
+    [tipoCompra] => 1
+    [id_comprador_sugerido] => 7
+    [items] => 1
+    [docs] => 2
+)
+
+[12-03-2026 12:52:43] tx-start
+[12-03-2026 12:52:43] file-not-found Array
+(
+    [filename] => Notas definitivas examen corregido (2).pdf
+    [searched] => Array
+        (
+            [0] => C:\xampp\htdocs/storage/temp/Notas definitivas examen corregido (2).pdf
+            [1] => C:\xampp\htdocs/uploads/Notas definitivas examen corregido (2).pdf
+            [2] => C:\xampp\htdocs/storage/uploads/Notas definitivas examen corregido (2).pdf
+        )
+
+)
+
+[12-03-2026 12:52:43] file-not-found Array
+(
+    [filename] => Anexo AC 1127 Notas Entrevista.pdf
+    [searched] => Array
+        (
+            [0] => C:\xampp\htdocs/storage/temp/Anexo AC 1127 Notas Entrevista.pdf
+            [1] => C:\xampp\htdocs/uploads/Anexo AC 1127 Notas Entrevista.pdf
+            [2] => C:\xampp\htdocs/storage/uploads/Anexo AC 1127 Notas Entrevista.pdf
+        )
+
+)
+
+[12-03-2026 12:52:43] create-ok Array
+(
+    [id] => 71
+    [items] => 1
+    [docs] => 2
+)
+
+[12-03-2026 13:19:41] normalized Array
+(
+    [action] => 
+    [id] => 62
+    [nombre] => 0001 Prueba 2
+    [area_sol] => Administración
+    [tipoCompra] => 1
+    [id_comprador_sugerido] => 7
+    [items] => 1
+    [docs] => 1
+)
+
+[12-03-2026 13:19:41] tx-start
+[12-03-2026 13:19:41] item-updated Array
+(
+    [item_id] => 83
+    [nombre] => aaa
+)
+
+[12-03-2026 13:19:41] file-not-found Array
+(
+    [filename] => 2do Parcial teórico_Práctico - Curso 3K1_ Revisión del intento _1_ (1).pdf
+    [searched] => Array
+        (
+            [0] => C:\xampp\htdocs/storage/temp/2do Parcial teórico_Práctico - Curso 3K1_ Revisión del intento _1_ (1).pdf
+            [1] => C:\xampp\htdocs/uploads/2do Parcial teórico_Práctico - Curso 3K1_ Revisión del intento _1_ (1).pdf
+            [2] => C:\xampp\htdocs/storage/uploads/2do Parcial teórico_Práctico - Curso 3K1_ Revisión del intento _1_ (1).pdf
+        )
+
+)
+
+[12-03-2026 13:19:41] edit-ok Array
+(
+    [id] => 62
+    [items_processed] => 1
+    [comprador_sugerido] => 7
+)
+
+[16-04-2026 09:54:03] normalized Array
+(
+    [action] => create
+    [id] => 0
+    [nombre] => 16/04 test
+    [area_sol] => Administración
+    [tipoCompra] => 1
+    [id_comprador_sugerido] => 7
+    [items] => 2
+    [docs] => 0
+)
+
+[16-04-2026 09:54:03] tx-start
+[16-04-2026 09:54:03] create-ok Array
+(
+    [id] => 72
+    [items] => 2
+    [docs] => 0
+)
+
+[16-04-2026 10:55:02] normalized Array
+(
+    [action] => create
+    [id] => 0
+    [nombre] => xDDDDDD
+    [area_sol] => Administración
+    [tipoCompra] => 1
+    [id_comprador_sugerido] => 7
+    [items] => 1
+    [docs] => 0
+)
+
+[16-04-2026 10:55:02] tx-start
+[16-04-2026 10:55:02] create-ok Array
+(
+    [id] => 73
+    [items] => 1
+    [docs] => 0
+)
+
+[16-04-2026 11:21:37] normalized Array
+(
+    [action] => edit
+    [id] => 73
+    [nombre] => xDDDDDD
+    [area_sol] => Administración
+    [tipoCompra] => 1
+    [id_comprador_sugerido] => 7
+    [items] => 2
+    [docs] => 0
+)
+
+[16-04-2026 11:21:37] tx-start
+[16-04-2026 11:21:37] item-updated Array
+(
+    [item_id] => 96
+    [nombre] => 11211
+)
+
+[16-04-2026 11:21:37] item-created Array
+(
+    [item_id] => 97
+    [nombre] => xDDD
+)
+
+[16-04-2026 11:21:37] edit-ok Array
+(
+    [id] => 73
+    [items_processed] => 2
+    [comprador_sugerido] => 7
+)
+
+[16-04-2026 11:30:22] normalized Array
+(
+    [action] => edit
+    [id] => 73
+    [nombre] => xDDDDDD
+    [area_sol] => Administración
+    [tipoCompra] => 1
+    [id_comprador_sugerido] => 7
+    [items] => 2
+    [docs] => 0
+)
+
+[16-04-2026 11:30:22] tx-start
+[16-04-2026 11:30:22] item-updated Array
+(
+    [item_id] => 96
+    [nombre] => 11211
+)
+
+[16-04-2026 11:30:22] item-updated Array
+(
+    [item_id] => 97
+    [nombre] => xDDD
+)
+
+[16-04-2026 11:30:22] edit-ok Array
+(
+    [id] => 73
+    [items_processed] => 2
+    [comprador_sugerido] => 7
+)
+

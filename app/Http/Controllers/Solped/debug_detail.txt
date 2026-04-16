@@ -6468,3 +6468,1154 @@ List final: Array
 
 === detail FIN ===
 
+
+=== detail INICIO === 16-04-2026 10:47:24 ===
+Params recibidos: Array
+(
+    [etapa] => en-correccion
+    [id] => 72
+)
+
+Usuario: ID=727, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=72, etapa=devuelta
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 94
+    [Nombre] => xd
+    [Descripcion] => 
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 95
+    [Nombre] => dx
+    [Descripcion] => 
+    [Cantidad] => 11
+    [OfertaMinima] => 11
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 0
+)
+
+Total productos: 2
+FilePath base: /storage/img/solpeds/30529135943/2026/
+Documents encontrados: 0
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 72
+    [Nombre] => 16/04 test
+    [IdSolicitante] => 727
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 19-04-2026 00:00:00
+    [FechaEntrega] => 27-04-2026 00:00:00
+    [FechaCreacion] => 16-04-2026 09:54:03
+    [FechaEnvioComprador] => 16-04-2026 09:59:48
+    [FechaFinEtapaEconomica] => 
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => xdeano loko
+    [Etapa] => devuelta
+    [EstadoActual] => devuelta
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 16-04-2026 10:00:12
+    [FechaDevolucion] => 16-04-2026 10:42:02
+    [CompradorDecisionFecha] => Ucoca Cola - 16-04-2026 10:42:02
+    [CompradorDevolucionFecha] => Ucoca Cola - 16-04-2026 10:42:02
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 94
+                    [Nombre] => xd
+                    [Descripcion] => 
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 0
+                )
+
+            [1] => Array
+                (
+                    [Id] => 95
+                    [Nombre] => dx
+                    [Descripcion] => 
+                    [Cantidad] => 11
+                    [OfertaMinima] => 11
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => Array
+        (
+        )
+
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-04-2026 10:52:18 ===
+Params recibidos: Array
+(
+    [etapa] => en-correccion
+    [id] => 72
+)
+
+Usuario: ID=727, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=72, etapa=devuelta
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 94
+    [Nombre] => xd
+    [Descripcion] => 
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 95
+    [Nombre] => dx
+    [Descripcion] => 
+    [Cantidad] => 11
+    [OfertaMinima] => 11
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 0
+)
+
+Total productos: 2
+FilePath base: /storage/img/solpeds/30529135943/2026/
+Documents encontrados: 0
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 72
+    [Nombre] => 16/04 test
+    [IdSolicitante] => 727
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 19-04-2026 00:00:00
+    [FechaEntrega] => 27-04-2026 00:00:00
+    [FechaCreacion] => 16-04-2026 09:54:03
+    [FechaEnvioComprador] => 16-04-2026 09:59:48
+    [FechaFinEtapaEconomica] => 
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => xdeano loko
+    [Etapa] => devuelta
+    [EstadoActual] => esperando-revision
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 16-04-2026 10:00:12
+    [FechaDevolucion] => 16-04-2026 10:42:02
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => Ucoca Cola - 16-04-2026 10:42:02
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 94
+                    [Nombre] => xd
+                    [Descripcion] => 
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 0
+                )
+
+            [1] => Array
+                (
+                    [Id] => 95
+                    [Nombre] => dx
+                    [Descripcion] => 
+                    [Cantidad] => 11
+                    [OfertaMinima] => 11
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => Array
+        (
+        )
+
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-04-2026 10:53:23 ===
+Params recibidos: Array
+(
+    [etapa] => en-correccion
+    [id] => 72
+)
+
+Usuario: ID=727, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=72, etapa=devuelta
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 94
+    [Nombre] => xd
+    [Descripcion] => 
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 95
+    [Nombre] => dx
+    [Descripcion] => 
+    [Cantidad] => 11
+    [OfertaMinima] => 11
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 0
+)
+
+Total productos: 2
+FilePath base: /storage/img/solpeds/30529135943/2026/
+Documents encontrados: 0
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 72
+    [Nombre] => 16/04 test
+    [IdSolicitante] => 727
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 19-04-2026 00:00:00
+    [FechaEntrega] => 27-04-2026 00:00:00
+    [FechaCreacion] => 16-04-2026 09:54:03
+    [FechaEnvioComprador] => 16-04-2026 09:59:48
+    [FechaFinEtapaEconomica] => 
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => xdeano loko
+    [Etapa] => devuelta
+    [EstadoActual] => esperando-revision
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 16-04-2026 10:00:12
+    [FechaDevolucion] => 16-04-2026 10:42:02
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => Ucoca Cola - 16-04-2026 10:42:02
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 94
+                    [Nombre] => xd
+                    [Descripcion] => 
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 0
+                )
+
+            [1] => Array
+                (
+                    [Id] => 95
+                    [Nombre] => dx
+                    [Descripcion] => 
+                    [Cantidad] => 11
+                    [OfertaMinima] => 11
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => Array
+        (
+        )
+
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-04-2026 10:53:27 ===
+Params recibidos: Array
+(
+    [etapa] => en-correccion
+    [id] => 72
+)
+
+Usuario: ID=727, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=72, etapa=devuelta
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 94
+    [Nombre] => xd
+    [Descripcion] => 
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 95
+    [Nombre] => dx
+    [Descripcion] => 
+    [Cantidad] => 11
+    [OfertaMinima] => 11
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 0
+)
+
+Total productos: 2
+FilePath base: /storage/img/solpeds/30529135943/2026/
+Documents encontrados: 0
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 72
+    [Nombre] => 16/04 test
+    [IdSolicitante] => 727
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 19-04-2026 00:00:00
+    [FechaEntrega] => 27-04-2026 00:00:00
+    [FechaCreacion] => 16-04-2026 09:54:03
+    [FechaEnvioComprador] => 16-04-2026 09:59:48
+    [FechaFinEtapaEconomica] => 
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => xdeano loko
+    [Etapa] => devuelta
+    [EstadoActual] => esperando-revision
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 16-04-2026 10:00:12
+    [FechaDevolucion] => 16-04-2026 10:42:02
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => Ucoca Cola - 16-04-2026 10:42:02
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 94
+                    [Nombre] => xd
+                    [Descripcion] => 
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 0
+                )
+
+            [1] => Array
+                (
+                    [Id] => 95
+                    [Nombre] => dx
+                    [Descripcion] => 
+                    [Cantidad] => 11
+                    [OfertaMinima] => 11
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => Array
+        (
+        )
+
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-04-2026 10:57:56 ===
+Params recibidos: Array
+(
+    [etapa] => en-correccion
+    [id] => 73
+)
+
+Usuario: ID=727, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=73, etapa=devuelta
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 96
+    [Nombre] => 11211
+    [Descripcion] => 1
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /storage/img/solpeds/30529135943/2026/
+Documents encontrados: 0
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 73
+    [Nombre] => xDDDDDD
+    [IdSolicitante] => 727
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 16-04-2026 00:00:00
+    [FechaEntrega] => 23-04-2026 00:00:00
+    [FechaCreacion] => 16-04-2026 10:55:02
+    [FechaEnvioComprador] => 16-04-2026 10:55:11
+    [FechaFinEtapaEconomica] => 
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => hola no me gusto los items
+    [Etapa] => devuelta
+    [EstadoActual] => devuelta
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 16-04-2026 10:56:17
+    [FechaDevolucion] => 16-04-2026 10:56:24
+    [CompradorDecisionFecha] => Ucoca Cola - 16-04-2026 10:56:24
+    [CompradorDevolucionFecha] => Ucoca Cola - 16-04-2026 10:56:24
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 96
+                    [Nombre] => 11211
+                    [Descripcion] => 1
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => Array
+        (
+        )
+
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-04-2026 11:17:39 ===
+Params recibidos: Array
+(
+    [etapa] => en-correccion
+    [id] => 72
+)
+
+Usuario: ID=727, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=72, etapa=devuelta
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 94
+    [Nombre] => xd
+    [Descripcion] => 
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 95
+    [Nombre] => dx
+    [Descripcion] => 
+    [Cantidad] => 11
+    [OfertaMinima] => 11
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 0
+)
+
+Total productos: 2
+FilePath base: /storage/img/solpeds/30529135943/2026/
+Documents encontrados: 0
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 72
+    [Nombre] => 16/04 test
+    [IdSolicitante] => 727
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 19-04-2026 00:00:00
+    [FechaEntrega] => 27-04-2026 00:00:00
+    [FechaCreacion] => 16-04-2026 09:54:03
+    [FechaEnvioComprador] => 16-04-2026 09:59:48
+    [FechaFinEtapaEconomica] => 
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => xDDD
+    [Etapa] => devuelta
+    [EstadoActual] => devuelta
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 16-04-2026 10:00:12
+    [FechaDevolucion] => 16-04-2026 10:55:37
+    [CompradorDecisionFecha] => Ucoca Cola - 16-04-2026 10:55:37
+    [CompradorDevolucionFecha] => Ucoca Cola - 16-04-2026 10:55:37
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 94
+                    [Nombre] => xd
+                    [Descripcion] => 
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 0
+                )
+
+            [1] => Array
+                (
+                    [Id] => 95
+                    [Nombre] => dx
+                    [Descripcion] => 
+                    [Cantidad] => 11
+                    [OfertaMinima] => 11
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => Array
+        (
+        )
+
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-04-2026 11:21:23 ===
+Params recibidos: Array
+(
+    [etapa] => en-correccion
+    [id] => 73
+)
+
+Usuario: ID=727, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=73, etapa=devuelta
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 96
+    [Nombre] => 11211
+    [Descripcion] => 1
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /storage/img/solpeds/30529135943/2026/
+Documents encontrados: 0
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 73
+    [Nombre] => xDDDDDD
+    [IdSolicitante] => 727
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 16-04-2026 00:00:00
+    [FechaEntrega] => 23-04-2026 00:00:00
+    [FechaCreacion] => 16-04-2026 10:55:02
+    [FechaEnvioComprador] => 16-04-2026 10:55:11
+    [FechaFinEtapaEconomica] => 
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => hola no me gusto los items
+    [Etapa] => devuelta
+    [EstadoActual] => devuelta
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 16-04-2026 10:56:17
+    [FechaDevolucion] => 16-04-2026 10:56:24
+    [CompradorDecisionFecha] => Ucoca Cola - 16-04-2026 10:56:24
+    [CompradorDevolucionFecha] => Ucoca Cola - 16-04-2026 10:56:24
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 96
+                    [Nombre] => 11211
+                    [Descripcion] => 1
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => Array
+        (
+        )
+
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-04-2026 11:21:38 ===
+Params recibidos: Array
+(
+    [etapa] => en-correccion
+    [id] => 73
+)
+
+Usuario: ID=727, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=73, etapa=devuelta
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 96
+    [Nombre] => 11211
+    [Descripcion] => 1
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 97
+    [Nombre] => xDDD
+    [Descripcion] => 
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 43
+)
+
+Total productos: 2
+FilePath base: /storage/img/solpeds/30529135943/2026/
+Documents encontrados: 0
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 73
+    [Nombre] => xDDDDDD
+    [IdSolicitante] => 727
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 16-04-2026 00:00:00
+    [FechaEntrega] => 23-04-2026 00:00:00
+    [FechaCreacion] => 16-04-2026 10:55:02
+    [FechaEnvioComprador] => 16-04-2026 10:55:11
+    [FechaFinEtapaEconomica] => 
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => hola no me gusto los items
+    [Etapa] => devuelta
+    [EstadoActual] => devuelta
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 16-04-2026 10:56:17
+    [FechaDevolucion] => 16-04-2026 10:56:24
+    [CompradorDecisionFecha] => Ucoca Cola - 16-04-2026 10:56:24
+    [CompradorDevolucionFecha] => Ucoca Cola - 16-04-2026 10:56:24
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 96
+                    [Nombre] => 11211
+                    [Descripcion] => 1
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+            [1] => Array
+                (
+                    [Id] => 97
+                    [Nombre] => xDDD
+                    [Descripcion] => 
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 43
+                )
+
+        )
+
+    [FilePath] => Array
+        (
+        )
+
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-04-2026 11:24:36 ===
+Params recibidos: Array
+(
+    [etapa] => en-correccion
+    [id] => 73
+)
+
+Usuario: ID=727, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=73, etapa=devuelta
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 96
+    [Nombre] => 11211
+    [Descripcion] => 1
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 97
+    [Nombre] => xDDD
+    [Descripcion] => 
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 43
+)
+
+Total productos: 2
+FilePath base: /storage/img/solpeds/30529135943/2026/
+Documents encontrados: 0
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 73
+    [Nombre] => xDDDDDD
+    [IdSolicitante] => 727
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 16-04-2026 00:00:00
+    [FechaEntrega] => 23-04-2026 00:00:00
+    [FechaCreacion] => 16-04-2026 10:55:02
+    [FechaEnvioComprador] => 16-04-2026 10:55:11
+    [FechaFinEtapaEconomica] => 
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => hola no me gusto los items
+    [Etapa] => devuelta
+    [EstadoActual] => devuelta
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 16-04-2026 10:56:17
+    [FechaDevolucion] => 16-04-2026 10:56:24
+    [CompradorDecisionFecha] => Ucoca Cola - 16-04-2026 10:56:24
+    [CompradorDevolucionFecha] => Ucoca Cola - 16-04-2026 10:56:24
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 96
+                    [Nombre] => 11211
+                    [Descripcion] => 1
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+            [1] => Array
+                (
+                    [Id] => 97
+                    [Nombre] => xDDD
+                    [Descripcion] => 
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 43
+                )
+
+        )
+
+    [FilePath] => Array
+        (
+        )
+
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-04-2026 11:30:23 ===
+Params recibidos: Array
+(
+    [etapa] => en-correccion
+    [id] => 73
+)
+
+Usuario: ID=727, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=73, etapa=devuelta
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 96
+    [Nombre] => 11211
+    [Descripcion] => 1
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 97
+    [Nombre] => xDDD
+    [Descripcion] => 
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 43
+)
+
+Total productos: 2
+FilePath base: /storage/img/solpeds/30529135943/2026/
+Documents encontrados: 0
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 73
+    [Nombre] => xDDDDDD
+    [IdSolicitante] => 727
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 16-04-2026 00:00:00
+    [FechaEntrega] => 23-04-2026 00:00:00
+    [FechaCreacion] => 16-04-2026 10:55:02
+    [FechaEnvioComprador] => 16-04-2026 10:55:11
+    [FechaFinEtapaEconomica] => 
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => hola no me gusto los items
+    [Etapa] => devuelta
+    [EstadoActual] => devuelta
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 16-04-2026 10:56:17
+    [FechaDevolucion] => 16-04-2026 10:56:24
+    [CompradorDecisionFecha] => Ucoca Cola - 16-04-2026 10:56:24
+    [CompradorDevolucionFecha] => Ucoca Cola - 16-04-2026 10:56:24
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 96
+                    [Nombre] => 11211
+                    [Descripcion] => 1
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+            [1] => Array
+                (
+                    [Id] => 97
+                    [Nombre] => xDDD
+                    [Descripcion] => 
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 43
+                )
+
+        )
+
+    [FilePath] => Array
+        (
+        )
+
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-04-2026 11:30:43 ===
+Params recibidos: Array
+(
+    [etapa] => en-correccion
+    [id] => 73
+)
+
+Usuario: ID=727, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=73, etapa=en-analisis
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 96
+    [Nombre] => 11211
+    [Descripcion] => 1
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 97
+    [Nombre] => xDDD
+    [Descripcion] => 
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 43
+)
+
+Total productos: 2
+FilePath base: /storage/img/solpeds/30529135943/2026/
+Documents encontrados: 0
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 73
+    [Nombre] => xDDDDDD
+    [IdSolicitante] => 727
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 16-04-2026 00:00:00
+    [FechaEntrega] => 23-04-2026 00:00:00
+    [FechaCreacion] => 16-04-2026 10:55:02
+    [FechaEnvioComprador] => 16-04-2026 11:30:36
+    [FechaFinEtapaEconomica] => 
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => en-analisis
+    [EstadoActual] => esperando-revision-2
+    [CompradorDecision] => 
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 16-04-2026 10:56:17
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 96
+                    [Nombre] => 11211
+                    [Descripcion] => 1
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+            [1] => Array
+                (
+                    [Id] => 97
+                    [Nombre] => xDDD
+                    [Descripcion] => 
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 43
+                )
+
+        )
+
+    [FilePath] => Array
+        (
+        )
+
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+

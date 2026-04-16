@@ -250,7 +250,7 @@
                 </table>
                 
                 <!-- Mensaje informativo sobre cómo funciona la estrategia -->
-                <div class="alert alert-info" style="margin-top: 20px;">
+                <div class="alert alert-info" id="estrategiaInfoBlock" style="margin-top: 20px;">
                     <i class="fa fa-info-circle"></i>
                     <strong>¿Cómo funciona la estrategia de liberación?</strong>
                     <ul style="margin-top: 10px; margin-bottom: 5px;">
@@ -276,6 +276,8 @@
 
 {block 'knockout' append}
 <script>
+    var estrategiaActiveFlag = {if isEstrategiaActive()}true{else}false{/if};
+
     var EstrategiaViewModel = function() {
         var self = this;
         this.Breadcrumbs = ko.observableArray([
@@ -359,6 +361,13 @@
 
         // Función para actualizar el status de la estrategia
         function actualizarStatusEstrategia() {
+            if (!estrategiaActiveFlag) {
+                var forcedStatusElement = $('#statusEstrategia');
+                forcedStatusElement.text('Deshabilitada');
+                forcedStatusElement.removeClass('status-habilitada').addClass('status-deshabilitada');
+                return;
+            }
+
             var hayAlgunSwitchActivo = false;
             
             // Verificar si hay algún switch activo
@@ -603,6 +612,25 @@
 
         // Cargar estrategia al iniciar
         cargarEstrategia();
+
+        if (!estrategiaActiveFlag) {
+            $('#statusEstrategia')
+                .text('Deshabilitada')
+                .removeClass('status-habilitada')
+                .addClass('status-deshabilitada');
+
+            $('#estrategiaInfoBlock').hide();
+
+            $('.onoffswitch-checkbox').prop('disabled', true);
+            $('.monto-input').prop('disabled', true);
+            $('#btnGuardarEstrategia').prop('disabled', true).addClass('disabled');
+
+            $('#btnGuardarEstrategia').off('click').on('click', function(e) {
+                e.preventDefault();
+                swal('Atención', 'El módulo de Estrategia de liberación está desactivado para tu empresa.', 'warning');
+                return false;
+            });
+        }
     });
 </script>
 {/block}

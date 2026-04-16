@@ -330,6 +330,20 @@ if (!function_exists('isSolpedActive')) {
     }
 }
 
+if (!function_exists('isEstrategiaActive')) {
+    function isEstrategiaActive()
+    {
+        if (isAdmin()) {
+            return true;
+        }
+        $user = user();
+        if (!$user || !$user->customer_company) {
+            return false;
+        }
+        return $user->customer_company->estrategia_active === 'si';
+    }
+}
+
 if (!function_exists('can')) {
 	function can($permission)
 	{

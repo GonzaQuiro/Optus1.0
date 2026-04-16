@@ -44,7 +44,8 @@ class CustomerCompany extends Model
         'website',
         'comments',
         'timeZone',
-        'solped_active'
+        'solped_active',
+        'estrategia_active'
     ];
 
     protected $appends = [
