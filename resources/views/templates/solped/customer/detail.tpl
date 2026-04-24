@@ -232,7 +232,7 @@
             <h5 class="block bold" style="margin-top: 0; padding-top: 0; color: #ff0000; font-size: 22px;">
                 Motivo de rechazo:
             </h5>
-            <div class="p-3" style="background-color: #f7f7f7; border-radius: 6px; font-size: 18px; color: #000000;">
+            <div style="padding: 20px; background-color: #f7f7f7; border-radius: 6px; font-size: 18px; color: #000000; min-height: 150px; overflow-y: auto; word-wrap: break-word;">
                 <span data-bind="text: RejectComment"></span>
             </div>
             <!-- ko if: CompradorDecisionFecha -->
@@ -489,71 +489,67 @@
                 if (!self.guardSolpedActive()) {
                     return;
                 }
-                swal({
-                    title: 'Rechazar Solicitud',
-                    text: '¿Por qué deseas rechazar la solicitud?',
-                    type: 'input',
-                    inputPlaceholder: 'Escribe un motivo (obligatorio)',
-                    closeOnClickOutside: false,
-                    showCancelButton: true,
-                    closeOnConfirm: false,
-                    closeOnCancel: true,
-                    confirmButtonText: 'Aceptar',
-                    confirmButtonClass: 'btn btn-danger',
-                    cancelButtonText: 'Cancelar',
-                    cancelButtonClass: 'btn btn-default'
-                }, function(result) {
-                    swal.close();
+                self.MotivoRechazo('');
+                $('#modalRechazarSolicitud').modal('show');
+            };
 
-                    if (result === false || result === null) return; // canceló
-                    if (!result.trim()) {
-                        swal('Error', 'Debes ingresar un motivo para rechazar la solicitud.', 'error');
-                        return;
-                    }
+            this.aceptarRechazo = function() {
+                var reason = String(self.MotivoRechazo() || '').trim();
+                if (!reason) {
+                    swal('Error', 'Debes ingresar un motivo para rechazar la solicitud.', 'error');
+                    return;
+                }
 
-                    $.blockUI();
+                $('#modalRechazarSolicitud').find('select').each(function () {
+                    try { $(this).select2('close'); } catch (e) {}
+                });
+                $.blockUI({
+                    baseZ: 20000,
+                    message: '<h1 style="margin:0;padding:10px 18px;font-size:18px;color:#fff;background:#2b3643;border-radius:4px;">Cargando...</h1>',
+                    overlayCSS: { backgroundColor: '#000', opacity: 0.35, zIndex: 20000 },
+                    css: { border: 'none', backgroundColor: 'transparent', zIndex: 20001 }
+                });
 
-                    Services.Post('/solped/cliente/reject', {
-                            UserToken: User.Token,
-                            Entity: JSON.stringify(ko.toJS({
-                                IdSolicitud: self.IdSolicitud(),
-                                IdUsuario: User.Id
-                            })),
-                            Reason: result
-                        },
-                        function(response) {
-                            $.unblockUI();
-                            if (response.success) {
-                                setTimeout(function() {
-                                    swal({
-                                        title: 'Éxito',
-                                        text: 'Solicitud rechazada correctamente',
-                                        type: 'success',
-                                        closeOnClickOutside: false,
-                                        confirmButtonText: 'Aceptar',
-                                        confirmButtonClass: 'btn btn-success'
-                                    }, function() {
-                                        if (response.data && response.data.redirect) {
-                                            window.location.href = response.data.redirect;
-                                        } else {
-                                            location.reload();
-                                        }
-                                    });
-                                }, 500);
-                            } else {
-                                setTimeout(function() {
-                                    swal('Error', response.message, 'error');
-                                }, 500);
-                            }
-                        },
-                        function(error) {
-                            $.unblockUI();
+                Services.Post('/solped/cliente/reject', {
+                        UserToken: User.Token,
+                        Entity: JSON.stringify(ko.toJS({
+                            IdSolicitud: self.IdSolicitud(),
+                            IdUsuario: User.Id
+                        })),
+                        Reason: reason
+                    },
+                    function(response) {
+                        $.unblockUI();
+                        $('#modalRechazarSolicitud').modal('hide');
+                        if (response.success) {
                             setTimeout(function() {
-                                swal('Error', error.message || 'Error al procesar la solicitud', 'error');
+                                swal('Hecho', 'Solicitud rechazada correctamente', 'success');
+                                setTimeout(function() {
+                                    if (response.data && response.data.redirect) {
+                                        window.location.href = response.data.redirect;
+                                    } else {
+                                        location.reload();
+                                    }
+                                }, 500);
+                            }, 500);
+                        } else {
+                            setTimeout(function() {
+                                swal('Error', response.message, 'error');
                             }, 500);
                         }
-                    );
-                });
+                    },
+                    function(error) {
+                        $.unblockUI();
+                        setTimeout(function() {
+                            swal('Error', error.message || 'Error al procesar la solicitud', 'error');
+                        }, 500);
+                    }
+                );
+            };
+
+            this.cancelarRechazo = function() {
+                $('#modalRechazarSolicitud').modal('hide');
+                self.MotivoRechazo('');
             };
 
 
@@ -630,6 +626,7 @@
             this.ListaCompradores = ko.observableArray([]);
             this.CargandoCompradores = ko.observable(false);
             this.MotivoDevolucion = ko.observable('');
+            this.MotivoRechazo = ko.observable('');
 
             this.cargarCompradores = function() {
                 self.CargandoCompradores(true);
@@ -753,7 +750,7 @@
 
 <!-- Modal para Delegar Solicitud -->
 <div class="modal fade" id="modalDelegarSolicitud" tabindex="-1" role="dialog" aria-labelledby="modalDelegarLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog" role="document" style="max-width: 760px; width: 90%; position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%);">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalDelegarLabel">
@@ -792,9 +789,41 @@
     </div>
 </div>
 
+<!-- Modal para Rechazar Solicitud -->
+<div class="modal fade" id="modalRechazarSolicitud" tabindex="-1" role="dialog" aria-labelledby="modalRechazarLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="max-width: 760px; width: 90%; position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%);">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalRechazarLabel">
+                    <i class="fa fa-times"></i> Rechazar Solicitud
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="motivoRechazo">Motivo de rechazo</label>
+                    <textarea
+                        id="motivoRechazo"
+                        class="form-control"
+                        rows="6"
+                        style="resize: vertical; min-height: 150px;"
+                        placeholder="Escribe un motivo detallado para rechazar la solicitud"
+                        data-bind="value: MotivoRechazo, valueUpdate: 'afterkeydown'"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bind="click: cancelarRechazo">Cancelar</button>
+                <button type="button" class="btn btn-danger" data-bind="click: aceptarRechazo">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Modal para Devolver Solicitud -->
 <div class="modal fade" id="modalDevolverSolicitud" tabindex="-1" role="dialog" aria-labelledby="modalDevolverLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document" style="max-width: 760px; width: 90%;">
+    <div class="modal-dialog" role="document" style="max-width: 760px; width: 90%; position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%);">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalDevolverLabel">
@@ -810,8 +839,8 @@
                     <textarea
                         id="motivoDevolucion"
                         class="form-control"
-                        rows="10"
-                        style="resize: vertical; min-height: 240px;"
+                        rows="6"
+                        style="resize: vertical; min-height: 150px;"
                         placeholder="Escribe un motivo detallado para devolver la solicitud"
                         data-bind="value: MotivoDevolucion, valueUpdate: 'afterkeydown'"></textarea>
                 </div>

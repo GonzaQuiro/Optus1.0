@@ -636,6 +636,230 @@
             this.IsClient = ko.observable(true);
             this.IsProv = ko.observable(false);
 
+            // Estrategia de liberación - cadena de aprobación
+            this.EstrategiaHabilitada = ko.observable(false);
+            this.NivelesAprobacion = ko.observableArray([]);
+            this.RejectedHistory = ko.observableArray([]); // Historial de cadenas rechazadas anteriores
+            this.MontoAdjudicacionActual = ko.observable(null);
+            this.MontoEnDolares = ko.observable(null);
+            this.TipoAdjudicacionActual = ko.observable(null);
+            this.TipoAdjudicacionSeleccionada = ko.observable(null); // Individual, Integral, Manual
+            this.BotonesAdjudicacionDeshabilitados = ko.observable(false);
+            this.AdjudicationPendingApproval = ko.observable(false);
+            this.AdjudicationRejected = ko.observable(false);
+            this.ApprovalChainComplete = ko.observable(false);
+            this.CanApproveInChain = ko.observable(false);
+            this.IsChainApprover = ko.observable(false); // Si el usuario pertenece a la cadena de aprobación
+            this.PendingApprovalId = ko.observable(null);
+            this.RequesterUserId = ko.observable(null);
+
+            // Modal fields
+            this.RejectionReason = ko.observable('');
+            this.ApprovalComment = ko.observable('');
+            this.IsProcessingApproval = ko.observable(false);
+
+            this.loadApprovalStatus = function(callback) {
+                var concursoId = data.list.IdConcurso;
+
+                Services.Get('/approval/status/' + concursoId, {
+                    UserToken: User.Token,
+                    _t: (new Date()).getTime()
+                },
+                function(response) {
+                    console.log('[DEBUG] loadApprovalStatus response:', JSON.stringify(response));
+                    if (response.success && response.data) {
+                        var d = response.data;
+                        console.log('[DEBUG] rejected_history:', JSON.stringify(d.rejected_history));
+                        console.log('[DEBUG] has_request:', d.has_request, 'chain_complete:', d.chain_complete, 'chain_rejected:', d.chain_rejected);
+
+                        var toBool = function(v) {
+                            return v === true || v === 1 || v === '1' || v === 'true';
+                        };
+                        var hasRequest = toBool(d.has_request);
+                        var chainComplete = toBool(d.chain_complete);
+                        var chainRejected = toBool(d.chain_rejected);
+                        var canApprove = toBool(d.can_approve);
+                        var isChainApprover = toBool(d.is_chain_approver);
+
+                        self.AdjudicationPendingApproval(hasRequest && !chainComplete && !chainRejected);
+                        if (hasRequest || (d.rejected_history && d.rejected_history.length > 0)) {
+                            self.EstrategiaHabilitada(true);
+                        }
+                        self.AdjudicationRejected(chainRejected);
+                        self.ApprovalChainComplete(chainComplete);
+                        self.CanApproveInChain(canApprove);
+                        self.IsChainApprover(isChainApprover);
+                        self.PendingApprovalId(d.pending_approval_id || null);
+
+                        if (d.levels && d.levels.length > 0) {
+                            var mappedLevels = d.levels.map(function(level) {
+                                return {
+                                    orden: level.sort_order,
+                                    rol: level.role,
+                                    usuario: level.user,
+                                    estado: level.status === 'Pending' ? 'Pendiente' :
+                                           (level.status === 'Approved' ? 'Aprobado' :
+                                           (level.status === 'Rejected' ? 'Rechazado' : 'Cancelado')),
+                                    fecha: level.date,
+                                    motivo: level.reason
+                                };
+                            });
+                            self.NivelesAprobacion(mappedLevels);
+
+                            if (d.amount_usd) {
+                                self.MontoEnDolares(d.amount_usd);
+                            }
+                            if (d.adjudication_type) {
+                                var typeLabel = d.adjudication_type === 'integral' ? 'Integral' :
+                                               (d.adjudication_type === 'individual' ? 'Individual' : 'Manual');
+                                self.TipoAdjudicacionSeleccionada(typeLabel);
+                            }
+                            if (d.requester_user_id) {
+                                self.RequesterUserId(d.requester_user_id);
+                            }
+                        } else {
+                            // Sin niveles activos: limpiar tabla
+                            self.NivelesAprobacion([]);
+                            self.MontoEnDolares(null);
+                            self.TipoAdjudicacionSeleccionada(null);
+                            self.RequesterUserId(null);
+                        }
+                        // Cargar historial de cadenas rechazadas
+                        if (d.rejected_history && d.rejected_history.length > 0) {
+                            self.RejectedHistory(d.rejected_history);
+                            console.log('[DEBUG] RejectedHistory SET:', self.RejectedHistory().length, 'items');
+                        } else {
+                            self.RejectedHistory([]);
+                            console.log('[DEBUG] RejectedHistory CLEARED - d.rejected_history:', d.rejected_history);
+                        }
+                        console.log('[DEBUG] CombinedRejectedHistory length:', self.CombinedRejectedHistory().length);
+                        console.log('[DEBUG] AdjudicationRejected:', self.AdjudicationRejected());
+                        console.log('[DEBUG] EstrategiaHabilitada:', self.EstrategiaHabilitada());
+                    }
+                    if (callback) callback(response);
+                },
+                function(error) {
+                    console.log('Error loading approval status:', error);
+                    if (callback) callback(null);
+                });
+            };
+
+            this.IsCurrentLevel = function(index) {
+                var levels = self.NivelesAprobacion();
+                for (var i = 0; i < levels.length; i++) {
+                    if (levels[i].estado === 'Pendiente') {
+                        return i === index;
+                    }
+                }
+                return false;
+            };
+
+            // Historial mostrado: incluye rechazos guardados + cadena rechazada actual (si existe)
+            this.CombinedRejectedHistory = ko.computed(function() {
+                var history = self.RejectedHistory() ? self.RejectedHistory().slice(0) : [];
+
+                if (!self.AdjudicationRejected()) {
+                    return history;
+                }
+
+                var levels = self.NivelesAprobacion() || [];
+                if (!levels.length) {
+                    return history;
+                }
+
+                var rejectedLevel = null;
+                for (var i = 0; i < levels.length; i++) {
+                    if (levels[i].estado === 'Rechazado') {
+                        rejectedLevel = levels[i];
+                        break;
+                    }
+                }
+
+                if (!rejectedLevel) {
+                    return history;
+                }
+
+                var type = self.TipoAdjudicacionSeleccionada();
+                history.push({
+                    batch_id: history.length + 1,
+                    adjudication_type: type ? type.toLowerCase() : '-',
+                    amount_usd: self.MontoEnDolares(),
+                    rejected_by: rejectedLevel.usuario || '-',
+                    rejected_at_level: rejectedLevel.rol || '-',
+                    rejected_at: rejectedLevel.fecha || '-',
+                    rejection_reason: rejectedLevel.motivo || 'Sin motivo especificado'
+                });
+
+                return history;
+            });
+
+            // Mostrar tabla si hay cadena cargada: pendiente, aprobada o rechazada
+            this.ShouldShowApprovalChainTable = ko.computed(function() {
+                var levels = self.NivelesAprobacion() || [];
+                if (!levels.length) {
+                    return false;
+                }
+
+                var hasPending = false;
+                var hasRejected = false;
+                var hasApproved = false;
+
+                for (var i = 0; i < levels.length; i++) {
+                    var estado = levels[i].estado;
+                    if (estado === 'Pendiente') hasPending = true;
+                    if (estado === 'Rechazado') hasRejected = true;
+                    if (estado === 'Aprobado') hasApproved = true;
+                    if (estado === 'Cancelado') hasRejected = true;
+                }
+
+                if (hasPending) return true;
+                if (hasRejected) return true;
+                if (!hasRejected && hasApproved) return true;
+                return false;
+            });
+
+            // Función para cargar/recargar la cadena de aprobación con un monto específico
+            this.cargarCadenaAprobacion = function(montoAdjudicacion, callback) {
+                var concursoId = data.list.IdConcurso;
+                var params = {
+                    UserToken: User.Token,
+                    concurso_id: concursoId
+                };
+
+                if (montoAdjudicacion !== null && montoAdjudicacion !== undefined) {
+                    params.monto_adjudicacion = montoAdjudicacion;
+                }
+
+                Services.Get('/estrategia/get', params,
+                    function(response) {
+                        if (response.success && response.data) {
+                            self.EstrategiaHabilitada(response.data.habilitado || false);
+                            // Solo cargar niveles si se pasó un monto (no en carga inicial)
+                            if (montoAdjudicacion !== null && montoAdjudicacion !== undefined) {
+                                if (response.data.niveles_aprobacion) {
+                                    self.NivelesAprobacion(response.data.niveles_aprobacion);
+                                }
+                                if (response.data.monto_adjudicacion_dolares !== undefined) {
+                                    self.MontoEnDolares(response.data.monto_adjudicacion_dolares);
+                                }
+                            }
+                        }
+                        if (callback) callback(response);
+                    },
+                    function(error) {
+                        console.log('Error al cargar estrategia:', error);
+                        if (callback) callback(null);
+                    }
+                );
+            };
+
+            // Cargar estado inicial de la estrategia de liberación (sin monto)
+            (function cargarEstrategiaInicial() {
+                self.cargarCadenaAprobacion(null, function() {
+                    self.loadApprovalStatus();
+                });
+            })();
+
 
 
             var ahora = new Date();

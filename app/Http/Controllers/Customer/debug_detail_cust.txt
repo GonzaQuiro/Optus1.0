@@ -418,3 +418,51 @@ RAW fecha_resolucion attr: 2026-04-16 00:00:00
 RAW fecha_entrega attr: 2026-04-23 00:00:00
 DB ROW: {"id":73,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"xDDDDDD","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"C\u00f3rdoba","direccion":"Paran\u00e1 661","cp":"X5000","latitud":"-31.4259862","longitud":"-64.1805248","clasificacion":null,"fecha_resolucion":"2026-04-16 00:00:00","fecha_entrega":"2026-04-23 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":7,"tipo_compra":1,"fecha_alta":"2026-04-16 10:55:02","etapa_actual":"aceptada","estado_actual":"aceptada","fecha_envio_a_comprador":"2026-04-16 11:30:36","fecha_first_revision":"2026-04-16 10:56:17","fecha_devolucion":null,"fecha_aceptacion":"2026-04-16 11:31:05","fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
 LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 24-04-2026 02:04:46 ===
+FECHAS => Resolucion: 20-02-2026 00:00, Entrega: 28-02-2026 00:00, Creacion: 20-02-2026 11:51:42
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 20-02-2026 11:53:32
+RAW fecha_resolucion attr: 2026-02-20 00:00:00
+RAW fecha_entrega attr: 2026-02-28 00:00:00
+DB ROW: {"id":63,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"000 Prueba 2","descripcion":"","pais":"","provincia":"","localidad":"","direccion":null,"cp":null,"latitud":null,"longitud":null,"clasificacion":null,"fecha_resolucion":"2026-02-20 00:00:00","fecha_entrega":"2026-02-28 00:00:00","id_comprador_sugerido":null,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-02-20 11:51:42","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-02-20 11:52:33","fecha_first_revision":"2026-02-20 11:53:32","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 24-04-2026 02:07:19 ===
+FECHAS => Resolucion: 20-02-2026 00:00, Entrega: 28-02-2026 00:00, Creacion: 20-02-2026 11:51:42
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 20-02-2026 11:53:32
+RAW fecha_resolucion attr: 2026-02-20 00:00:00
+RAW fecha_entrega attr: 2026-02-28 00:00:00
+DB ROW: {"id":63,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"000 Prueba 2","descripcion":"","pais":"","provincia":"","localidad":"","direccion":null,"cp":null,"latitud":null,"longitud":null,"clasificacion":null,"fecha_resolucion":"2026-02-20 00:00:00","fecha_entrega":"2026-02-28 00:00:00","id_comprador_sugerido":null,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-02-20 11:51:42","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-02-20 11:52:33","fecha_first_revision":"2026-02-20 11:53:32","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 24-04-2026 02:08:58 ===
+FECHAS => Resolucion: 20-02-2026 00:00, Entrega: 28-02-2026 00:00, Creacion: 20-02-2026 11:51:42
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 20-02-2026 11:53:32
+RAW fecha_resolucion attr: 2026-02-20 00:00:00
+RAW fecha_entrega attr: 2026-02-28 00:00:00
+DB ROW: {"id":63,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"000 Prueba 2","descripcion":"","pais":"","provincia":"","localidad":"","direccion":null,"cp":null,"latitud":null,"longitud":null,"clasificacion":null,"fecha_resolucion":"2026-02-20 00:00:00","fecha_entrega":"2026-02-28 00:00:00","id_comprador_sugerido":null,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-02-20 11:51:42","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-02-20 11:52:33","fecha_first_revision":"2026-02-20 11:53:32","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 24-04-2026 02:10:04 ===
+FECHAS => Resolucion: 20-02-2026 00:00, Entrega: 28-02-2026 00:00, Creacion: 20-02-2026 11:51:42
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 20-02-2026 11:53:32
+RAW fecha_resolucion attr: 2026-02-20 00:00:00
+RAW fecha_entrega attr: 2026-02-28 00:00:00
+DB ROW: {"id":63,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"000 Prueba 2","descripcion":"","pais":"","provincia":"","localidad":"","direccion":null,"cp":null,"latitud":null,"longitud":null,"clasificacion":null,"fecha_resolucion":"2026-02-20 00:00:00","fecha_entrega":"2026-02-28 00:00:00","id_comprador_sugerido":null,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-02-20 11:51:42","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-02-20 11:52:33","fecha_first_revision":"2026-02-20 11:53:32","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
