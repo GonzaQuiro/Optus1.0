@@ -39,6 +39,14 @@ class InvitationController extends BaseController
             $body = $request->getParsedBody();
 
             $concurso = Concurso::find((int) $body['IdConcurso']);
+            if (!$concurso) {
+                $status = 422;
+                $message = 'Concurso no encontrado.';
+                return $this->json($response, [
+                    'success' => false,
+                    'message' => $message,
+                ], $status);
+            }
             $fecha_invitacion = $concurso->fecha_limite;
             $finalizacion_consultas = $concurso->finalizacion_consultas;
             $fecha_limite_economicas = $concurso->sobrecerrado ?? $concurso->fecha_limite_economicas;
@@ -56,8 +64,17 @@ class InvitationController extends BaseController
                 if ($creation) {
                     $users = User::where('id', (int) $body['IdUsuario'])->get();
                 } else {
+                    if (!$concurso->oferentes) {
+                        $status = 422;
+                        $message = 'No se pudieron cargar los oferentes del concurso.';
+                        $connection->rollBack();
+                        return $this->json($response, [
+                            'success' => false,
+                            'message' => $message,
+                        ], $status);
+                    }
                     $companiesInvited = $concurso->oferentes->where('is_seleccionado', true)->pluck('id_offerer');
-                    if ($companiesInvited->count() == 0) {
+                    if (!$companiesInvited || $companiesInvited->count() == 0) {
                         $status = 422;
                         $message = 'No hay nuevos usuarios para enviar invitaciones.';
                     } else {
@@ -147,7 +164,34 @@ class InvitationController extends BaseController
 
             $body = $request->getParsedBody();
             $concurso = Concurso::find((int) $body['IdConcurso']);
+            if (!$concurso) {
+                $status = 422;
+                $message = 'Concurso no encontrado.';
+                $connection->rollBack();
+                return $this->json($response, [
+                    'success' => false,
+                    'message' => $message,
+                ], $status);
+            }
+            if (!$concurso->oferentes) {
+                $status = 422;
+                $message = 'No se pudieron cargar los oferentes del concurso.';
+                $connection->rollBack();
+                return $this->json($response, [
+                    'success' => false,
+                    'message' => $message,
+                ], $status);
+            }
             $oferente = $concurso->oferentes->where('id_offerer', (int) $body['idOfferer'])->first();
+            if (!$oferente) {
+                $status = 422;
+                $message = 'Oferente no encontrado en este concurso.';
+                $connection->rollBack();
+                return $this->json($response, [
+                    'success' => false,
+                    'message' => $message,
+                ], $status);
+            }
             $users = User::where('offerer_company_id', $oferente->id_offerer)->pluck('email');
 
             $invitation = $oferente->invitation;
@@ -317,6 +361,15 @@ class InvitationController extends BaseController
 
             $body = $request->getParsedBody();
             $concurso = Concurso::find((int) $body['IdConcurso']);
+            if (!$concurso) {
+                $status = 422;
+                $message = 'Concurso no encontrado.';
+                $connection->rollBack();
+                return $this->json($response, [
+                    'success' => false,
+                    'message' => $message,
+                ], $status);
+            }
             
             // Si el concurso ya tenía enviado el email de "todos cotizaron"
             // lo reseteamos porque se está agregando un nuevo proveedor
@@ -341,7 +394,25 @@ class InvitationController extends BaseController
             }
             
             $concurso->refresh();
+            if (!$concurso->oferentes) {
+                $status = 422;
+                $message = 'No se pudieron cargar los oferentes del concurso.';
+                $connection->rollBack();
+                return $this->json($response, [
+                    'success' => false,
+                    'message' => $message,
+                ], $status);
+            }
             $companiesInvited = $concurso->oferentes->where('is_seleccionado', true)->pluck('id_offerer');
+            if (!$companiesInvited || $companiesInvited->count() == 0) {
+                $status = 422;
+                $message = 'No hay oferentes seleccionados.';
+                $connection->rollBack();
+                return $this->json($response, [
+                    'success' => false,
+                    'message' => $message,
+                ], $status);
+            }
             $companies = OffererCompany::with('users')->whereIn('id', $companiesInvited)->get();
             // dd($companiesInvited);  
 
