@@ -87,7 +87,7 @@
                         <!-- La descarga sigue habilitada -->
                         <td class="col-md-3 text-center vertical-align-middle">
                         <!-- ko if: filename() -->
-                        <a data-bind="click: $root.downloadFile.bind($data, filename(), 'concurso', $root.Entity.Id())"
+                        <a data-bind="click: $root.downloadFile.bind($data, '/adjudicado/' + filename(), 'concurso', $root.Entity.Id())"
                             download class="btn btn-xl green" title="Descargar">
                             Descargar <i class="fa fa-download"></i>
                         </a>

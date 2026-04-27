@@ -246,7 +246,6 @@ class MediaController extends BaseController
         $file_path = null;
         $message = "";
 
-
         try {
             $file_name = basename($path);
             $normalizedPath = trim(str_replace('\\', '/', $path));
@@ -264,8 +263,18 @@ class MediaController extends BaseController
                     break;
                 case 'concurso':
                     $concurso = Concurso::find((int) $id);
+                    
                     if ($concurso) {
-                        $file_path = $concurso->file_path . $file_name;
+                        // Normalizar file_path del concurso (reemplazar backslashes)
+                        $concurso_file_path = str_replace('\\', '/', $concurso->file_path);
+                        $concurso_file_path = rtrim($concurso_file_path, '/');
+                        
+                        // Si el path contiene adjudicado/, usarlo completo
+                        if ($normalizedPath !== '' && strpos($normalizedPath, 'adjudicado/') !== false) {
+                            $file_path = $concurso_file_path . '/' . $normalizedPath;
+                        } else {
+                            $file_path = $concurso_file_path . '/' . $file_name;
+                        }
                     } else {
                         $file_path =
                             $user->file_path_customer .
@@ -296,6 +305,9 @@ class MediaController extends BaseController
                     break;
             }
 
+            // Normalizar separadores de ruta (convertir backslashes a forward slashes)
+            $file_path = str_replace('\\', '/', (string)$file_path);
+            
             // filePath() ya antepone /storage, por lo tanto aquí debemos mantener
             // una ruta relativa interna (ej: img/solpeds/.../archivo.pdf).
             $file_path = ltrim((string)$file_path, '/');
@@ -304,7 +316,6 @@ class MediaController extends BaseController
             }
 
             $file_path_absolute = rootPath() . filePath('/' . $file_path);
-
 
             if ($file_path_absolute && file_exists($file_path_absolute)) {
                 $success = true;
