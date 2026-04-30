@@ -66,3 +66,71 @@ MAIL aprobacion: {"success":true,"message":"Mensaje enviado con \u00e9xito."}
 Transacción confirmada exitosamente
 === approve FIN ===
 
+
+=== approve INICIO === 30-04-2026 11:35:36 ===
+Body recibido: stdClass Object
+(
+    [IdSolicitud] => 91
+    [IdUsuario] => 7
+)
+
+Usuario: ID=7, type_id=3
+Solped encontrada: ID=91, estado_actual=revisada
+Solped actualizada con estado aprobada
+Fecha aceptación: 30-04-2026 11:35:36
+Comprador decisión: 7 (Ucoca Cola)
+MAIL aprobacion: {"success":true,"message":"Mensaje enviado con \u00e9xito."}
+Transacción confirmada exitosamente
+=== approve FIN ===
+
+
+=== approve INICIO === 30-04-2026 12:02:15 ===
+Body recibido: stdClass Object
+(
+    [IdSolicitud] => 88
+    [IdUsuario] => 7
+)
+
+Usuario: ID=7, type_id=3
+Solped encontrada: ID=88, estado_actual=revisada
+Solped actualizada con estado aprobada
+Fecha aceptación: 30-04-2026 12:02:15
+Comprador decisión: 7 (Ucoca Cola)
+MAIL aprobacion: {"success":true,"message":"Mensaje enviado con \u00e9xito."}
+Transacción confirmada exitosamente
+=== approve FIN ===
+
+
+=== approve INICIO === 30-04-2026 12:02:26 ===
+Body recibido: stdClass Object
+(
+    [IdSolicitud] => 85
+    [IdUsuario] => 7
+)
+
+Usuario: ID=7, type_id=3
+Solped encontrada: ID=85, estado_actual=revisada
+Solped actualizada con estado aprobada
+Fecha aceptación: 30-04-2026 12:02:26
+Comprador decisión: 7 (Ucoca Cola)
+MAIL aprobacion: {"success":true,"message":"Mensaje enviado con \u00e9xito."}
+Transacción confirmada exitosamente
+=== approve FIN ===
+
+
+=== approve INICIO === 30-04-2026 12:02:35 ===
+Body recibido: stdClass Object
+(
+    [IdSolicitud] => 86
+    [IdUsuario] => 7
+)
+
+Usuario: ID=7, type_id=3
+Solped encontrada: ID=86, estado_actual=revisada
+Solped actualizada con estado aprobada
+Fecha aceptación: 30-04-2026 12:02:35
+Comprador decisión: 7 (Ucoca Cola)
+MAIL aprobacion: {"success":true,"message":"Mensaje enviado con \u00e9xito."}
+Transacción confirmada exitosamente
+=== approve FIN ===
+

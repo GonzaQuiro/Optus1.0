@@ -2225,7 +2225,6 @@ class ConcursoController extends BaseController
         $is_copy = isset($params['id']);
         $isReadOnly = false;
         $isVisible = false;
-        $emailService = new EmailService();
         $bloquearInvitacionOferentes = false;
 
 

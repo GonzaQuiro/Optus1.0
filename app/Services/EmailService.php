@@ -43,7 +43,14 @@ class EmailService
             ];
 
             $this->mail->ClearAddresses();
-            $this->mail->setFrom(env('MAIL_USERNAME'), env('MAIL_ALIAS'));
+            
+            // Validar que MAIL_USERNAME no esté vacío antes de setFrom
+            $mailUsername = env('MAIL_USERNAME');
+            if (empty($mailUsername)) {
+                throw new Exception('MAIL_USERNAME no está configurado en las variables de entorno');
+            }
+            
+            $this->mail->setFrom($mailUsername, env('MAIL_ALIAS'));
 
             $this->mail->Priority = '3';
             $this->mail->Timeout = 600;
@@ -90,12 +97,13 @@ class EmailService
 
                 $this->mail->ClearAddresses();
                 
-                // Verificar si el campo userAlt es null
-                if (is_null($lst['userAlt'])) {
-                    $this->mail->setFrom($lst['user'], $lst['alias']);
-                } else {
-                    $this->mail->setFrom($lst['userAlt'], $lst['alias']);
+                // Validar que haya un usuario de email configurado
+                $fromUser = is_null($lst['userAlt']) ? $lst['user'] : $lst['userAlt'];
+                if (empty($fromUser)) {
+                    throw new Exception('El email remitente (From) no está configurado para esta compañía. Contacte al administrador.');
                 }
+                
+                $this->mail->setFrom($fromUser, $lst['alias']);
 
                 $this->mail->Priority = '3';
                 $this->mail->Timeout = 600;
@@ -132,7 +140,13 @@ class EmailService
                 ];
 
                 $this->mail->ClearAddresses();
-                $this->mail->setFrom(env('MAIL_USERNAME'), env('MAIL_ALIAS'));
+
+                $mailUsername = env('MAIL_USERNAME');
+                if (empty($mailUsername)) {
+                    throw new Exception('MAIL_USERNAME no está configurado en las variables de entorno');
+                }
+
+                $this->mail->setFrom($mailUsername, env('MAIL_ALIAS'));
 
                 $this->mail->Priority = '3';
                 $this->mail->Timeout = 600;

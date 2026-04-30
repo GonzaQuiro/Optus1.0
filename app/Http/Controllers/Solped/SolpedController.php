@@ -1219,8 +1219,17 @@ class SolpedController extends BaseController
             return ($row['nombre'] !== '') && !empty($row['unidad']);
         });
 
-        if ($nombre === '' || !$tipoCompra || $area_sol === '' || !$fechaResolucion || !$fechaEntrega || count($validItems) === 0) {
-            throw new \Exception('Faltan campos obligatorios (Nombre, Área solicitante, Tipo de compra, Fechas de resolución/entrega y al menos un ítem).', 422);
+        // Validación detallada con información específica de qué falta
+        $missing = [];
+        if ($nombre === '') $missing[] = 'Nombre';
+        if (!$tipoCompra) $missing[] = 'Tipo de compra';
+        if ($area_sol === '') $missing[] = 'Área solicitante';
+        if (!$fechaResolucion) $missing[] = 'Fecha de resolución';
+        if (!$fechaEntrega) $missing[] = 'Fecha de entrega';
+        if (count($validItems) === 0) $missing[] = 'Al menos un ítem válido (nombre + unidad)';
+
+        if (!empty($missing)) {
+            throw new \Exception('Faltan campos obligatorios: ' . implode(', ', $missing) . '.', 422);
         }
 
             // Regla adicional: FechaResolucion < FechaEntrega y al menos 7 días de diferencia
@@ -1485,10 +1494,16 @@ class SolpedController extends BaseController
             : (method_exists($e, 'getCode') ? ($e->getCode() ?: 500) : 500);
     }
 
+    // Incluir el ID en la respuesta si se creó correctamente
+    $data = ['redirect' => ''];
+    if ($success && isset($solped) && isset($solped->id)) {
+        $data['id'] = $solped->id;
+    }
+    
     return $this->json($response, [
         'success' => $success,
         'message' => $message,
-        'data'    => ['redirect' => '']
+        'data'    => $data
     ], $status);
 }
 

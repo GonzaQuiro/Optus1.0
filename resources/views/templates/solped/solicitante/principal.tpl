@@ -664,58 +664,186 @@
         // SubVM
         this.Entity = new Form(data, self);
 
+        // Función auxiliar para guardar sin redirigir (usado por sendSolpeds)
+        this.storeSilent = function(callback) {
+            if (!self.guardSolpedActive()) {
+                if (callback) callback(false);
+                return;
+            }
+            if (self.IsSaving()) {
+                if (callback) callback(false);
+                return;
+            }
+            
+            // Validación en cliente
+            var entityErrors = ko.validation.group(self.Entity, { deep: true });
+            var hasItems = self.Entity.Products().length > 0;
+
+            var missing = [];
+            if (!self.Entity.Nombre()) missing.push('Nombre');
+            if (!self.Entity.AreaSolicitante()) missing.push('Área solicitante');
+            if (!self.Entity.TipoCompra()) missing.push('Tipo de compra');
+            if (!self.Entity.FechaResolucion()) missing.push('Fecha de resolución');
+            if (!self.Entity.FechaEntrega()) missing.push('Fecha de entrega');
+            if (!hasItems) missing.push('Al menos un ítem (producto)');
+
+            if ((entityErrors && entityErrors().length) || !hasItems) {
+                if (callback) callback(false);
+                return;
+            }
+
+            $.blockUI();
+            self.IsSaving(true);
+
+            var resolvedId = self.resolveSolpedId();
+            if (resolvedId > 0 && Number(ko.unwrap(self.Entity.Id) || 0) !== resolvedId) {
+                self.Entity.Id(resolvedId);
+            }
+
+            var actionFromVM = ko.unwrap(self.action); 
+            var action = actionFromVM || (resolvedId > 0 ? 'edit' : 'create');
+            var id = resolvedId || Number(ko.unwrap(self.Entity.Id)) || 0;
+
+            var url = (action === 'edit' && id > 0)
+                ? '/solped/save/' + id
+                : '/solped/save';
+
+            var payload = {
+                UserToken: User.Token,
+                Data: JSON.stringify({
+                    Action: action,
+                    Id: id,
+                    Entity: ko.toJS(self.Entity),
+                    Filters: self.Filters ? ko.toJS(self.Filters()) : null 
+                })
+            };
+
+            Services.Post(
+                url,
+                payload,
+                function (response) {
+                    self.IsSaving(false);
+                    $.unblockUI();
+                    if (response && response.success) {
+                        if (callback) callback(true, response.data);
+                    } else {
+                        // Pasar también el mensaje de error
+                        var errorMsg = response && response.message ? response.message : 'Error desconocido al guardar';
+                        if (callback) callback(false, null, errorMsg);
+                    }
+                },
+                function (error) {
+                    self.IsSaving(false);
+                    $.unblockUI();
+                    if (callback) callback(false, null, 'Error de conexión');
+                },
+                null,
+                null
+            );
+        };
+
         this.sendSolpeds = function() {
                 if (!self.guardSolpedActive()) {
                     return;
                 }
-                swal({
-                    title: '¿Desea enviar la Solicitud de Pedido?',
-                    text: 'Esta a punto de enviar las notificaciones para esta solicitud.',
-                    type: 'info',
-                    closeOnClickOutside: false,
-                    showCancelButton: true,
-                    closeOnConfirm: true,
-                    confirmButtonText: 'Aceptar',
-                    confirmButtonClass: 'btn btn-success',
-                    cancelButtonText: 'Cancelar',
-                    cancelButtonClass: 'btn btn-default'
-                }, function(result) {
-                    swal.close();
-                    if (result) {
-                        $.blockUI();
-                        var url = '/solped/invitations/send';
-                        var invitationId = self.resolveSolpedId ? self.resolveSolpedId() : Number(ko.unwrap(self.Entity.Id) || 0);
-                        Services.Post(url, {
-                                UserToken: User.Token,
-                            IdConcurso: invitationId,
-                            IdSolicitud: invitationId
-                            },
-                            (response) => {
-                                swal.close();
-                                $.unblockUI();
-                                setTimeout(function() {
-                                    if (response.success) {
-                                        swal('Hecho', response.message, 'success');
-                                        setTimeout(function() {
-                                            window.location.href = '/solped/solicitante/monitor';
-                                        }, 1500);
-                                    } else {
-                                        swal('Error', response.message, 'error');
-                                    }
-                                }, 500);
-                            },
-                            (error) => {
-                                swal.close();
-                                $.unblockUI();
-                                setTimeout(function() {
-                                    swal('Error', error.message, 'error');
-                                }, 500);
-                            },
-                            null,
-                            null
-                        );
-                    }
-                });
+                
+                // Verificar si la solicitud está guardada
+                var solpedId = self.resolveSolpedId ? self.resolveSolpedId() : Number(ko.unwrap(self.Entity.Id) || 0);
+                
+                // Si no tiene ID, debe guardar primero
+                if (solpedId <= 0) {
+                    swal('Atención', 'Guardando solicitud...', 'info');
+                    self.storeSilent(function(success, data, errorMsg) {
+                        swal.close();
+                        
+                        if (success && data && data.id) {
+                            // Actualizar el ID local
+                            var newId = Number(data.id);
+                            self.Entity.Id(newId);
+                            self.action = ko.observable('edit');
+                            // Proceder a enviar con el nuevo ID
+                            self.proceedToSend(newId);
+                        } else {
+                            swal('Error', errorMsg || 'No se pudo guardar la solicitud.', 'error');
+                        }
+                    });
+                    return;
+                }
+                
+                // Si ya tiene ID, proceder a enviar directamente
+                self.proceedToSend(solpedId);
+            };
+        
+        this.proceedToSend = function(solpedId) {
+                // Limpiar cualquier bloqueo de UI anterior
+                $.unblockUI();
+                
+                if (!solpedId || isNaN(solpedId)) {
+                    swal('Error', 'ID de solicitud no válido', 'error');
+                    return;
+                }
+                
+                // Usar setTimeout para que se ejecute después de que se complete el evento actual
+                setTimeout(function() {
+                    
+                    swal({
+                        title: '¿Desea enviar la Solicitud de Pedido?',
+                        text: 'Esta a punto de enviar las notificaciones para esta solicitud.',
+                        type: 'info',
+                        closeOnClickOutside: false,
+                        showCancelButton: true,
+                        closeOnConfirm: true,
+                        confirmButtonText: 'Aceptar',
+                        confirmButtonClass: 'btn btn-success',
+                        cancelButtonText: 'Cancelar',
+                        cancelButtonClass: 'btn btn-default',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                    }, function(result) {
+                        if (result === true) {
+                            swal.close();
+                            $.blockUI();
+                            var url = '/solped/solicitante/send';
+                            
+                            Services.Post(url, {
+                                    UserToken: User.Token,
+                                    IdSolped: solpedId
+                                },
+                                (response) => {
+                                    $.unblockUI();
+                                    setTimeout(function() {
+                                        if (response && response.success) {
+                                            swal({
+                                                title: 'Hecho',
+                                                text: response.message || 'Solicitud enviada correctamente.',
+                                                type: 'success',
+                                                closeOnClickOutside: false,
+                                                closeOnConfirm: true,
+                                                confirmButtonText: 'Aceptar',
+                                                confirmButtonClass: 'btn btn-success'
+                                            }, function(finalResult) {
+                                                window.location.href = '/solped/solicitante/monitor';
+                                            });
+                                        } else {
+                                            swal('Error', response && response.message ? response.message : 'Error al enviar la solicitud.', 'error');
+                                        }
+                                    }, 500);
+                                },
+                                (error) => {
+                                    $.unblockUI();
+                                    setTimeout(function() {
+                                        var errorMsg = error.message || 'Error desconocido al enviar la solicitud';
+                                        swal('Error', errorMsg, 'error');
+                                    }, 500);
+                                },
+                                null,
+                                null
+                            );
+                        } else {
+                            swal.close();
+                        }
+                    });
+                }, 100);
             }
         this.store = function(){ /* TODO */ };
 
@@ -1018,17 +1146,35 @@
                     self.IsSaving(false);
                     $.unblockUI();
                     if (response && response.success) {
-                        swal({
-                            title: 'Hecho',
-                            text: response.message || 'Guardado correctamente.',
-                            type: 'success',
-                            closeOnClickOutside: false,
-                            closeOnConfirm: true,
-                            confirmButtonText: 'Aceptar',
-                            confirmButtonClass: 'btn btn-success'
-                        }, function () {
-                            window.history.back();
-                        });
+                        // Si es una solicitud nueva (create)
+                        if (action === 'create') {
+                            // Extraer el ID de la respuesta
+                            var newId = response.data && response.data.id ? Number(response.data.id) : null;
+                            
+                            swal('Hecho', response.message || 'Guardado correctamente.', 'success');
+                            setTimeout(function() {
+                                if (newId && newId > 0) {
+                                    // Redirigir a modo edición con el ID
+                                    window.location.href = '/solped/edicion/' + newId;
+                                } else {
+                                    // Si no se obtiene el ID, ir al monitor
+                                    window.location.href = '/solped/solicitante/monitor';
+                                }
+                            }, 1500);
+                        } else {
+                            // Si es edición, solo mostrar mensaje y permanecer
+                            swal({
+                                title: 'Hecho',
+                                text: response.message || 'Guardado correctamente.',
+                                type: 'success',
+                                closeOnClickOutside: false,
+                                closeOnConfirm: true,
+                                confirmButtonText: 'Aceptar',
+                                confirmButtonClass: 'btn btn-success'
+                            }, function () {
+                                // Permanecer en la misma pestaña
+                            });
+                        }
                     } else {
                         swal('Error', (response && response.message) || 'Se produjo un error inesperado.', 'error');
                     }
