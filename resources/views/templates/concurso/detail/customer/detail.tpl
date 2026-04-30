@@ -200,7 +200,7 @@
             <div class="{if $tipo eq 'convocatoria-oferentes'}col-md-6{else}col-md-12{/if}">
                  <!-- ko if: User.Tipo != 4 -->
                 <div class="form-group">
-                    <button type="button" class="btn btn-xl red" data-bind="click: CancelConcurso">
+                    <button type="button" class="btn btn-xl red" data-bind="click: CancelConcurso, , disable: IsChainApprover()">
                         Cancelar Concurso
                     </button>
                 </div>
@@ -509,6 +509,7 @@
             this.Tipo = ko.observable(data.list.Tipo);
             this.Nombre = ko.observable(data.list.Nombre);
             this.Solicitante = ko.observable(data.list.Solicitante);
+            this.AreaSolicitante = ko.observable(data.list.AreaSolicitante);
             this.Administrador = ko.observable(data.list.Administrador);
             this.Tipologia = ko.observable(data.list.Tipologia);
             this.TipoOperacion = ko.observable(data.list.TipoOperacion);
@@ -639,7 +640,7 @@
             // Estrategia de liberación - cadena de aprobación
             this.EstrategiaHabilitada = ko.observable(false);
             this.NivelesAprobacion = ko.observableArray([]);
-            this.RejectedHistory = ko.observableArray([]); // Historial de cadenas rechazadas anteriores
+             this.RejectedHistory = ko.observableArray([]); // Historial de cadenas rechazadas anteriores
             this.MontoAdjudicacionActual = ko.observable(null);
             this.MontoEnDolares = ko.observable(null);
             this.TipoAdjudicacionActual = ko.observable(null);
@@ -660,7 +661,7 @@
 
             this.loadApprovalStatus = function(callback) {
                 var concursoId = data.list.IdConcurso;
-
+                
                 Services.Get('/approval/status/' + concursoId, {
                     UserToken: User.Token,
                     _t: (new Date()).getTime()
@@ -671,7 +672,7 @@
                         var d = response.data;
                         console.log('[DEBUG] rejected_history:', JSON.stringify(d.rejected_history));
                         console.log('[DEBUG] has_request:', d.has_request, 'chain_complete:', d.chain_complete, 'chain_rejected:', d.chain_rejected);
-
+                        
                         var toBool = function(v) {
                             return v === true || v === 1 || v === '1' || v === 'true';
                         };
@@ -690,27 +691,27 @@
                         self.CanApproveInChain(canApprove);
                         self.IsChainApprover(isChainApprover);
                         self.PendingApprovalId(d.pending_approval_id || null);
-
+                        
                         if (d.levels && d.levels.length > 0) {
                             var mappedLevels = d.levels.map(function(level) {
                                 return {
                                     orden: level.sort_order,
                                     rol: level.role,
                                     usuario: level.user,
-                                    estado: level.status === 'Pending' ? 'Pendiente' :
-                                           (level.status === 'Approved' ? 'Aprobado' :
+                                    estado: level.status === 'Pending' ? 'Pendiente' : 
+                                           (level.status === 'Approved' ? 'Aprobado' : 
                                            (level.status === 'Rejected' ? 'Rechazado' : 'Cancelado')),
                                     fecha: level.date,
                                     motivo: level.reason
                                 };
                             });
                             self.NivelesAprobacion(mappedLevels);
-
+                            
                             if (d.amount_usd) {
                                 self.MontoEnDolares(d.amount_usd);
                             }
                             if (d.adjudication_type) {
-                                var typeLabel = d.adjudication_type === 'integral' ? 'Integral' :
+                                var typeLabel = d.adjudication_type === 'integral' ? 'Integral' : 
                                                (d.adjudication_type === 'individual' ? 'Individual' : 'Manual');
                                 self.TipoAdjudicacionSeleccionada(typeLabel);
                             }
@@ -792,7 +793,7 @@
 
                 return history;
             });
-
+            
             // Mostrar tabla si hay cadena cargada: pendiente, aprobada o rechazada
             this.ShouldShowApprovalChainTable = ko.computed(function() {
                 var levels = self.NivelesAprobacion() || [];
@@ -817,19 +818,19 @@
                 if (!hasRejected && hasApproved) return true;
                 return false;
             });
-
+            
             // Función para cargar/recargar la cadena de aprobación con un monto específico
             this.cargarCadenaAprobacion = function(montoAdjudicacion, callback) {
                 var concursoId = data.list.IdConcurso;
-                var params = {
-                    UserToken: User.Token,
-                    concurso_id: concursoId
+                var params = { 
+                    UserToken: User.Token, 
+                    concurso_id: concursoId 
                 };
-
+                
                 if (montoAdjudicacion !== null && montoAdjudicacion !== undefined) {
                     params.monto_adjudicacion = montoAdjudicacion;
                 }
-
+                
                 Services.Get('/estrategia/get', params,
                     function(response) {
                         if (response.success && response.data) {
@@ -852,7 +853,7 @@
                     }
                 );
             };
-
+            
             // Cargar estado inicial de la estrategia de liberación (sin monto)
             (function cargarEstrategiaInicial() {
                 self.cargarCadenaAprobacion(null, function() {
@@ -1920,7 +1921,63 @@
             }
 
             this.AdjudicationSend = function(type, values) {
+                
+                var montoAdjudicacion = 0;
+                var concursoEconomicas = self.RondasOfertas()[self.RondaActual()]['ConcursoEconomicas'];
+                
+                switch (type) {
+                    case 'integral':
+                        montoAdjudicacion = concursoEconomicas['mejoresOfertas']['mejorIntegral']['total'] || 0;
+                        break;
+                    case 'individual':
+                        montoAdjudicacion = concursoEconomicas['mejoresOfertas']['mejorIndividual']['total1'] || 0;
+                        break;
+                    case 'manual':
+                        montoAdjudicacion = self.ManualAdjudication().total() || 0;
+                        break;
+                }
 
+                if (self.EstrategiaHabilitada()) {
+                   
+                    self.TipoAdjudicacionActual(type);
+                    self.MontoAdjudicacionActual(montoAdjudicacion);
+                    
+                    var adjudicationData = null;
+                    switch (type) {
+                        case 'manual':
+                            adjudicationData = ko.toJS(self.ManualAdjudication());
+                            break;
+                        case 'individual':
+                            adjudicationData = ko.toJS(self.IndividualAdjudication());
+                            break;
+                        case 'integral':
+                            adjudicationData = ko.toJS(self.IntegralAdjudication());
+                            break;
+                    }
+                    
+                    swal({
+                        title: 'Iniciar Proceso de Aprobación',
+                        text: 'Esta adjudicación requiere aprobación de la cadena de autorización. ¿Desea continuar?',
+                        type: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Sí, continuar',
+                        cancelButtonText: 'Cancelar',
+                        confirmButtonClass: 'btn btn-success',
+                        cancelButtonClass: 'btn btn-default'
+                    }, function(confirmed) {
+                        if (confirmed) {
+                            self.startApprovalProcess(type, montoAdjudicacion, adjudicationData);
+                        }
+                    });
+                    return;
+                }
+
+            
+                self.procesarAdjudicacion(type, values);
+            };
+            
+            // Función separada para procesar la adjudicación
+            this.procesarAdjudicacion = function(type, values) {
                 var data = {
                     Comment: self.AdjudicacionComentario()
                 };
@@ -2007,7 +2064,280 @@
                         );
                     }
                 });
-            }
+            };
+
+            this.startApprovalProcess = function(type, amount, adjudicationData) {
+                $.blockUI({ message: 'Iniciando proceso de aprobación...' });
+                
+                var requestData = {
+                    IdConcurso: self.IdConcurso(),
+                    Type: type,
+                    Monto: amount,
+                    Comment: self.AdjudicacionComentario(),
+                    Data: adjudicationData
+                };
+                
+                Services.Post('/approval/start', {
+                    UserToken: User.Token,
+                    Data: JSON.stringify(requestData)
+                },
+                function(response) {
+                    $.unblockUI();
+                    
+                    if (response.success) {
+                        if (response.data && response.data.requires_approval === false) {
+                            self.procesarAdjudicacion(type, null);
+                        } else {
+                            self.loadApprovalStatus(function() {
+                                swal({
+                                    title: 'Solicitud Enviada',
+                                    text: response.data.message || 'Se ha iniciado el proceso de aprobación.',
+                                    type: 'success',
+                                    confirmButtonText: 'OK',
+                                    confirmButtonClass: 'btn btn-success'
+                                });
+                            });
+                        }
+                    } else {
+                        swal('Error', response.message || 'Error al iniciar el proceso de aprobación', 'error');
+                    }
+                },
+                function(error) {
+                    $.unblockUI();
+                    swal('Error', 'Error de comunicación con el servidor', 'error');
+                });
+            };
+
+            this.ApproveLevel = function() {
+                self.ApprovalComment('');
+                $('#modalApprovalComment').modal('show');
+            };
+
+            this.ConfirmApproval = function() {
+                if (self.IsProcessingApproval()) return;
+                self.IsProcessingApproval(true);
+                
+                $('#modalApprovalComment').modal('hide');
+                $.blockUI({ message: 'Procesando aprobación...' });
+                
+                var requestData = {
+                    contest_id: self.IdConcurso(),
+                    reason: self.ApprovalComment() || null
+                };
+                
+                Services.Post('/approval/approve', {
+                    UserToken: User.Token,
+                    Data: JSON.stringify(requestData)
+                },
+                function(response) {
+                    $.unblockUI();
+                    if (response.success) {
+                        // Actualizar UI inmediatamente desde la respuesta
+                        if (response.data && response.data.levels && response.data.levels.length > 0) {
+                            var mappedLevels = response.data.levels.map(function(level) {
+                                return {
+                                    orden: level.sort_order,
+                                    rol: level.role,
+                                    usuario: level.user,
+                                    estado: level.status === 'Pending' ? 'Pendiente' : 
+                                           (level.status === 'Approved' ? 'Aprobado' : 
+                                           (level.status === 'Rejected' ? 'Rechazado' : 'Cancelado')),
+                                    fecha: level.date,
+                                    motivo: level.reason
+                                };
+                            });
+                            self.NivelesAprobacion(mappedLevels);
+                        }
+                        
+                        self.CanApproveInChain(false);
+                        if (response.data && response.data.chain_complete) {
+                            self.ApprovalChainComplete(true);
+                            self.AdjudicationPendingApproval(false);
+                        }
+                        
+                        self.loadApprovalStatus(function() {
+                            self.IsProcessingApproval(false);
+                            swal({
+                                title: 'Aprobado',
+                                text: response.message || 'Su aprobación ha sido registrada.',
+                                type: 'success',
+                                confirmButtonText: 'OK',
+                                confirmButtonClass: 'btn btn-success'
+                            });
+                        });
+                    } else {
+                        self.IsProcessingApproval(false);
+                        swal('Error', response.message || 'Error al procesar la aprobación', 'error');
+                    }
+                },
+                function(error) {
+                    $.unblockUI();
+                    self.IsProcessingApproval(false);
+                    swal('Error', 'Error de comunicación con el servidor', 'error');
+                });
+            };
+
+            this.RejectLevel = function() {
+                self.RejectionReason('');
+                $('#modalRejectionReason').modal('show');
+            };
+
+            this.ConfirmRejection = function() {
+                if (self.IsProcessingApproval()) return;
+                
+                var reason = self.RejectionReason();
+                if (!reason || reason.trim().length === 0) {
+                    swal('Error', 'El motivo del rechazo es obligatorio', 'error');
+                    return;
+                }
+                
+                self.IsProcessingApproval(true);
+                $('#modalRejectionReason').modal('hide');
+                $.blockUI({ message: 'Procesando rechazo...' });
+                
+                var requestData = {
+                    contest_id: self.IdConcurso(),
+                    reason: reason
+                };
+                
+                Services.Post('/approval/reject', {
+                    UserToken: User.Token,
+                    Data: JSON.stringify(requestData)
+                },
+                function(response) {
+                    $.unblockUI();
+                    if (response.success) {
+                        if (response.data && response.data.levels && response.data.levels.length > 0) {
+                            var mappedLevels = response.data.levels.map(function(level) {
+                                return {
+                                    orden: level.sort_order,
+                                    rol: level.role,
+                                    usuario: level.user,
+                                    estado: level.status === 'Pending' ? 'Pendiente' : 
+                                           (level.status === 'Approved' ? 'Aprobado' : 
+                                           (level.status === 'Rejected' ? 'Rechazado' : 'Cancelado')),
+                                    fecha: level.date,
+                                    motivo: level.reason
+                                };
+                            });
+                            self.NivelesAprobacion(mappedLevels);
+                        }
+
+                        self.AdjudicationRejected(true);
+                        self.AdjudicationPendingApproval(false);
+                        self.ApprovalChainComplete(false);
+                        self.CanApproveInChain(false);
+                        self.PendingApprovalId(null);
+
+                        self.loadApprovalStatus(function() {
+                            self.IsProcessingApproval(false);
+                            swal({
+                                title: 'Rechazado',
+                                text: response.message || 'La adjudicación ha sido rechazada.',
+                                type: 'warning',
+                                confirmButtonText: 'OK',
+                                confirmButtonClass: 'btn btn-warning'
+                            });
+                        });
+                    } else {
+                        self.IsProcessingApproval(false);
+                        swal('Error', response.message || 'Error al procesar el rechazo', 'error');
+                    }
+                },
+                function(error) {
+                    $.unblockUI();
+                    self.IsProcessingApproval(false);
+                    swal('Error', 'Error de comunicación con el servidor', 'error');
+                });
+            };
+
+            
+
+            this.ProcessApprovedAdjudication = function() {
+                $.blockUI({ message: 'Cargando datos de adjudicación...' });
+                
+                Services.Post('/approval/process', {
+                    UserToken: User.Token,
+                    Data: JSON.stringify({ contest_id: self.IdConcurso() })
+                },
+                function(response) {
+                    $.unblockUI();
+                    if (response.success && response.data.can_process) {
+                        var type = response.data.adjudication_type;
+                        var savedData = response.data.adjudication_data;
+                        self.AdjudicacionComentario(response.data.comment || '');
+                        self.procesarAdjudicacionFinal(type, savedData);
+                    } else {
+                        swal('Error', response.message || 'No se puede procesar la adjudicación', 'error');
+                    }
+                },
+                function(error) {
+                    $.unblockUI();
+                    swal('Error', 'Error de comunicación con el servidor', 'error');
+                });
+            };
+
+            this.procesarAdjudicacionFinal = function(type, savedData) {
+                var requestData = {
+                    Comment: self.AdjudicacionComentario(),
+                    Type: type,
+                    IdConcurso: self.IdConcurso(),
+                    Data: savedData
+                };
+
+                swal({
+                    title: '¿Confirma Ajudicación?',
+                    text: 'Una vez procesada la adjudicación, esta no podrá ser modificada.',
+                    type: 'success',
+                    closeOnClickOutside: false,
+                    showCancelButton: true,
+                    closeOnConfirm: true,
+                    confirmButtonText: 'Aceptar',
+                    confirmButtonClass: 'btn btn-success',
+                    cancelButtonText: 'Cancelar',
+                    cancelButtonClass: 'btn btn-default'
+                }, function(result) {
+                    swal.close();
+                    if (result) {
+                        $.blockUI();
+                        Services.Post('/concursos/adjudication/send', {
+                            UserToken: User.Token,
+                            Data: JSON.stringify(ko.toJS(requestData))
+                        },
+                        function(response) {
+                            $.unblockUI();
+                            if (response.success) {
+                                setTimeout(function() {
+                                    swal({
+                                        title: 'Hecho',
+                                        text: response.message,
+                                        type: 'success',
+                                        closeOnClickOutside: false,
+                                        closeOnConfirm: true,
+                                        confirmButtonText: 'Aceptar',
+                                        confirmButtonClass: 'btn btn-success'
+                                    }, function() {
+                                        swal.close();
+                                        if (response.data.redirect) {
+                                            window.location.href = response.data.redirect;
+                                        } else {
+                                            location.reload();
+                                        }
+                                    });
+                                }, 500);
+                            } else {
+                                setTimeout(function() {
+                                    swal('Error', response.message, 'error');
+                                }, 500);
+                            }
+                        },
+                        function(error) {
+                            $.unblockUI();
+                            swal('Error', 'Error al procesar la adjudicación', 'error');
+                        });
+                    }
+                });
+            };
 
             this.EvaluationSend = function() {
                 var valores = self.Evaluaciones;
