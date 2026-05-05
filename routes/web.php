@@ -474,6 +474,10 @@ app()->group('/reportes', function () {
     $this->get('/evaluados', 'App\Http\Controllers\Reports\ReportsController:serveListEval')->setName('reports.serveListEval');
     $this->get('/evaluados/list', 'App\Http\Controllers\Reports\ReportsController:listEval')->setName('reports.listEval');
     $this->post('/evaluados/filter', 'App\Http\Controllers\Reports\ReportsController:filterEval')->setName('reports.filterEval');
+
+    $this->get('/solicitudes', 'App\Http\Controllers\Reports\ReportsController:serveListSolicitudes')->setName('reports.serveListSolicitudes');
+    $this->get('/solicitudes/list', 'App\Http\Controllers\Reports\ReportsController:listSolicitudes')->setName('reports.listSolicitudes');
+    $this->post('/solicitudes/filter', 'App\Http\Controllers\Reports\ReportsController:filterSolicitudes')->setName('reports.filterSolicitudes');
 })->add(new AuthMiddleware());
 
 // Tutoriales
