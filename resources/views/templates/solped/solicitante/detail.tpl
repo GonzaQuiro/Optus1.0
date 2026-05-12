@@ -225,6 +225,7 @@
                 EstadoActual() === 'aceptada' ? 'Felicitaciones tu solicitud ha sido aceptada, espera mientras se procesa.' :
                 EstadoActual() === 'licitando' ? 'Tu solicitud entró en el proceso de licitación, para más detalles contacta con el equipo de compras' :
                 EstadoActual() === 'adjudicada' ? 'Tu solicitud ha sido adjudicada, contacta con el proveedor y el equipo de compras para coordinar la entrega.' :
+                EstadoActual() === 'finalizada' ? 'Tu solicitud de pedido fue dada por tratada.' :
                 'Estado desconocido'">
             </span>
 

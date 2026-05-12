@@ -515,7 +515,7 @@
                                 <td data-bind="text: FechaEntrega()" class="vertical-align-middle"></td>
                                 <td class="text-center vertical-align-center">
                                 
-                                <a href="javascript:;" data-bind="click: function() { $root.goToAcceso(Id(), 'rechazada', User.Tipo) }"
+                                <a href="javascript:;" data-bind="click: function() { $root.goToAcceso(Id(), Etapa(), User.Tipo) }"
                                         class="btn btn-xs red-haze" title="Acceder">
                                         Acceder <i class="fa fa-play"></i>
                                     </a>
@@ -559,6 +559,7 @@
             // this.CantidadPresentaciones = ko.observable(data.CantidadPresentaciones);
             this.HabilitaEnvioAComprador = ko.observable(data.HabilitaEnvioAComprador);
             this.Estado = ko.observable(data.Estado);
+            this.Etapa = ko.observable(data.Etapa);
             this.FechaEntrega = ko.observable(data.FechaEntrega || '');
             this.Urgencia = ko.observable(data.Urgencia);
 
@@ -804,6 +805,7 @@
                     'rechazada': 'Rechazada',
                     'devuelta': 'Devuelta para Corrección',
                     'cancelada': 'Cancelada',
+                    'finalizada': 'Finalizada',
                     'licitando': 'En Proceso de Licitación'
 
                 };

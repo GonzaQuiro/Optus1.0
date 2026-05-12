@@ -218,6 +218,7 @@
                     EstadoActual() === 'revisada' ? 'Tu solicitud ha sido revisada, pero aún no ha sido aprobada.' :
                     EstadoActual() === 'rechazada' ? 'La solicitud ha sido evaluada y fue rechazada.' :
                     EstadoActual() === 'cancelada' ? 'La solicitud ha sido cancelada por el creador.' :
+                    EstadoActual() === 'finalizada' ? 'La solicitud de pedido fue dada por tratada.' :
                     EstadoActual() === 'licitando' ? 'Tu solicitud está siendo procesada en un proceso de licitación/subasta.' :
                     'Estado desconocido'">
                 </span>
@@ -332,25 +333,38 @@
         </div>
     </div>
     <!-- Botones de acción -->
-<div style="margin-top: 20px; text-align: right;">
-    <a href="javascript:history.back()" class="btn btn-primary" style="margin-right: 30px;">
-        Volver al listado
-    </a>
+<div class="col-sm-12" style="margin-top: 20px;">
+    <div class="row">
+        <div class="col-sm-4 text-left">
+            <!--ko if : User.Tipo === 3 -->
+                <!-- ko if: Etapa() === 'en-analisis' && (EstadoActual() === 'esperando-revision' || EstadoActual() === 'revisada' || EstadoActual() === 'esperando-revision-2' || EstadoActual() === 'revisada-2') -->
+            <a data-bind="click: concluirTratamiento, css: { disabled: !SolpedActive() }" class="btn grey-salsa btn-sm" style="background-color: #8e9aa6; border-color: #7c8792; color: #fff;">
+                <i class="fa fa-check-square-o"></i> Concluir tratamiento</a>
+                <!-- /ko -->
+            <!-- /ko -->
+        </div>
 
-    <!--ko if : User.Tipo === 3 -->
-        <!-- ko if: EstadoActual() === 'esperando-revision' || EstadoActual() === 'revisada' ||  EstadoActual() === 'esperando-revision-2' || EstadoActual() === 'revisada-2' -->
-    <a data-bind="click: delegarSolicitud, css: { disabled: !SolpedActive() }" class="btn btn-info btn-sm">
-        <i class="fa fa-share"></i> Delegar Solicitud</a>
-    <a data-bind="click: aceptarSolicitud, css: { disabled: !SolpedActive() }" class="btn green btn-sm">
-        <i class="fa fa-check"></i> Aceptar Solicitud</a>
-    <a data-bind="click: rechazarSolicitud, css: { disabled: !SolpedActive() }" class="btn red btn-sm">
-        <i class="fa fa-times"></i> Rechazar Solicitud</a>
-        <!-- ko if: EstadoActual() === 'esperando-revision' || EstadoActual() === 'revisada' -->
-    <a data-bind="click: devolverSolicitud, css: { disabled: !SolpedActive() }" class="btn yellow-gold btn-sm">
-        <i class="fa fa-undo"></i> Devolver Solicitud</a>
-        <!-- /ko -->
-        <!-- /ko -->
-    <!-- /ko -->
+        <div class="col-sm-8 text-right" style="white-space: nowrap;">
+            <a href="javascript:history.back()" class="btn btn-primary" style="margin-right: 30px;">
+                Volver al listado
+            </a>
+
+            <!--ko if : User.Tipo === 3 -->
+                <!-- ko if: EstadoActual() === 'esperando-revision' || EstadoActual() === 'revisada' ||  EstadoActual() === 'esperando-revision-2' || EstadoActual() === 'revisada-2' -->
+            <a data-bind="click: delegarSolicitud, css: { disabled: !SolpedActive() }" class="btn btn-info btn-sm">
+                <i class="fa fa-share"></i> Delegar Solicitud</a>
+            <a data-bind="click: aceptarSolicitud, css: { disabled: !SolpedActive() }" class="btn green btn-sm">
+                <i class="fa fa-check"></i> Aceptar Solicitud</a>
+            <a data-bind="click: rechazarSolicitud, css: { disabled: !SolpedActive() }" class="btn red btn-sm">
+                <i class="fa fa-times"></i> Rechazar Solicitud</a>
+                <!-- ko if: EstadoActual() === 'esperando-revision' || EstadoActual() === 'revisada' -->
+            <a data-bind="click: devolverSolicitud, css: { disabled: !SolpedActive() }" class="btn yellow-gold btn-sm">
+                <i class="fa fa-undo"></i> Devolver Solicitud</a>
+                <!-- /ko -->
+                <!-- /ko -->
+            <!-- /ko -->
+        </div>
+    </div>
 </div>
 </div>
 {/block}
@@ -462,6 +476,62 @@
                                         swal({
                                             title: 'Éxito',
                                             text: 'Solicitud aceptada correctamente',
+                                            type: 'success',
+                                            closeOnClickOutside: false,
+                                            confirmButtonText: 'Aceptar',
+                                            confirmButtonClass: 'btn btn-success'
+                                        }, function() {
+                                            if (response.data && response.data.redirect) {
+                                                window.location.href = response.data.redirect;
+                                            } else {
+                                                location.reload();
+                                            }
+                                        });
+                                    } else {
+                                        swal('Error', response.message, 'error');
+                                    }
+                                },
+                                (error) => {
+                                    $.unblockUI();
+                                    swal('Error', error.message || 'Error al procesar la solicitud', 'error');
+                                });
+                            }
+                        });
+            };
+
+            this.concluirTratamiento = function() {
+                if (!self.guardSolpedActive()) {
+                    return;
+                }
+                swal({
+                        title: 'Concluir tratamiento',
+                        text: '¿Está seguro que desea dar por tratada la solicitud de pedido?',
+                        type: 'warning',
+                        closeOnClickOutside: false,
+                        showCancelButton: true,
+                        closeOnConfirm: true,
+                        closeOnCancel: true,
+                        confirmButtonText: 'Sí, concluir',
+                        confirmButtonClass: 'btn grey-salsa',
+                        cancelButtonText: 'Cancelar',
+                        cancelButtonClass: 'btn btn-default'
+                    }, function (result) {
+                            swal.close();
+                            if (result) {
+                                $.blockUI();
+                                Services.Post('/solped/cliente/conclude-treatment', {
+                                    UserToken: User.Token,
+                                    Entity: JSON.stringify(ko.toJS({
+                                        IdSolicitud: self.IdSolicitud(),
+                                        IdUsuario: User.Id
+                                    }))
+                                },
+                                (response) => {
+                                    $.unblockUI();
+                                    if (response.success) {
+                                        swal({
+                                            title: 'Éxito',
+                                            text: response.message || 'Solicitud de pedido dada por tratada correctamente',
                                             type: 'success',
                                             closeOnClickOutside: false,
                                             confirmButtonText: 'Aceptar',

@@ -675,6 +675,85 @@ class SolpedController extends BaseController {
         ], $status);
     }
 
+    public function concludeTreatment(Request $request, Response $response, $params) {
+        $success = false;
+        $message = null;
+        $status = 200;
+        $redirect_url = null;
+
+        if (!isSolpedActive() && !isAdmin()) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'El módulo de Solped está desactivado para tu empresa.'
+            ], 403);
+        }
+
+        try {
+            $parsedBody = $request->getParsedBody() ?: [];
+            $body = json_decode($parsedBody['Entity'] ?? '{}');
+
+            if (empty($body->IdSolicitud)) {
+                throw new \Exception('ID de Solicitud requerido.', 400);
+            }
+
+            $capsule = dependency('db');
+            $connection = $capsule->getConnection();
+            $connection->beginTransaction();
+
+            $user = user();
+
+            if ($user->type_id != 3) {
+                throw new \Exception('Solo los compradores pueden concluir el tratamiento de solicitudes.', 403);
+            }
+
+            if (isAdmin()) {
+                $solped = Solped::find($body->IdSolicitud);
+            } else {
+                $solped = $user->customer_company->getAllSolpedsByCompany()->find($body->IdSolicitud);
+            }
+
+            if (!$solped) {
+                throw new \Exception("Solicitud no encontrada con ID: {$body->IdSolicitud}", 404);
+            }
+
+            $estadosFinalizables = ['esperando-revision', 'revisada', 'esperando-revision-2', 'revisada-2'];
+            if ($solped->etapa_actual !== 'en-analisis' || !in_array($solped->estado_actual, $estadosFinalizables, true)) {
+                throw new \Exception("La solicitud no se puede concluir en su estado actual: {$solped->estado_actual}", 400);
+            }
+
+            $now = Carbon::now();
+            $solped->etapa_actual = 'finalizada';
+            $solped->estado_actual = 'finalizada';
+            $solped->id_comprador_decision = $user->id;
+            $solped->cancel_motive = 'Solicitud de pedido dada por tratada.';
+            $solped->updated_at = $now;
+            $solped->save();
+
+            $success = true;
+            $message = 'Solicitud de pedido dada por tratada correctamente.';
+            $redirect_url = '/solped/cliente/monitor';
+
+            $connection->commit();
+        } catch (\Exception $e) {
+            if (isset($connection)) {
+                $connection->rollback();
+            }
+
+            $success = false;
+            $message = $e->getMessage();
+            $code = method_exists($e, 'getCode') ? (int)$e->getCode() : 500;
+            $status = $code >= 400 ? $code : 500;
+        }
+
+        return $this->json($response, [
+            'success' => $success,
+            'message' => $message,
+            'data' => [
+                'redirect' => $redirect_url
+            ]
+        ], $status);
+    }
+
     public function delegate(Request $request, Response $response, $params) {
         $success = false;
         $message = null;

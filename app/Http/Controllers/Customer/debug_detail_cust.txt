@@ -538,3 +538,87 @@ RAW fecha_resolucion attr: 2026-04-30 00:00:00
 RAW fecha_entrega attr: 2026-05-07 00:00:00
 DB ROW: {"id":91,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"Boton enviar solicitud 05","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"C\u00f3rdoba","direccion":"Avenida Poeta L. Lugones 298","cp":"X5000","latitud":"-31.4265240","longitud":"-64.1805457","clasificacion":null,"fecha_resolucion":"2026-04-30 00:00:00","fecha_entrega":"2026-05-07 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":7,"tipo_compra":2,"fecha_alta":"2026-04-30 11:34:03","etapa_actual":"aceptada","estado_actual":"licitando","fecha_envio_a_comprador":"2026-04-30 11:34:08","fecha_first_revision":"2026-04-30 11:35:30","fecha_devolucion":null,"fecha_aceptacion":"2026-04-30 11:35:36","fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":"2026-04-30 11:36:18","created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
 LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path,AdjudicacionProveedor,AdjudicacionFechaHora,CompradorConcurso
+
+=== detail INICIO === 12-05-2026 11:06:08 ===
+FECHAS => Resolucion: 20-02-2026 00:00, Entrega: 28-02-2026 00:00, Creacion: 20-02-2026 11:51:42
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 20-02-2026 11:53:32
+RAW fecha_resolucion attr: 2026-02-20 00:00:00
+RAW fecha_entrega attr: 2026-02-28 00:00:00
+DB ROW: {"id":63,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"000 Prueba 2","descripcion":"","pais":"","provincia":"","localidad":"","direccion":null,"cp":null,"latitud":null,"longitud":null,"clasificacion":null,"fecha_resolucion":"2026-02-20 00:00:00","fecha_entrega":"2026-02-28 00:00:00","id_comprador_sugerido":null,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-02-20 11:51:42","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-02-20 11:52:33","fecha_first_revision":"2026-02-20 11:53:32","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 12-05-2026 11:23:47 ===
+FECHAS => Resolucion: 05-05-2026 00:00, Entrega: 12-05-2026 00:00, Creacion: 05-05-2026 12:00:45
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 12-05-2026 11:23:46
+RAW fecha_resolucion attr: 2026-05-05 00:00:00
+RAW fecha_entrega attr: 2026-05-12 00:00:00
+DB ROW: {"id":92,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"Hijos solped","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"C\u00f3rdoba","direccion":"Avenida Poeta L. Lugones","cp":"X5000","latitud":"-31.4263310","longitud":"-64.1804860","clasificacion":null,"fecha_resolucion":"2026-05-05 00:00:00","fecha_entrega":"2026-05-12 00:00:00","id_comprador_sugerido":696,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":3,"fecha_alta":"2026-05-05 12:00:45","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-05-05 12:00:56","fecha_first_revision":"2026-05-12 11:23:46","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 12-05-2026 11:24:07 ===
+FECHAS => Resolucion: 05-05-2026 00:00, Entrega: 12-05-2026 00:00, Creacion: 05-05-2026 12:00:45
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 12-05-2026 11:23:46
+RAW fecha_resolucion attr: 2026-05-05 00:00:00
+RAW fecha_entrega attr: 2026-05-12 00:00:00
+DB ROW: {"id":92,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"Hijos solped","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"C\u00f3rdoba","direccion":"Avenida Poeta L. Lugones","cp":"X5000","latitud":"-31.4263310","longitud":"-64.1804860","clasificacion":null,"fecha_resolucion":"2026-05-05 00:00:00","fecha_entrega":"2026-05-12 00:00:00","id_comprador_sugerido":696,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":3,"fecha_alta":"2026-05-05 12:00:45","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-05-05 12:00:56","fecha_first_revision":"2026-05-12 11:23:46","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 12-05-2026 11:26:23 ===
+FECHAS => Resolucion: 05-05-2026 00:00, Entrega: 12-05-2026 00:00, Creacion: 05-05-2026 12:01:52
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 12-05-2026 11:26:23
+RAW fecha_resolucion attr: 2026-05-05 00:00:00
+RAW fecha_entrega attr: 2026-05-12 00:00:00
+DB ROW: {"id":93,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"en borradores","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"C\u00f3rdoba","direccion":"Obispo Oro","cp":"X5000","latitud":"-31.4264618","longitud":"-64.1805869","clasificacion":null,"fecha_resolucion":"2026-05-05 00:00:00","fecha_entrega":"2026-05-12 00:00:00","id_comprador_sugerido":685,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-05-05 12:01:52","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-05-12 11:24:56","fecha_first_revision":"2026-05-12 11:26:23","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 12-05-2026 11:26:54 ===
+FECHAS => Resolucion: 05-05-2026 00:00, Entrega: 12-05-2026 00:00, Creacion: 05-05-2026 12:01:52
+FECHA CANCELACION: 12-05-2026 11:26:44
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 12-05-2026 11:26:23
+RAW fecha_resolucion attr: 2026-05-05 00:00:00
+RAW fecha_entrega attr: 2026-05-12 00:00:00
+DB ROW: {"id":93,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"en borradores","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"C\u00f3rdoba","direccion":"Obispo Oro","cp":"X5000","latitud":"-31.4264618","longitud":"-64.1805869","clasificacion":null,"fecha_resolucion":"2026-05-05 00:00:00","fecha_entrega":"2026-05-12 00:00:00","id_comprador_sugerido":685,"id_comprador_first_revision":7,"id_comprador_decision":7,"tipo_compra":1,"fecha_alta":"2026-05-05 12:01:52","etapa_actual":"finalizada","estado_actual":"finalizada","fecha_envio_a_comprador":"2026-05-12 11:24:56","fecha_first_revision":"2026-05-12 11:26:23","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":"2026-05-12 11:26:44","cancel_motive":"Solicitud de pedido dada por tratada.","deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 12-05-2026 11:29:47 ===
+FECHAS => Resolucion: 05-05-2026 00:00, Entrega: 12-05-2026 00:00, Creacion: 05-05-2026 12:01:52
+FECHA CANCELACION: 12-05-2026 11:26:44
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 12-05-2026 11:26:23
+RAW fecha_resolucion attr: 2026-05-05 00:00:00
+RAW fecha_entrega attr: 2026-05-12 00:00:00
+DB ROW: {"id":93,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"en borradores","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"C\u00f3rdoba","direccion":"Obispo Oro","cp":"X5000","latitud":"-31.4264618","longitud":"-64.1805869","clasificacion":null,"fecha_resolucion":"2026-05-05 00:00:00","fecha_entrega":"2026-05-12 00:00:00","id_comprador_sugerido":685,"id_comprador_first_revision":7,"id_comprador_decision":7,"tipo_compra":1,"fecha_alta":"2026-05-05 12:01:52","etapa_actual":"finalizada","estado_actual":"finalizada","fecha_envio_a_comprador":"2026-05-12 11:24:56","fecha_first_revision":"2026-05-12 11:26:23","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":"2026-05-12 11:26:44","cancel_motive":"Solicitud de pedido dada por tratada.","deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 12-05-2026 11:30:00 ===
+FECHAS => Resolucion: 30-04-2026 00:00, Entrega: 07-05-2026 00:00, Creacion: 30-04-2026 11:31:48
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 12-05-2026 11:30:00
+RAW fecha_resolucion attr: 2026-04-30 00:00:00
+RAW fecha_entrega attr: 2026-05-07 00:00:00
+DB ROW: {"id":89,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"Boton enviar solicitud 04","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"C\u00f3rdoba","direccion":"Avenida Poeta L. Lugones 298","cp":"X5000","latitud":"-31.4264987","longitud":"-64.1805194","clasificacion":null,"fecha_resolucion":"2026-04-30 00:00:00","fecha_entrega":"2026-05-07 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":2,"fecha_alta":"2026-04-30 11:31:48","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-05-12 11:25:07","fecha_first_revision":"2026-05-12 11:30:00","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path

@@ -679,21 +679,23 @@ class SolpedController extends BaseController
                 );
             }
 
-            //Canceladas
+            // Finalizadas / Canceladas
             $solpeds = collect($created)->filter(function ($solped) {
-                return $solped->etapa_actual === 'cancelada';
+                return $solped->etapa_actual === 'cancelada'
+                    || ($solped->etapa_actual === 'finalizada' && $solped->estado_actual === 'finalizada');
             })->sortBy('id');
 
-            fwrite($fp, "Solpeds canceladas: " . count($solpeds) . "\n");
+            fwrite($fp, "Solpeds finalizadas/canceladas: " . count($solpeds) . "\n");
 
             foreach ($solpeds as $solped) {
-                fwrite($fp, "Solped ID: {$solped->id}, etapa: {$solped->etapa_actual}, estado: {$solped->estado_actual} - CANCELADAS\n");
+                fwrite($fp, "Solped ID: {$solped->id}, etapa: {$solped->etapa_actual}, estado: {$solped->estado_actual} - FINALIZADAS/CANCELADAS\n");
                 array_push(
                     $list['ListaSolpedsCanceladas'],
                     array_merge(
                         $this->mapSolpedlist($solped),
                         [
                             'FueCancelada' => $solped->etapa_actual === 'cancelada' ? true : false,
+                            'FueFinalizada' => $solped->estado_actual === 'finalizada' ? true : false,
                             'CancelMotive' => $solped->cancel_motive ?: null,
                             'Estado' => $solped->estado_actual,
                             'FechaCancelacion' => $solped->updated_at ? $solped->updated_at->format('d-m-Y H:i:s') : null

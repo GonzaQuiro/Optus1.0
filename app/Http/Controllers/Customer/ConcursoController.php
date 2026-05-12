@@ -2397,14 +2397,14 @@ class ConcursoController extends BaseController
                     $concurso->oferentes->pluck('id_offerer')->toArray(),
                 //'FinalizacionConsultas' => $create ? Carbon::now()->addDays(3)->addHour(1)->format('d-m-Y H:i') : $concurso->finalizacion_consultas->format('d-m-Y H:i'),
                'FinalizacionConsultas' => $create
-                ? $this->addBusinessHours(Carbon::now(), 24)->format('d-m-Y H:i')
-                : $concurso->finalizacion_consultas->format('d-m-Y H:i'),                
+                ? $this->addBusinessHours(Carbon::now(), 24)->minute(0)->second(0)->format('d-m-Y H:i')
+                : $this->formatDateClosedHour($concurso->finalizacion_consultas),                
                 'AceptacionTerminos' => $create && !$is_copy ? 'no' : $concurso->aceptacion_terminos,
                 'Aperturasobre' => $create && !$is_copy ? 'no' : $concurso->aperturasobre,
                 //'FechaLimite' => $create ? Carbon::now()->addDays(1)->addHour()->format('d-m-Y H:i') : $concurso->fecha_limite->format('d-m-Y H:i'),
                 'FechaLimite' => $create 
-                ? $this->addBusinessHours(Carbon::now(), 24)->format('d-m-Y H:i')
-                : $concurso->fecha_limite->format('d-m-Y H:i'),               
+                ? $this->addBusinessHours(Carbon::now(), 24)->minute(0)->second(0)->format('d-m-Y H:i')
+                : $this->formatDateClosedHour($concurso->fecha_limite),               
                 'SeguroCaucion' => $create && !$is_copy ? 'no' : $concurso->seguro_caucion,
                 'DiagramaGant' => $create && !$is_copy ? 'no' : $concurso->diagrama_gant,
                 'CertificadoVisitaObra' => $create && !$is_copy ? 'no' : $concurso->cert_visita,
@@ -2623,9 +2623,9 @@ class ConcursoController extends BaseController
             'OfertasParcialesCantidadMin' => $create && !$is_copy ? 0 : $concurso->ofertas_parciales_cantidad_min,
              'FechaLimiteEconomicas' =>
                 $create
-                    ? $this->addBusinessHours(Carbon::now(), 72)->format('d-m-Y H:i')
+                    ? $this->addBusinessHours(Carbon::now(), 72)->minute(0)->second(0)->format('d-m-Y H:i')
                     : ($concurso->fecha_limite_economicas
-                        ? $concurso->fecha_limite_economicas->minute(0)->second(0)->format('d-m-Y H:i')
+                        ? $this->formatDateClosedHour($concurso->fecha_limite_economicas)
                         : null),
 
             'SegundaRondaHabilita' => $create && !$is_copy ? 'no' : $concurso->segunda_ronda_habilita,
@@ -2633,9 +2633,9 @@ class ConcursoController extends BaseController
             'ImagePath' => filePath(config('app.images_path')),
             'Portrait' => $create && !$is_copy ? null : $concurso->portrait,
             'FechaLimiteTecnica' => $create
-            ? $this->addBusinessHours(Carbon::now(), 48)->format('d-m-Y H:i')
+            ? $this->addBusinessHours(Carbon::now(), 48)->minute(0)->second(0)->format('d-m-Y H:i')
             : ($concurso->ficha_tecnica_fecha_limite
-                ? $concurso->ficha_tecnica_fecha_limite->minute(0)->second(0)->format('d-m-Y H:i')
+                ? $this->formatDateClosedHour($concurso->ficha_tecnica_fecha_limite)
                 : null
             ),
 
@@ -2672,9 +2672,9 @@ class ConcursoController extends BaseController
             'ImagePath' => filePath(config('app.images_path')),
             'Portrait' => $create && !$is_copy ? null : $concurso->portrait,
             'FechaLimiteTecnica' => $create
-            ? $this->addBusinessHours(Carbon::now(), 48)->format('d-m-Y H:i')
+            ? $this->addBusinessHours(Carbon::now(), 48)->minute(0)->second(0)->format('d-m-Y H:i')
             : ($concurso->ficha_tecnica_fecha_limite
-                ? $concurso->ficha_tecnica_fecha_limite->minute(0)->second(0)->format('d-m-Y H:i')
+                ? $this->formatDateClosedHour($concurso->ficha_tecnica_fecha_limite)
                 : null
             ),
 
@@ -2734,7 +2734,7 @@ class ConcursoController extends BaseController
             $create
                 ? Carbon::now()->addDays(4)->addHour(2)->minute(0)->second(0)->format('d-m-Y H:i')
                 : ($concurso->fecha_limite_economicas
-                    ? $concurso->fecha_limite_economicas->minute(0)->second(0)->format('d-m-Y H:i')
+                    ? $this->formatDateClosedHour($concurso->fecha_limite_economicas)
                     : null),
 
 
@@ -2765,8 +2765,8 @@ class ConcursoController extends BaseController
             'AdditionalDriverDocuments' => $additional_driver_documents,
             'AdditionalVehicleDocuments' => $additional_vehicle_documents,
             'FinalizarSiOferentesCompletaronEconomicas' => 'si',
-            'FechaLimiteTecnica' => $create ? Carbon::now()->addDays(4)->addHour(2)->format('d-m-Y H:i') : ($concurso->fecha_limite_economicas ?
-                $concurso->fecha_limite_economicas->format('d-m-Y H:i') :
+            'FechaLimiteTecnica' => $create ? Carbon::now()->addDays(4)->addHour(2)->minute(0)->second(0)->format('d-m-Y H:i') : ($concurso->fecha_limite_economicas ?
+                $this->formatDateClosedHour($concurso->fecha_limite_economicas) :
                 null
             ),
         ]);
@@ -5491,15 +5491,16 @@ class ConcursoController extends BaseController
 
 
             // cambio de fechas
-             $fechaInvitacionEdit =
-                 $concurso->fecha_limite->format('Y-m-d H:i:s') != $common_fields['fecha_limite'] ? true : false;
+            $fechaInvitacionEdit =
+                $this->formatDateForComparison($concurso->fecha_limite) != ($common_fields['fecha_limite'] ?? null);
 
-            $cambio_fechas = $fecha_antigua->format('Y-m-d H:i:s') != $extra_fields['fecha_limite_economicas'] ? true : false;
+            $cambio_fechas =
+                $this->formatDateForComparison($fecha_antigua) != ($extra_fields['fecha_limite_economicas'] ?? null);
             
            
 
             $fechaFinConsultasEdit =
-                $concurso->finalizacion_consultas->format('Y-m-d H:i:s') != $common_fields['finalizacion_consultas'] ? true : false;
+                $this->formatDateForComparison($concurso->finalizacion_consultas) != ($common_fields['finalizacion_consultas'] ?? null);
 
             $ajustdate =
                 ($fechaInvitacionEdit || $fechaFinConsultasEdit || $cambio_fechas /*|| $fechaTecnicaLimitEdit || $fechaEconomicLimitEdit*/) ? true : false;
@@ -5767,6 +5768,36 @@ class ConcursoController extends BaseController
         return Carbon::createFromFormat('d-m-Y H:i', $date)->format('Y-m-d H:i:s');
     }
 
+    private function formatDateForComparison($date)
+    {
+        if (empty($date)) {
+            return null;
+        }
+
+        if ($date instanceof \DateTimeInterface) {
+            return $date->format('Y-m-d H:i:s');
+        }
+
+        return Carbon::parse($date)->format('Y-m-d H:i:s');
+    }
+
+    private function formatDateClosedHour($date, $format = 'd-m-Y H:i')
+    {
+        if (empty($date)) {
+            return null;
+        }
+
+        if ($date instanceof Carbon) {
+            $date = $date->copy();
+        } elseif ($date instanceof \DateTimeInterface) {
+            $date = Carbon::parse($date->format('Y-m-d H:i:s'));
+        } else {
+            $date = Carbon::parse($date);
+        }
+
+        return $date->minute(0)->second(0)->format($format);
+    }
+
     private function changeTechnicalDocuments($concurso, $common_fields)
     {
         $documents = [
@@ -5982,7 +6013,8 @@ class ConcursoController extends BaseController
             date_default_timezone_set($user->customer_company->timeZone ?? 'America/Argentina/Buenos_Aires');
             
             // Calcular fecha de finalización de consultas (7 días desde ahora)
-            $fechaFinalizacionConsultas = Carbon::now()->addDays(7);
+            $fechaFinalizacionConsultas = Carbon::now()->addDays(7)->minute(0)->second(0);
+            $fechaLimiteEconomicas = $fechaFinalizacionConsultas->copy()->addDay();
             
             $concurso = new Concurso();
             $concurso->id_cliente = $user->id; // ID del usuario, no de la compañía
@@ -6001,6 +6033,7 @@ class ConcursoController extends BaseController
             $concurso->fecha_alta = Carbon::now();
             $concurso->finalizacion_consultas = $fechaFinalizacionConsultas;
             $concurso->fecha_limite = $fechaFinalizacionConsultas;
+            $concurso->fecha_limite_economicas = $fechaLimiteEconomicas;
             $concurso->area_sol = "Administración";
             $concurso->moneda = 5; // ARS (Pesos Argentinos) por defecto
             $concurso->tipo_convocatoria = 1; // Privada
@@ -6169,9 +6202,9 @@ class ConcursoController extends BaseController
             date_default_timezone_set($user->customer_company->timeZone ?? 'America/Argentina/Buenos_Aires');
             
             // Calcular fecha de finalización de consultas (7 días desde ahora)
-            $fechaFinalizacionConsultas = Carbon::now()->addDays(7);
+            $fechaFinalizacionConsultas = Carbon::now()->addDays(7)->minute(0)->second(0);
             // Calcular fecha de inicio de subasta (8 días desde ahora, 1 día después de consultas)
-            $fechaInicioSubasta = Carbon::now()->addDays(8);
+            $fechaInicioSubasta = $fechaFinalizacionConsultas->copy()->addDay();
             
             $concurso = new Concurso();
             $concurso->id_cliente = $user->id;

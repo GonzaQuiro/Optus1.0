@@ -228,6 +228,7 @@ app()->group('/solped', function () {
     $this->post('/cliente/reject', 'App\Http\Controllers\Customer\SolpedController:reject')->add(new AuthMiddleware())->setName('solped.reject');
     $this->post('/cliente/approve', 'App\Http\Controllers\Customer\SolpedController:approve')->add(new AuthMiddleware())->setName('solped.approve');
     $this->post('/cliente/delegate', 'App\Http\Controllers\Customer\SolpedController:delegate')->add(new AuthMiddleware())->setName('solped.delegate');
+    $this->post('/cliente/conclude-treatment', 'App\Http\Controllers\Customer\SolpedController:concludeTreatment')->add(new AuthMiddleware())->setName('solped.concludeTreatment');
     $this->get('/cliente/compradores', 'App\Http\Controllers\Customer\SolpedController:getCompradores')->add(new AuthMiddleware())->setName('solped.compradores');
     //Detail Cliente 
     $this->get('/cliente/{etapa}/{id:[0-9]+}', 'App\Http\Controllers\Customer\SolpedController:serveDetail')->add(new AuthMiddleware())->setName('solped.serveDetail');
