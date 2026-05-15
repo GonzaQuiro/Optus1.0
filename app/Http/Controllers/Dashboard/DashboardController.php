@@ -10,6 +10,7 @@ use App\Models\Participante;
 use App\Models\User;
 use Carbon\Carbon;
 use App\Models\AdjudicationApproval;
+use App\Services\ApprovalUserResolver;
 
 class DashboardController extends BaseController
 {
@@ -195,6 +196,11 @@ class DashboardController extends BaseController
                             ->where('status', 'pending')
                             ->orderBy('sort_order', 'asc')
                             ->first();
+
+                        if ($nextPending) {
+                            ApprovalUserResolver::syncPendingApprovalUser($nextPending, $customercCompanyID);
+                            $nextPending = $nextPending->fresh();
+                        }
 
                         // Solo mostrar si el user_id del siguiente pendiente coincide con el usuario actual
                         if ($nextPending && $nextPending->user_id && $nextPending->user_id == $userId) {

@@ -9,6 +9,7 @@ use App\Models\EstrategiaLiberacion;
 use App\Models\Concurso;
 use App\Models\User;
 use App\Models\Tipocambio;
+use App\Services\ApprovalUserResolver;
 
 class EstrategiaController extends BaseController
 {
@@ -28,21 +29,9 @@ class EstrategiaController extends BaseController
      */
     private function findUserByRolArea($customerCompanyId, $rol, $area = null)
     {
-        $query = User::where('customer_company_id', $customerCompanyId)
-            ->where('rol', $rol)
-            ->whereNull('deleted_at');
-        
-        if ($area) {
-            $query->where('area', $area);
-        }
-        
-        $user = $query->first();
-        
-        if ($user) {
-            return $user->first_name . ' ' . $user->last_name;
-        }
-        
-        return null;
+        $user = ApprovalUserResolver::findByRoleArea($customerCompanyId, $rol, $area);
+
+        return ApprovalUserResolver::formatUserName($user);
     }
 
     /**

@@ -22,6 +22,7 @@ use App\Models\GoType;
 use App\Models\Alcance;
 use App\Models\Concurso;
 use App\Models\AdjudicationApproval;
+use App\Services\ApprovalUserResolver;
 use App\Models\ConcursoPlantillaItem;
 use App\Models\Participante;
 use App\Models\Producto;
@@ -6357,6 +6358,13 @@ class ConcursoController extends BaseController
             ->get();
         
         foreach ($pendingApprovals as $approval) {
+            ApprovalUserResolver::syncPendingApprovalUser($approval, $user->customer_company_id);
+            $approval = $approval->fresh();
+
+            if (ApprovalUserResolver::userMatchesApproval($approval, $user)) {
+                return true;
+            }
+
             // User match
             if ($approval->user_id && $approval->user_id == $user->id) {
                 return true;

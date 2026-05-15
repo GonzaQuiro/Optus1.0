@@ -12,6 +12,7 @@ use App\Models\EstrategiaLiberacion;
 use App\Models\User;
 use App\Models\Tipocambio;
 use App\Services\EmailService;
+use App\Services\ApprovalUserResolver;
 
 class ApprovalController extends BaseController
 {
@@ -39,6 +40,11 @@ class ApprovalController extends BaseController
                     ->where('status', 'pending')
                     ->orderBy('sort_order', 'asc')
                     ->first();
+
+                if ($nextPending) {
+                    ApprovalUserResolver::syncPendingApprovalUser($nextPending, $user->customer_company_id);
+                    $nextPending = $nextPending->fresh();
+                }
 
                 // Solo mostrar si el user_id del siguiente pendiente coincide con el usuario actual
                 if ($nextPending && $nextPending->user_id && $nextPending->user_id == $user->id) {
@@ -288,6 +294,11 @@ class ApprovalController extends BaseController
 
             $approvals = AdjudicationApproval::getByContest($contestId);
 
+            if (!$approvals->isEmpty()) {
+                $this->assignMissingApprovalUsers($approvals, $user->customer_company_id);
+                $approvals = AdjudicationApproval::getByContest($contestId);
+            }
+
             // Detectar cadena stale: rechazada en una ronda anterior.
             // Usamos los flags del concurso para determinarlo:
             // - Cuando se rechaza: adjudication_rejected=1, adjudication_pending_approval=0
@@ -404,6 +415,8 @@ class ApprovalController extends BaseController
                 throw new \Exception('La cadena de aprobación ya fue rechazada. No se puede aprobar.');
             }
 
+            $this->assignMissingApprovalUsersForContest($contestId, $user->customer_company_id);
+
             // Buscar el nivel pendiente que corresponde a este usuario
             $approval = AdjudicationApproval::where('contest_id', $contestId)
                 ->where('status', 'pending')
@@ -500,6 +513,8 @@ class ApprovalController extends BaseController
             if (empty($reason)) {
                 throw new \Exception('El motivo del rechazo es obligatorio');
             }
+
+            $this->assignMissingApprovalUsersForContest($contestId, $user->customer_company_id);
 
             // Buscar el nivel pendiente que corresponde a este usuario
             $approval = AdjudicationApproval::where('contest_id', $contestId)
@@ -705,15 +720,20 @@ class ApprovalController extends BaseController
      */
     private function findUserByRoleArea($customerCompanyId, $role, $area = null)
     {
-        $query = User::where('customer_company_id', $customerCompanyId)
-            ->where('rol', $role)
-            ->whereNull('deleted_at');
-        
-        if ($area) {
-            $query->where('area', $area);
+        return ApprovalUserResolver::findByRoleArea($customerCompanyId, $role, $area);
+    }
+
+    private function assignMissingApprovalUsersForContest($contestId, $customerCompanyId)
+    {
+        $approvals = AdjudicationApproval::getByContest($contestId);
+        $this->assignMissingApprovalUsers($approvals, $customerCompanyId);
+    }
+
+    private function assignMissingApprovalUsers($approvals, $customerCompanyId)
+    {
+        foreach ($approvals as $approval) {
+            ApprovalUserResolver::syncPendingApprovalUser($approval, $customerCompanyId);
         }
-        
-        return $query->first();
     }
 
     /**
