@@ -212,6 +212,8 @@ class ApprovalController extends BaseController
             }
 
             // Crear registros de aprobación
+            $this->ensureApprovalLevelsHaveUsers($approvalLevels);
+
             $records = AdjudicationApproval::createApprovalRequest(
                 $contestId,
                 $adjudicationType,
@@ -721,6 +723,33 @@ class ApprovalController extends BaseController
     private function findUserByRoleArea($customerCompanyId, $role, $area = null)
     {
         return ApprovalUserResolver::findByRoleArea($customerCompanyId, $role, $area);
+    }
+
+    private function ensureApprovalLevelsHaveUsers($approvalLevels)
+    {
+        $missingLevels = [];
+
+        foreach ($approvalLevels as $level) {
+            if (empty($level['user_id'])) {
+                $label = $level['role'];
+
+                if (!empty($level['area'])) {
+                    $label .= ' (' . $level['area'] . ')';
+                }
+
+                $missingLevels[] = $label;
+            }
+        }
+
+        if (empty($missingLevels)) {
+            return;
+        }
+
+        throw new \Exception(
+            'No se encontraron usuarios para todos los niveles de la estrategia de liberación. ' .
+            'Verifique los roles y áreas de sus usuarios de acuerdo a su matriz de estrategia de liberación. ' .
+            'Niveles sin usuario: ' . implode(', ', $missingLevels)
+        );
     }
 
     private function assignMissingApprovalUsersForContest($contestId, $customerCompanyId)
