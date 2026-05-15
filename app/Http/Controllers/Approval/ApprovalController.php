@@ -10,7 +10,7 @@ use App\Models\AdjudicationApproval;
 use App\Models\Concurso;
 use App\Models\EstrategiaLiberacion;
 use App\Models\User;
-use App\Models\Tipocambio;
+use App\Models\TipoCambio;
 use App\Services\EmailService;
 use App\Services\ApprovalUserResolver;
 
@@ -258,20 +258,16 @@ class ApprovalController extends BaseController
                     return $r->toResponseArray();
                 }, $records),
                 'message' => 'Solicitud de aprobación creada.',
-                // DEBUG: Información para ver en consola
-                'debug' => [
-                    'first_approver_user_id' => $firstApproval->user_id,
-                    'first_approver_email' => $firstApproverEmail,
-                    'first_approver_name' => $firstApproverName,
-                    'email_sent' => $emailSent,
-                    'email_error' => $this->lastEmailError
-                ]
             ];
 
             $success = true;
             $message = 'Proceso de aprobación solicitado correctamente';
 
         } catch (\Exception $e) {
+            $success = false;
+            $message = $e->getMessage();
+            $status = 500;
+        } catch (\Throwable $e) {
             $success = false;
             $message = $e->getMessage();
             $status = 500;
@@ -476,12 +472,7 @@ class ApprovalController extends BaseController
                 'levels' => $approvals->map(function($a) {
                     return $a->toResponseArray();
                 })->toArray(),
-                'chain_complete' => AdjudicationApproval::isChainComplete($contestId),
-                // DEBUG
-                'debug' => [
-                    'next_approver_email' => $nextApproverEmail,
-                    'next_approver_name' => $nextApproverName
-                ]
+                'chain_complete' => AdjudicationApproval::isChainComplete($contestId)
             ];
 
             $success = true;
@@ -625,7 +616,7 @@ class ApprovalController extends BaseController
             return (float) $amount;
         }
 
-        $exchangeRate = Tipocambio::where('monedaId', $currencyId)->first();
+        $exchangeRate = TipoCambio::where('monedaId', $currencyId)->first();
         
         if ($exchangeRate && $exchangeRate->cambio) {
             $rateStr = str_replace('.', '', $exchangeRate->cambio);
@@ -786,7 +777,6 @@ class ApprovalController extends BaseController
      */
     private function sendApprovalEmail($approval, $contest, $email, $name)
     {
-        // Store error for debugging
         $this->lastEmailError = null;
         
         try {

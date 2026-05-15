@@ -667,11 +667,8 @@
                     _t: (new Date()).getTime()
                 },
                 function(response) {
-                    console.log('[DEBUG] loadApprovalStatus response:', JSON.stringify(response));
                     if (response.success && response.data) {
                         var d = response.data;
-                        console.log('[DEBUG] rejected_history:', JSON.stringify(d.rejected_history));
-                        console.log('[DEBUG] has_request:', d.has_request, 'chain_complete:', d.chain_complete, 'chain_rejected:', d.chain_rejected);
                         
                         var toBool = function(v) {
                             return v === true || v === 1 || v === '1' || v === 'true';
@@ -728,19 +725,13 @@
                         // Cargar historial de cadenas rechazadas
                         if (d.rejected_history && d.rejected_history.length > 0) {
                             self.RejectedHistory(d.rejected_history);
-                            console.log('[DEBUG] RejectedHistory SET:', self.RejectedHistory().length, 'items');
                         } else {
                             self.RejectedHistory([]);
-                            console.log('[DEBUG] RejectedHistory CLEARED - d.rejected_history:', d.rejected_history);
                         }
-                        console.log('[DEBUG] CombinedRejectedHistory length:', self.CombinedRejectedHistory().length);
-                        console.log('[DEBUG] AdjudicationRejected:', self.AdjudicationRejected());
-                        console.log('[DEBUG] EstrategiaHabilitada:', self.EstrategiaHabilitada());
                     }
                     if (callback) callback(response);
                 },
                 function(error) {
-                    console.log('Error loading approval status:', error);
                     if (callback) callback(null);
                 });
             };
@@ -848,7 +839,6 @@
                         if (callback) callback(response);
                     },
                     function(error) {
-                        console.log('Error al cargar estrategia:', error);
                         if (callback) callback(null);
                     }
                 );
@@ -2107,8 +2097,12 @@
                     var message = 'Error de comunicacion con el servidor';
 
                     if (error) {
-                        if (error.responseJSON && error.responseJSON.message) {
+                        if (error.message) {
+                            message = error.message;
+                        } else if (error.responseJSON && error.responseJSON.message) {
                             message = error.responseJSON.message;
+                        } else if (error.parsedResponse && error.parsedResponse.message) {
+                            message = error.parsedResponse.message;
                         } else if (error.responseText) {
                             try {
                                 var parsedError = JSON.parse(error.responseText);
@@ -2116,13 +2110,10 @@
                                     message = parsedError.message;
                                 }
                             } catch (e) {}
-                        } else if (error.message) {
-                            message = error.message;
                         }
                     }
 
-                    return swal('Error', message, 'error');
-                    swal('Error', 'Error de comunicación con el servidor', 'error');
+                    swal('Error', message, 'error');
                 });
             };
 
@@ -2544,9 +2535,6 @@
                     },
                     (response) => {
                         $.unblockUI();
-                        if (response.success) {
-                            console.log(response.message);
-                        }
                     },
                     (error) => {
                         $.unblockUI();
@@ -2643,8 +2631,6 @@
                             }, 5000);
 
                         }).fail(function(jqXHR, textStatus) {
-                            console.log(jqXHR);
-                            console.log(textStatus);
                             $.unblockUI();
                             swal.close();
                             setTimeout(function() {

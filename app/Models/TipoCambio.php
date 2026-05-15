@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Models\Model;
 
-class Tipocambio extends Model
+class TipoCambio extends Model
 {
   
     protected $table = 'tipocambio';

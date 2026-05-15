@@ -8,7 +8,7 @@ use Slim\Http\Response;
 use App\Models\EstrategiaLiberacion;
 use App\Models\Concurso;
 use App\Models\User;
-use App\Models\Tipocambio;
+use App\Models\TipoCambio;
 use App\Services\ApprovalUserResolver;
 
 class EstrategiaController extends BaseController
@@ -45,7 +45,7 @@ class EstrategiaController extends BaseController
         }
 
         // Buscar el tipo de cambio para esta moneda usando monedaId
-        $tipoCambio = Tipocambio::where('monedaId', $monedaId)->first();
+        $tipoCambio = TipoCambio::where('monedaId', $monedaId)->first();
         
         if ($tipoCambio && $tipoCambio->cambio) {
             // El campo cambio viene en formato "1.453,16" (punto miles, coma decimal)

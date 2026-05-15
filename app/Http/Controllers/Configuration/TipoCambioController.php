@@ -29,7 +29,7 @@ class TipoCambioController extends BaseController
 
         try {
             // Obtenemos todos los registros de la tabla 'tipocambio', incluyendo los eliminados (soft deleted)
-            $tipocambios = Tipocambio::all();
+            $tipocambios = TipoCambio::all();
             foreach ($tipocambios as $tipocambio) {
                 array_push($list, [
                     'Idtipocambio' => $tipocambio->idtipocambio,
