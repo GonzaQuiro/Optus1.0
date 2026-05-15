@@ -260,7 +260,7 @@
                     <hr style="margin: 10px 0;">
                     <strong>Aclaración:</strong>
                     <ul style="margin-top: 5px; margin-bottom: 5px;">
-                        <li>Por favor verifique que con usuarios dados de alta en la plataforma con roles de <strong>Jefe</strong> y <strong>Gerente</strong> de las areas de compra y areas solicitantes (Administración, Logística, Producción, etc)</li>
+                        <li>Por favor verifique que cuenta con usuarios dados de alta en la plataforma con roles de <strong>Jefe</strong> y <strong>Gerente</strong> de las areas de compra y areas solicitantes (Administración, Logística, Producción, etc)</li>
                     </ul>
                 </div>
                 <div class="text-right" style="margin-top: 20px;">

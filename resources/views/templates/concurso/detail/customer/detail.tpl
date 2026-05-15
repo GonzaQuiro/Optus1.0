@@ -2104,6 +2104,24 @@
                 },
                 function(error) {
                     $.unblockUI();
+                    var message = 'Error de comunicacion con el servidor';
+
+                    if (error) {
+                        if (error.responseJSON && error.responseJSON.message) {
+                            message = error.responseJSON.message;
+                        } else if (error.responseText) {
+                            try {
+                                var parsedError = JSON.parse(error.responseText);
+                                if (parsedError && parsedError.message) {
+                                    message = parsedError.message;
+                                }
+                            } catch (e) {}
+                        } else if (error.message) {
+                            message = error.message;
+                        }
+                    }
+
+                    return swal('Error', message, 'error');
                     swal('Error', 'Error de comunicación con el servidor', 'error');
                 });
             };
