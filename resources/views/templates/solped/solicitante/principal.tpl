@@ -403,6 +403,16 @@
         );
 
         // Fechas de resolución y entrega
+        this.Monedas = ko.observableArray(
+            (data.list.Monedas || []).map(function (m) {
+                return { id: Number(m.id), text: String(m.text) };
+            })
+        );
+        this.Moneda = ko.observable(
+            data.list.Moneda != null ? Number(data.list.Moneda) : null
+        ).extend({ required: true });
+
+        // Fechas de resolucion y entrega
         this.FechaResolucion = ko.observable(data.list.FechaResolucion || null).extend({ required: true });
         this.FechaEntrega = ko.observable(data.list.FechaEntrega || null).extend({ required: true });
 
@@ -684,6 +694,7 @@
             if (!self.Entity.AreaSolicitante()) missing.push('Área solicitante');
             if (!self.Entity.TipoCompra()) missing.push('Tipo de compra');
             if (!self.Entity.FechaResolucion()) missing.push('Fecha de resolución');
+            if (!self.Entity.Moneda()) missing.push('Moneda');
             if (!self.Entity.FechaEntrega()) missing.push('Fecha de entrega');
             if (!hasItems) missing.push('Al menos un ítem (producto)');
 
@@ -1049,6 +1060,7 @@
         if (!self.Entity.AreaSolicitante()) missing.push('Área solicitante');
         if (!self.Entity.TipoCompra()) missing.push('Tipo de compra');
         if (!self.Entity.FechaResolucion()) missing.push('Fecha de resolución');
+        if (!self.Entity.Moneda()) missing.push('Moneda');
         if (!self.Entity.FechaEntrega()) missing.push('Fecha de entrega');
         if (!hasItems) missing.push('Al menos un ítem (producto)');
 

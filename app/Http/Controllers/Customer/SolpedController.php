@@ -173,6 +173,7 @@ class SolpedController extends BaseController {
                 'Descripcion'     => $solped->descripcion,
                 'AreaSolicitante' => $solped->area_sol,
                 'CompradorSugerido'=> $solped->comprador_sugerido && $solped->comprador_sugerido->full_name ? $solped->comprador_sugerido->full_name : null,
+                'Moneda'          => $solped->moneda ? $solped->moneda->nombre : null,
                 'FechaCreacion'   => $solped->fecha_alta ? $solped->fecha_alta->format('d-m-Y H:i:s') : null,
                 'FechaEnvioComprador' => $solped->fecha_envio_a_comprador ? $solped->fecha_envio_a_comprador->format('d-m-Y H:i:s') : null,
                 'FechaResolucion'  => $solped->fecha_resolucion ? $solped->fecha_resolucion->format('d-m-Y H:i') : null,
@@ -184,14 +185,29 @@ class SolpedController extends BaseController {
                 'FechaAceptacion' => $solped->fecha_aceptacion ? $solped->fecha_aceptacion->format('d-m-Y H:i:s') : null,
                 'RejectComment'   => $solped->reject_comment ? $solped->reject_comment : null,
                 'ReturnComment'   => $solped->return_comment ? $solped->return_comment : null,
+                'TratamentComment'=> $solped->tratament_comment ? $solped->tratament_comment : null,
                 'Etapa'           => $solped->etapa_actual,
                 'EstadoActual'    => $solped->estado_actual,
                 'CompradorDecision' => $solped->comprador_decision ? $solped->comprador_decision->full_name : null,
                 'CompradorFirstRevision' => $solped->comprador_first_revision ? $solped->comprador_first_revision->full_name : null,
                 'FechaFirstRevision' => $solped->fecha_first_revision ? $solped->fecha_first_revision->format('d-m-Y H:i:s') : null,
                 'FechaDevolucion' => $solped->fecha_devolucion ? $solped->fecha_devolucion->format('d-m-Y H:i:s') : null,
-                'CompradorDecisionFecha' => $solped->comprador_decision && $solped->fecha_rechazo ? 
-                    $solped->comprador_decision->full_name . ' - ' . $solped->fecha_rechazo->format('d-m-Y H:i:s') : null,
+                'CompradorDecisionFecha' => (function() use ($solped) {
+                    $comprador = $solped->comprador_decision ? $solped->comprador_decision->full_name : null;
+                    $fecha = null;
+
+                    if ($solped->estado_actual === 'rechazada' && $solped->fecha_rechazo) {
+                        $fecha = $solped->fecha_rechazo->format('d-m-Y H:i:s');
+                    } elseif ($solped->estado_actual === 'devuelta' && $solped->fecha_devolucion) {
+                        $fecha = $solped->fecha_devolucion->format('d-m-Y H:i:s');
+                    } elseif ($solped->estado_actual === 'aceptada' && $solped->fecha_aceptacion) {
+                        $fecha = $solped->fecha_aceptacion->format('d-m-Y H:i:s');
+                    } elseif ($solped->estado_actual === 'finalizada' && $solped->updated_at) {
+                        $fecha = $solped->updated_at->format('d-m-Y H:i:s');
+                    }
+
+                    return ($comprador && $fecha) ? ($comprador . ' - ' . $fecha) : null;
+                })(),
                 'CompradorDevolucionFecha' => $solped->comprador_decision && $solped->fecha_devolucion ? 
                     $solped->comprador_decision->full_name . ' - ' . $solped->fecha_devolucion->format('d-m-Y H:i:s') : null,
                 'CancelMotive'   => $solped->cancel_motive ?: null,
@@ -620,6 +636,7 @@ class SolpedController extends BaseController {
             // Limpiar comentarios de rechazo/devolución previos si existen
             $solped->reject_comment = null;
             $solped->return_comment = null;
+            $solped->tratament_comment = null;
             $solped->fecha_rechazo = null;
             $solped->fecha_devolucion = null;
             
@@ -691,9 +708,14 @@ class SolpedController extends BaseController {
         try {
             $parsedBody = $request->getParsedBody() ?: [];
             $body = json_decode($parsedBody['Entity'] ?? '{}');
+            $reason = trim((string)($parsedBody['Reason'] ?? ''));
 
             if (empty($body->IdSolicitud)) {
                 throw new \Exception('ID de Solicitud requerido.', 400);
+            }
+
+            if ($reason === '') {
+                throw new \Exception('El motivo de conclusion es obligatorio.', 400);
             }
 
             $capsule = dependency('db');
@@ -725,9 +747,23 @@ class SolpedController extends BaseController {
             $solped->etapa_actual = 'finalizada';
             $solped->estado_actual = 'finalizada';
             $solped->id_comprador_decision = $user->id;
+            $solped->tratament_comment = $reason;
             $solped->cancel_motive = 'Solicitud de pedido dada por tratada.';
             $solped->updated_at = $now;
             $solped->save();
+
+            $emailService = new EmailService();
+            $template = rootPath(config('app.templates_path')) . '/email/solped-concluded.tpl';
+            $subject = 'Solicitud #' . $solped->id . ' concluida';
+            $html = $this->fetch($template, [
+                'title' => $subject,
+                'ano' => Carbon::now()->format('Y'),
+                'solped' => $solped,
+                'reason' => $reason,
+                'user' => $user
+            ]);
+
+            $emailService->send($html, $subject, [$solped->solicitante->email], $solped->solicitante->full_name);
 
             $success = true;
             $message = 'Solicitud de pedido dada por tratada correctamente.';

@@ -25,6 +25,26 @@
       </div>
     </div>
 
+    <div class="form-group required" data-bind="validationElement: Entity.Moneda">
+      <label for="moneda_solped" class="control-label">
+        <strong>Moneda</strong>
+      </label>
+      <div class="selectRequerido">
+        <select id="moneda_solped"
+          data-bind="
+            value: Entity.Moneda,
+            valueAllowUnset: true,
+            options: Entity.Monedas,
+            optionsText: 'text',
+            optionsValue: 'id',
+            select2Safe: { placeholder: 'Seleccionar...', allowClear: true, width: '100%' },
+            disable: ReadOnly()
+          ">
+          <option value=""></option>
+        </select>
+      </div>
+    </div>
+
   </div>
 </div>
 

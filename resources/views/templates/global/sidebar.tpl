@@ -335,6 +335,7 @@
                                     <span class="title">Concursos Evaluados</span>
                                 </a>
                             </li>
+                            <li class="nav-item{if $accion eq 'lista-solicitudes'} active open{/if}">
                                 <a href="/reportes/solicitudes" class="nav-link ">
                                     <span class="title">Solicitudes de pedidos</span>
                                 </a>

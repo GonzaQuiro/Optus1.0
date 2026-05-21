@@ -59,7 +59,9 @@ class Solped extends Model
         'clasificacion',
         'reject_comment',
         'return_comment',
+        'tratament_comment',
         'id_comprador_sugerido',
+        'id_moneda',
         'id_comprador_decision',
         'id_comprador_first_revision',
         'tipo_compra',
@@ -130,6 +132,11 @@ class Solped extends Model
     public function comprador_sugerido()
     {
         return $this->belongsTo(User::class, 'id_comprador_sugerido');
+    }
+
+    public function moneda()
+    {
+        return $this->belongsTo(Moneda::class, 'id_moneda', 'id');
     }
 
     public function comprador_decision()

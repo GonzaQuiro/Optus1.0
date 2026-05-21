@@ -878,7 +878,10 @@
         },
         error: function(err) {
             console.error("❌ Error en el request:", err);
-            swal("Error", "No se pudo crear la licitación desde las solicitudes", "error");
+            var message = err && err.responseJSON && err.responseJSON.message
+                ? err.responseJSON.message
+                : "No se pudo crear la licitación desde las solicitudes";
+            swal("Error", message, "error");
         }
     });
 };
@@ -949,7 +952,10 @@
                     },
                     error: function(err) {
                         console.error("❌ Error en el request:", err);
-                        swal("Error", "No se pudo crear la subasta desde las solicitudes", "error");
+                        var message = err && err.responseJSON && err.responseJSON.message
+                            ? err.responseJSON.message
+                            : "No se pudo crear la subasta desde las solicitudes";
+                        swal("Error", message, "error");
                     }
                 });
             };

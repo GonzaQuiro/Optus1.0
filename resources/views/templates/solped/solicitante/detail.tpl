@@ -169,7 +169,7 @@
                         <td class="col-md-9 vertical-align-middle" data-bind="text: CompradorFecha"></td>
                     </tr>
                     <!-- /ko -->
-                    <!-- ko if: EstadoActual() === 'rechazada' || EstadoActual() === 'devuelta' || EstadoActual() === 'aceptada' || EstadoActual() === 'adjudicada' -->
+                    <!-- ko if: EstadoActual() === 'rechazada' || EstadoActual() === 'devuelta' || EstadoActual() === 'aceptada' || EstadoActual() === 'adjudicada' || EstadoActual() === 'finalizada' -->
                     <tr>
                         <td class="col-md-3 vertical-align-middle">Comprador que tomó la decisión y fecha de decisión</td>
                         <td class="col-md-9 vertical-align-middle" data-bind="text: CompradorDecisionFecha"></td>
@@ -257,8 +257,27 @@
 </div>
 <!-- /ko -->
 
-    
+    <!-- Motivo de conclusion -->
+    <!-- ko if: EstadoActual() === 'finalizada' -->
+<div class="col-sm-12">
+    <div class="m-heading-1 border-default m-bordered text-left">
+        <h5 class="block bold" style="margin-top: 0; padding-top: 0; color: #3f6f8f; font-size: 22px;">
+            Motivo de conclusion:
+        </h5>
+        <div class="p-3" style="border-radius: 6px; font-size: 18px; color: #000000;">
+            <span data-bind="text: TratamentComment"></span>
+        </div>
+        <!-- ko if: CompradorDecisionFecha -->
+        <div class="p-2" style="background-color: #f7f7f7; border-radius: 6px; font-size: 16px; color: #666; margin-top: 10px;">
+            <strong>Concluida por:</strong> <span data-bind="text: CompradorDecisionFecha"></span>
+        </div>
+        <!-- /ko -->
+    </div>
+</div>
+<!-- /ko -->
 
+
+    
 
 <!-- Motivo de rechazo -->
     <!-- ko if: EstadoActual() === 'rechazada' -->
@@ -322,7 +341,12 @@
     <!-- Items/Productos -->
     <div class="col-sm-12">
         <div class="m-heading-1 border-default m-bordered text-left">
-            <h4 class="block bold" style="margin-top: 0; padding-top: 0;">Items Solicitados</h4>
+            <h4 class="block bold" style="margin-top: 0; padding-top: 0;">
+                Items Solicitados
+                <!-- ko if: Moneda() -->
+                <span style="color: #e7505a; font-weight: 700;">- Moneda:</span> <span data-bind="text: Moneda"></span>
+                <!-- /ko -->
+            </h4>
             <table class="table table-striped table-bordered" id="ListaItems">
                 <thead>
                     <tr>
@@ -408,6 +432,7 @@
             this.Descripcion = ko.observable(data.list.Descripcion);
             this.AreaSolicitante = ko.observable(data.list.AreaSolicitante);
             this.CompradorSugerido = ko.observable(data.list.CompradorSugerido);
+            this.Moneda = ko.observable(data.list.Moneda);
             this.FechaCreacion = ko.observable(data.list.FechaCreacion);
             this.FechaEnvioComprador = ko.observable(data.list.FechaEnvioComprador);
             this.FechaFinEtapaEconomica = ko.observable(data.list.FechaFinEtapaEconomica || null);
@@ -418,6 +443,7 @@
             this.FechaFirstRevision = ko.observable(data.list.FechaFirstRevision);
             this.RejectComment = ko.observable(data.list.RejectComment);
             this.ReturnComment = ko.observable(data.list.ReturnComment);
+            this.TratamentComment = ko.observable(data.list.TratamentComment);
             this.Productos = ko.observableArray(data.list.Productos);
 
             this.CompradorDecision = ko.observable(data.list.CompradorDecision);

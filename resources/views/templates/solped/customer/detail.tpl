@@ -245,6 +245,24 @@
     </div>
 <!-- /ko -->
 
+    <!-- ko if: EstadoActual() === 'finalizada' -->
+    <div class="col-sm-12">
+        <div class="m-heading-1 border-default m-bordered text-left">
+            <h5 class="block bold" style="margin-top: 0; padding-top: 0; color: #3f6f8f; font-size: 22px;">
+                Motivo de conclusion:
+            </h5>
+            <div style="padding: 20px; background-color: #f7f7f7; border-radius: 6px; font-size: 18px; color: #000000; min-height: 150px; overflow-y: auto; word-wrap: break-word;">
+                <span data-bind="text: TratamentComment"></span>
+            </div>
+            <!-- ko if: CompradorDecisionFecha -->
+            <div class="p-2" style="background-color: #f7f7f7; border-radius: 6px; font-size: 16px; color: #666; margin-top: 10px;">
+                <strong>Concluida por:</strong> <span data-bind="text: CompradorDecisionFecha"></span>
+            </div>
+            <!-- /ko -->
+        </div>
+    </div>
+    <!-- /ko -->
+
     <!-- ko if: EstadoActual() === 'cancelada' -->
     <div class="col-sm-12" >
         <div class="m-heading-1 border-default m-bordered text-left">
@@ -306,7 +324,12 @@
     <!-- Items/Productos -->
     <div class="col-sm-12">
         <div class="m-heading-1 border-default m-bordered text-left">
-            <h4 class="block bold" style="margin-top: 0; padding-top: 0;">Items Solicitados</h4>
+            <h4 class="block bold" style="margin-top: 0; padding-top: 0;">
+                Items Solicitados
+                <!-- ko if: Moneda() -->
+                <span style="color: #e7505a; font-weight: 700;">- Moneda:</span> <span data-bind="text: Moneda"></span>
+                <!-- /ko -->
+            </h4>
             <table class="table table-striped table-bordered" id="ListaItems">
                 <thead>
                     <tr>
@@ -403,6 +426,7 @@
             this.Descripcion = ko.observable(data.list.Descripcion);
             this.AreaSolicitante = ko.observable(data.list.AreaSolicitante);
             this.CompradorSugerido = ko.observable(data.list.CompradorSugerido);
+            this.Moneda = ko.observable(data.list.Moneda);
             this.FechaEnvioComprador = ko.observable(data.list.FechaEnvioComprador);
             this.FechaCreacion = ko.observable(data.list.FechaCreacion);
             this.FechaResolucion = ko.observable(data.list.FechaResolucion);
@@ -414,6 +438,7 @@
             this.FechaFirstRevision = ko.observable(data.list.FechaFirstRevision);
             this.RejectComment = ko.observable(data.list.RejectComment);
             this.ReturnComment = ko.observable(data.list.ReturnComment);
+            this.TratamentComment = ko.observable(data.list.TratamentComment);
             this.Productos = ko.observableArray(data.list.Productos);
 
             this.CancelMotive = ko.observable(data.list.CancelMotive);
@@ -503,56 +528,67 @@
                 if (!self.guardSolpedActive()) {
                     return;
                 }
-                swal({
-                        title: 'Concluir tratamiento',
-                        text: '¿Está seguro que desea dar por tratada la solicitud de pedido?',
-                        type: 'warning',
-                        closeOnClickOutside: false,
-                        showCancelButton: true,
-                        closeOnConfirm: true,
-                        closeOnCancel: true,
-                        confirmButtonText: 'Sí, concluir',
-                        confirmButtonClass: 'btn grey-salsa',
-                        cancelButtonText: 'Cancelar',
-                        cancelButtonClass: 'btn btn-default'
-                    }, function (result) {
-                            swal.close();
-                            if (result) {
-                                $.blockUI();
-                                Services.Post('/solped/cliente/conclude-treatment', {
-                                    UserToken: User.Token,
-                                    Entity: JSON.stringify(ko.toJS({
-                                        IdSolicitud: self.IdSolicitud(),
-                                        IdUsuario: User.Id
-                                    }))
-                                },
-                                (response) => {
-                                    $.unblockUI();
-                                    if (response.success) {
-                                        swal({
-                                            title: 'Éxito',
-                                            text: response.message || 'Solicitud de pedido dada por tratada correctamente',
-                                            type: 'success',
-                                            closeOnClickOutside: false,
-                                            confirmButtonText: 'Aceptar',
-                                            confirmButtonClass: 'btn btn-success'
-                                        }, function() {
-                                            if (response.data && response.data.redirect) {
-                                                window.location.href = response.data.redirect;
-                                            } else {
-                                                location.reload();
-                                            }
-                                        });
+                self.MotivoConclusion('');
+                $('#modalConcluirTratamiento').modal('show');
+            };
+
+            this.aceptarConclusion = function() {
+                var reason = String(self.MotivoConclusion() || '').trim();
+                if (!reason) {
+                    swal('Error', 'Debes ingresar un motivo para concluir el tratamiento.', 'error');
+                    return;
+                }
+
+                $('#modalConcluirTratamiento').find('select').each(function () {
+                    try { $(this).select2('close'); } catch (e) {}
+                });
+                $.blockUI({
+                    baseZ: 20000,
+                    message: '<h1 style="margin:0;padding:10px 18px;font-size:18px;color:#fff;background:#2b3643;border-radius:4px;">Cargando...</h1>',
+                    overlayCSS: { backgroundColor: '#000', opacity: 0.35, zIndex: 20000 },
+                    css: { border: 'none', backgroundColor: 'transparent', zIndex: 20001 }
+                });
+
+                Services.Post('/solped/cliente/conclude-treatment', {
+                        UserToken: User.Token,
+                        Entity: JSON.stringify(ko.toJS({
+                            IdSolicitud: self.IdSolicitud(),
+                            IdUsuario: User.Id
+                        })),
+                        Reason: reason
+                    },
+                    function(response) {
+                        $.unblockUI();
+                        $('#modalConcluirTratamiento').modal('hide');
+                        if (response.success) {
+                            setTimeout(function() {
+                                swal('Hecho', response.message || 'Solicitud concluida correctamente', 'success');
+                                setTimeout(function() {
+                                    if (response.data && response.data.redirect) {
+                                        window.location.href = response.data.redirect;
                                     } else {
-                                        swal('Error', response.message, 'error');
+                                        location.reload();
                                     }
-                                },
-                                (error) => {
-                                    $.unblockUI();
-                                    swal('Error', error.message || 'Error al procesar la solicitud', 'error');
-                                });
-                            }
-                        });
+                                }, 500);
+                            }, 500);
+                        } else {
+                            setTimeout(function() {
+                                swal('Error', response.message, 'error');
+                            }, 500);
+                        }
+                    },
+                    function(error) {
+                        $.unblockUI();
+                        setTimeout(function() {
+                            swal('Error', error.message || 'Error al procesar la solicitud', 'error');
+                        }, 500);
+                    }
+                );
+            };
+
+            this.cancelarConclusion = function() {
+                $('#modalConcluirTratamiento').modal('hide');
+                self.MotivoConclusion('');
             };
 
             this.rechazarSolicitud = function() {
@@ -697,6 +733,7 @@
             this.CargandoCompradores = ko.observable(false);
             this.MotivoDevolucion = ko.observable('');
             this.MotivoRechazo = ko.observable('');
+            this.MotivoConclusion = ko.observable('');
 
             this.cargarCompradores = function() {
                 self.CargandoCompradores(true);
@@ -854,6 +891,38 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bind="click: cancelarDelegacion">Rechazar</button>
                 <button type="button" class="btn btn-primary" data-bind="click: aceptarDelegacion">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Concluir Tratamiento -->
+<div class="modal fade" id="modalConcluirTratamiento" tabindex="-1" role="dialog" aria-labelledby="modalConcluirLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="max-width: 760px; width: 90%; position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%);">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalConcluirLabel">
+                    <i class="fa fa-check-square-o"></i> Concluir tratamiento
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="motivoConclusion">Motivo de conclusion</label>
+                    <textarea
+                        id="motivoConclusion"
+                        class="form-control"
+                        rows="6"
+                        style="resize: vertical; min-height: 150px;"
+                        placeholder="Escribe un motivo detallado para concluir el tratamiento"
+                        data-bind="value: MotivoConclusion, valueUpdate: 'afterkeydown'"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bind="click: cancelarConclusion">Cancelar</button>
+                <button type="button" class="btn grey-salsa" data-bind="click: aceptarConclusion">Aceptar</button>
             </div>
         </div>
     </div>

@@ -97,6 +97,45 @@ class ConcursoController extends BaseController
         ];
     }
 
+    private function resolveSolpedCurrencyId($solpeds)
+    {
+        if (!$solpeds || $solpeds->isEmpty()) {
+            throw new \Exception('No se encontraron solicitudes para obtener la moneda.', 422);
+        }
+
+        $missingCurrencyIds = $solpeds->filter(function ($solped) {
+            return empty($solped->id_moneda);
+        })->pluck('id')->all();
+
+        if (!empty($missingCurrencyIds)) {
+            throw new \Exception(
+                'Las solicitudes seleccionadas no tienen moneda configurada: ' . implode(', ', $missingCurrencyIds) . '.',
+                422
+            );
+        }
+
+        $currencyIds = $solpeds->pluck('id_moneda')
+            ->map(function ($id) {
+                return (int) $id;
+            })
+            ->unique()
+            ->values();
+
+        if ($currencyIds->count() > 1) {
+            $currencyNames = Moneda::whereIn('id', $currencyIds->all())->pluck('nombre', 'id')->all();
+            $currencySummary = $currencyIds->map(function ($id) use ($currencyNames) {
+                return isset($currencyNames[$id]) ? $currencyNames[$id] : ('ID ' . $id);
+            })->implode(', ');
+
+            throw new \Exception(
+                'Todas las solicitudes seleccionadas deben tener la misma moneda. Monedas detectadas: ' . $currencySummary . '.',
+                422
+            );
+        }
+
+        return (int) $currencyIds->first();
+    }
+
     private function resolveSolpedLocation($solpeds, $fallbackCountry = 'Argentina', $fallbackProvince = null)
     {
         if (!$solpeds || $solpeds->isEmpty()) {
@@ -5996,6 +6035,7 @@ class ConcursoController extends BaseController
                 throw new \Exception("No se encontraron solicitudes de compra válidas.");
             }
 
+            $monedaSolpedId = $this->resolveSolpedCurrencyId($solpeds);
             $summaryTexts = $this->buildSolpedSummaryTexts($solpeds);
             $locationData = $this->resolveSolpedLocation(
                 $solpeds,
@@ -6036,7 +6076,7 @@ class ConcursoController extends BaseController
             $concurso->fecha_limite = $fechaFinalizacionConsultas;
             $concurso->fecha_limite_economicas = $fechaLimiteEconomicas;
             $concurso->area_sol = "Administración";
-            $concurso->moneda = 5; // ARS (Pesos Argentinos) por defecto
+            $concurso->moneda = $monedaSolpedId;
             $concurso->tipo_convocatoria = 1; // Privada
             $concurso->finalizar_si_oferentes_completaron_economicas = 'no';  // No finalizar automáticamente
             $concurso->chat = 'S';
@@ -6185,6 +6225,7 @@ class ConcursoController extends BaseController
                 throw new \Exception("No se encontraron solicitudes de compra válidas.");
             }
 
+            $monedaSolpedId = $this->resolveSolpedCurrencyId($solpeds);
             $summaryTexts = $this->buildSolpedSummaryTexts($solpeds);
             $locationData = $this->resolveSolpedLocation(
                 $solpeds,
@@ -6225,7 +6266,7 @@ class ConcursoController extends BaseController
             $concurso->finalizacion_consultas = $fechaFinalizacionConsultas;
             $concurso->fecha_limite = $fechaFinalizacionConsultas;
             $concurso->area_sol = "Administración";
-            $concurso->moneda = 5; // ARS (Pesos Argentinos) por defecto
+            $concurso->moneda = $monedaSolpedId;
             $concurso->tipo_convocatoria = 1; // Privada
             $concurso->chat = 'S';
             $concurso->adjudicado = 0;

@@ -158,6 +158,7 @@ class SolpedController extends BaseController
                 'Descripcion'     => $solped->descripcion,
                 'AreaSolicitante' => $solped->area_sol ,
                 'CompradorSugerido'=> $solped->comprador_sugerido ? $solped->comprador_sugerido->full_name : null,
+                'Moneda'          => $solped->moneda ? $solped->moneda->nombre : null,
                 'FechaResolucion'  => $solped->fecha_resolucion ? $solped->fecha_resolucion->format('d-m-Y H:i:s') : null,
                 'FechaEntrega'    => $solped->fecha_entrega ? $solped->fecha_entrega->format('d-m-Y H:i:s') : null,
                 'FechaCreacion'   => $solped->fecha_alta ? $solped->fecha_alta->format('d-m-Y H:i:s') : null,
@@ -170,6 +171,7 @@ class SolpedController extends BaseController
                 'FechaAceptacion' => $solped->fecha_aceptacion ? $solped->fecha_aceptacion->format('d-m-Y H:i:s') : null,
                 'RejectComment'   => $solped->reject_comment ?: null,
                 'ReturnComment'   => $solped->return_comment ?: null,
+                'TratamentComment'=> $solped->tratament_comment ?: null,
                 'Etapa'         => $solped->etapa_actual,
                 'EstadoActual'   => $solped->estado_actual,
                 'CompradorDecision' => $solped->comprador_decision ? $solped->comprador_decision->full_name : null,
@@ -189,6 +191,8 @@ class SolpedController extends BaseController
                     } elseif ($solped->estado_actual === 'adjudicada' && $solped->fecha_aceptacion) {
                         // Para estado adjudicada, mostrar la fecha de aceptación de la decisión
                         $fecha = $solped->fecha_aceptacion->format('d-m-Y H:i:s');
+                    } elseif ($solped->estado_actual === 'finalizada' && $solped->updated_at) {
+                        $fecha = $solped->updated_at->format('d-m-Y H:i:s');
                     }
                     return ($comprador && $fecha) ? ($comprador . ' - ' . $fecha) : null;
                 })(),
@@ -697,6 +701,7 @@ class SolpedController extends BaseController
                             'FueCancelada' => $solped->etapa_actual === 'cancelada' ? true : false,
                             'FueFinalizada' => $solped->estado_actual === 'finalizada' ? true : false,
                             'CancelMotive' => $solped->cancel_motive ?: null,
+                            'TratamentComment' => $solped->tratament_comment ?: null,
                             'Estado' => $solped->estado_actual,
                             'FechaCancelacion' => $solped->updated_at ? $solped->updated_at->format('d-m-Y H:i:s') : null
                         ]
@@ -825,6 +830,7 @@ class SolpedController extends BaseController
             $measurementList = \App\Models\Measurement::getList();
             $buyersList      = $user->getCompradoresByCompanyList();
             $countriesList   = \App\Models\Pais::getCountries();
+            $monedasList     = \App\Models\Moneda::getList();
 
             // === DOCS - Ruta dinámica con estructura CUIT/AÑO ===
             // Construir ruta base usando CUIT del usuario y año actual
@@ -983,6 +989,8 @@ class SolpedController extends BaseController
                                                 ),
                 'ProductMeasurementList'  => is_array($measurementList) ? $measurementList : (array)$measurementList,
                 'CompradoresSugeridos'    => is_array($buyersList) ? $buyersList : (array)$buyersList,
+                'Monedas'                 => is_array($monedasList) ? $monedasList : (array)$monedasList,
+                'Moneda'                  => $create ? null : ($solped->id_moneda ? (int)$solped->id_moneda : null),
 
                 // >>> campos clave para el front:
                 'CompradorSugeridoId'     => $compradorSugeridoId,     // single (0 si no hay)
@@ -1121,6 +1129,15 @@ class SolpedController extends BaseController
         }
 
         // --- Fechas de resolución y entrega ---
+        $idMoneda = null;
+        if (array_key_exists('Moneda', $entity)) {
+            $v = $entity['Moneda'];
+            $idMoneda = (is_numeric($v) && (int)$v > 0) ? (int)$v : null;
+        } elseif (array_key_exists('MonedaId', $entity)) {
+            $v = $entity['MonedaId'];
+            $idMoneda = (is_numeric($v) && (int)$v > 0) ? (int)$v : null;
+        }
+
         $fechaResolucion = null;
         if (!empty($entity['FechaResolucion'])) {
             try {
@@ -1212,6 +1229,7 @@ class SolpedController extends BaseController
             'area_sol' => $area_sol,
             'tipoCompra' => $tipoCompra,
             'id_comprador_sugerido' => $idCompradorSugerido,
+            'id_moneda' => $idMoneda,
             'items'  => count($items),
             'docs'   => count($docs)
         ]);
@@ -1227,6 +1245,7 @@ class SolpedController extends BaseController
         if (!$tipoCompra) $missing[] = 'Tipo de compra';
         if ($area_sol === '') $missing[] = 'Área solicitante';
         if (!$fechaResolucion) $missing[] = 'Fecha de resolución';
+        if (!$idMoneda) $missing[] = 'Moneda';
         if (!$fechaEntrega) $missing[] = 'Fecha de entrega';
         if (count($validItems) === 0) $missing[] = 'Al menos un ítem válido (nombre + unidad)';
 
@@ -1271,6 +1290,7 @@ class SolpedController extends BaseController
             $solped->etapa_actual   = 'en-preparacion';
             $solped->estado_actual  = 'borrador';
             $solped->id_comprador_sugerido = $idCompradorSugerido; // ahora siempre NULL o un int válido
+            $solped->id_moneda      = $idMoneda;
             $solped->fecha_resolucion = $fechaResolucion;
             $solped->fecha_entrega    = $fechaEntrega;
             $solped->fecha_alta     = \Carbon\Carbon::now();
@@ -1367,6 +1387,7 @@ class SolpedController extends BaseController
             $solped->longitud       = $longitud;
             $solped->tipo_compra    = $tipoCompra;
             $solped->id_comprador_sugerido = $idCompradorSugerido; // null o int válido
+            $solped->id_moneda      = $idMoneda;
             $solped->fecha_resolucion      = $fechaResolucion;
             $solped->fecha_entrega         = $fechaEntrega;
             $solped->save();
