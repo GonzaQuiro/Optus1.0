@@ -24,7 +24,7 @@
             <th class="text-center">
                 Cotización
             </th>
-            <th class="text-center" data-bind="visible: !$root.Adjudicado()">
+            <th class="text-center" data-bind="visible: !$root.Adjudicado() && $root.UserType() !== 'customer-approve'">
                 Acciones
             </th>
         </tr>
@@ -38,7 +38,7 @@
                         options: $root.ManualAdjudication().products, 
                         optionsText: 'text', 
                         optionsValue: 'id', 
-                        select2: { placeholder: 'Seleccionar...' }, disable: $root.Adjudicado()">
+                        select2: { placeholder: 'Seleccionar...' }, disable: $root.Adjudicado() || $root.IsChainApprover() || $root.UserType() === 'customer-approve'">
                 </select>
             </td>
             <td class="vertical-align-middle text-center">
@@ -51,7 +51,7 @@
                         options: offerers, 
                         optionsText: 'text', 
                         optionsValue: 'id', 
-                        select2: { placeholder: 'Seleccionar...', allowClear: true }, disable: !product_id() || $root.Adjudicado()">
+                        select2: { placeholder: 'Seleccionar...', allowClear: true }, disable: !product_id() || $root.Adjudicado() || $root.IsChainApprover() || $root.UserType() === 'customer-approve'">
                 </select>
             </td>
             <td class="vertical-align-middle text-center">
@@ -64,12 +64,12 @@
                 <input class="form-control placeholder-no-fix " type="number" data-bind="value: $root.Adjudicado() ? cantidadAdj : quantity, attr: { 
                         'min': 0, 
                         'max': offerer() ? offerer().quantity() : 0 
-                    }, disable: !offerer_id() || $root.Adjudicado()" />
+                    }, disable: !offerer_id() || $root.Adjudicado() || $root.IsChainApprover() || $root.UserType() === 'customer-approve'" />
             </td>
             <td class="vertical-align-middle text-center">
                 <span data-bind="text: total()"></span>
             </td>
-            <td class="vertical-align-middle text-center" data-bind="visible: !$root.Adjudicado()">
+            <td class="vertical-align-middle text-center" data-bind="visible: !$root.Adjudicado() && $root.UserType() !== 'customer-approve'">
                 <button data-bind="click: $root.AdjudicationItemAddOrDelete.bind($data, 'delete', adjudication_item)"
                     class="btn btn-xl btn-danger" title="Eliminar">
                     <i class="fa fa-trash-o"></i>
@@ -95,7 +95,7 @@
     <div class="col-md-12">
         <div class="form-group text-right">
             <label class="control-label visible-ie8 visible-ie9" style="display: block;">&nbsp;</label>
-            <button data-bind="click: AdjudicationItemAddOrDelete.bind($data, 'add'), disable: IsChainApprover()" class="btn btn-xl btn-success"
+            <button data-bind="click: AdjudicationItemAddOrDelete.bind($data, 'add'), disable: IsChainApprover() || UserType() === 'customer-approve'" class="btn btn-xl btn-success"
                 title="Agregar Item">
                 <i class="fa fa-plus"></i>
                 Agregar Item

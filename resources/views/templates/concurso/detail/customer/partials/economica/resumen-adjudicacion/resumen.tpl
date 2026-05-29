@@ -152,7 +152,7 @@
                     Comentarios
                 </label>
                 <textarea class="form-control placeholder-no-fix" maxlength="1000" rows="3" id="maxlength_textarea"
-                    data-bind="value: $root.AdjudicacionComentario, attr: { 'placeholder': $root.Adjudicado() ? '' : 'Máximo 1000 caracteres' }, disable: $root.Adjudicado() || !active || $root.AdjudicationPendingApproval()">
+                    data-bind="value: $root.AdjudicacionComentario, attr: { 'placeholder': $root.Adjudicado() ? '' : 'Máximo 1000 caracteres' }, disable: $root.Adjudicado() || !active || $root.AdjudicationPendingApproval() || $root.IsChainApprover() || $root.UserType() === 'customer-approve'">
                 </textarea>
             </td>
         </tr>
@@ -161,7 +161,7 @@
         <tr>
             <td class="text-center" colspan="4">
                 <!-- ko if: ConcursoEconomicas.mejoresOfertas.mejorIntegral.items.length > 0  -->
-                <!-- ko if: $root.UserType() !== 'customer-read' -->
+                <!-- ko if: $root.UserType() !== 'customer-read' && $root.UserType() !== 'customer-approve' -->
                 <button type="button" class="btn btn-primary"
                     data-bind="click: $root.AdjudicationSend.bind($data, 'integral', ConcursoEconomicas.mejoresOfertas.mejorIntegral.idOferente), disable: $root.BotonesAdjudicacionDeshabilitados() || $root.IsChainApprover() || $root.ApprovalChainComplete()">
                     Adjudicar Integral
@@ -169,7 +169,7 @@
                 <!-- /ko -->
                 <!-- /ko -->
                 <!-- ko if: ConcursoEconomicas.mejoresOfertas.mejorIndividual.individual.length > 0 -->
-                <!-- ko if: $root.UserType() !== 'customer-read' -->
+                <!-- ko if: $root.UserType() !== 'customer-read' && $root.UserType() !== 'customer-approve' -->
 
                 <button type="button" class="btn btn-primary"
                     data-bind="click: $root.AdjudicationSend.bind($data, 'individual', ConcursoEconomicas.mejoresOfertas.idOferentes), disable: $root.BotonesAdjudicacionDeshabilitados() || $root.IsChainApprover() || $root.ApprovalChainComplete()">
@@ -178,7 +178,7 @@
                 <!-- /ko -->
                 <!-- /ko -->
                 <!-- ko if: ConcursoEconomicas.proveedores.length > 0 -->
-                <!-- ko if: $root.UserType() !== 'customer-read' -->
+                <!-- ko if: $root.UserType() !== 'customer-read' && $root.UserType() !== 'customer-approve' -->
 
                 <button type="button" class="btn btn-primary"
                     data-bind="click: $root.AdjudicationSend.bind($data, 'manual'), disable: $root.ManualAdjudication().total() == 0 || $root.BotonesAdjudicacionDeshabilitados() || $root.IsChainApprover() || $root.ApprovalChainComplete()">
@@ -195,7 +195,7 @@
 </table>
 
 <!-- ko if: active && $root.EjecutarNuevaRonda() -->
-<!-- ko if: $root.UserType() !== 'customer-read' -->
+<!-- ko if: $root.UserType() !== 'customer-read' && $root.UserType() !== 'customer-approve' -->
 <!-- ko if: !$root.AdjudicationPendingApproval() || $root.AdjudicationRejected() -->
 <button type="button" class="btn btn-primary" style="width: 100%;"
     data-bind="text:$root.TitleNewRound(), click: $root.ShowModalNewRound, visible: !($root.Adjudicado() || $root.Eliminado()), disable: $root.IsChainApprover() || $root.ApprovalChainComplete()">
@@ -338,7 +338,7 @@
     <!-- Solo visible para el solicitante (no para aprobadores de la cadena) -->
     <!-- ko if: !$root.Adjudicado() && !$root.Eliminado() && $root.ApprovalChainComplete() && !$root.IsChainApprover() -->
     <div class="text-center" style="margin-top: 20px; padding: 15px; background-color: #dff0d8; border-radius: 4px;">
-        <!-- ko if: $root.UserType() !== 'customer-read' -->
+        <!-- ko if: $root.UserType() !== 'customer-read' && $root.UserType() !== 'customer-approve' -->
         <button type="button" class="btn btn-success btn-lg" data-bind="click: $root.ProcessApprovedAdjudication">
             <i class="fa fa-gavel"></i> Procesar Adjudicación Aprobada
         </button>

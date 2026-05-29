@@ -1,4 +1,3 @@
-<!-- ko if: UserType() != 'customer-approve' -->
 <!-- ko if: 
     (IsOnline() && !Countdown() && !Timeleft()) || 
     (IsSobrecerrado() || IsGo())
@@ -9,18 +8,24 @@
         IsOnline() && ExistenOfertas()
     ) || 
     (
+        (IsSobrecerrado() || IsGo()) && 
         (
-            IsSobrecerrado() || IsGo()
-        ) && 
-        (
-            AdjudicacionAnticipada() && ExistenOfertas() && IsRevisado()
-        ) || 
-        (
-            !AdjudicacionAnticipada() && (
-                TodosPresentaronEconomica() || 
-                PlazoVencidoEconomica()
-            ) && IsRevisado()
+            (
+                AdjudicacionAnticipada() && ExistenOfertas() && IsRevisado()
+            ) || 
+            (
+                !AdjudicacionAnticipada() && (
+                    TodosPresentaronEconomica() || 
+                    PlazoVencidoEconomica()
+                ) && IsRevisado()
+            )
         )
+    ) ||
+    (
+        AdjudicationPendingApproval() ||
+        ApprovalChainComplete() ||
+        AdjudicationRejected() ||
+        IsChainApprover()
     )
 -->
 {include file='concurso/detail/customer/partials/economica/adjudication.tpl'}
@@ -50,11 +55,11 @@
             <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
                 <!-- Botón "Modificar fechas" -->
                 <button class="btn btn-xl green"
-                    data-bind="click: ModificarFechasSobres, visible: !IsRevisado()">Modificar Fechas</button>
+                    data-bind="click: ModificarFechasSobres, visible: !IsRevisado() && UserType() != 'customer-approve'">Modificar Fechas</button>
 
                 <!-- Botón "Ver Ofertas" -->
                 <button class="btn btn-xl green"
-                    data-bind="click: VerOfertas, visible: !IsRevisado(), disable: (!verOfertasEnable())">Ver
+                    data-bind="click: VerOfertas, visible: !IsRevisado() && UserType() != 'customer-approve', disable: (!verOfertasEnable())">Ver
                     Ofertas</button>
             </div>
 
@@ -134,8 +139,6 @@
 </div>
 <!-- /ko -->
 <!-- /ko -->
-<!-- /ko -->
-
 <!-- /ko -->
 
 <!-- ko if: IsGo() -->
