@@ -149,7 +149,7 @@
 
             {/if}
 
-            {if isAdmin() || isCustomer() }
+            {if (isAdmin() || isCustomer()) && isEstrategiaActive() }
             <li class="nav-item{if $page eq 'estrategia'} active open{/if}">
                 <a href="#" class="nav-link nav-toggle">
                     <i class="icon-layers"></i>
