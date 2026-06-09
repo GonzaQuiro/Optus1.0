@@ -35,6 +35,12 @@ class ApprovalController extends BaseController
                 ->pluck('contest_id');
 
             foreach ($contestIds as $contestId) {
+                $contest = Concurso::find($contestId);
+
+                if (!$contest) {
+                    continue;
+                }
+
                 // Obtener el PRIMER pendiente por sort_order para este concurso
                 $nextPending = AdjudicationApproval::where('contest_id', $contestId)
                     ->where('status', 'pending')
@@ -42,28 +48,32 @@ class ApprovalController extends BaseController
                     ->first();
 
                 if ($nextPending) {
-                    ApprovalUserResolver::syncPendingApprovalUser($nextPending, $user->customer_company_id);
+                    ApprovalUserResolver::syncPendingApprovalUser(
+                        $nextPending,
+                        $user->customer_company_id,
+                        $this->getApprovalExcludedUserIds($contest)
+                    );
                     $nextPending = $nextPending->fresh();
                 }
 
                 // Solo mostrar si el user_id del siguiente pendiente coincide con el usuario actual
-                if ($nextPending && $nextPending->user_id && $nextPending->user_id == $user->id) {
-                    $contest = Concurso::find($contestId);
-                    if ($contest) {
-                        $requester = User::find($nextPending->requester_user_id);
-                        
-                        $data[] = [
-                            'ContestId' => $nextPending->contest_id,
-                            'ContestName' => $contest->nombre,
-                            'AdjudicationType' => ucfirst($nextPending->adjudication_type),
-                            'Amount' => number_format($nextPending->amount, 2, ',', '.'),
-                            'AmountUsd' => number_format($nextPending->amount_usd, 2, ',', '.'),
-                            'Role' => $nextPending->role,
-                            'RequesterName' => $requester ? $requester->first_name . ' ' . $requester->last_name : '-',
-                            'CreatedAt' => $nextPending->created_at ? $nextPending->created_at->format('d-m-Y H:i') : '-',
-                            'TipoConcursoPath' => $contest->tipo_concurso ?? 'sobrecerrado'
-                        ];
-                    }
+                if ($nextPending
+                    && $nextPending->user_id
+                    && $nextPending->user_id == $user->id
+                    && !$this->isExcludedApprovalUser($contest, $user->id, $nextPending->requester_user_id)) {
+                    $requester = User::find($nextPending->requester_user_id);
+
+                    $data[] = [
+                        'ContestId' => $nextPending->contest_id,
+                        'ContestName' => $contest->nombre,
+                        'AdjudicationType' => ucfirst($nextPending->adjudication_type),
+                        'Amount' => number_format($nextPending->amount, 2, ',', '.'),
+                        'AmountUsd' => number_format($nextPending->amount_usd, 2, ',', '.'),
+                        'Role' => $nextPending->role,
+                        'RequesterName' => $requester ? $requester->first_name . ' ' . $requester->last_name : '-',
+                        'CreatedAt' => $nextPending->created_at ? $nextPending->created_at->format('d-m-Y H:i') : '-',
+                        'TipoConcursoPath' => $contest->tipo_concurso ?? 'sobrecerrado'
+                    ];
                 }
             }
 
@@ -103,13 +113,22 @@ class ApprovalController extends BaseController
                 throw new \Exception('ID del concurso requerido');
             }
 
+            $contest = Concurso::find($contestId);
+            if (!$contest) {
+                throw new \Exception('Concurso no encontrado');
+            }
+
+            if ($this->isExcludedApprovalUser($contest, $user->id)) {
+                throw new \Exception('El creador o solicitante de la licitacion no puede aprobar la cadena');
+            }
+
             // Verify user is an approver for this contest (solo por user_id)
-            $isApprover = AdjudicationApproval::where('contest_id', $contestId)
+            $approval = AdjudicationApproval::where('contest_id', $contestId)
                 ->where('status', 'pending')
                 ->where('user_id', $user->id)
-                ->exists();
+                ->first();
 
-            if (!$isApprover) {
+            if (!$approval || $this->isExcludedApprovalUser($contest, $user->id, $approval->requester_user_id)) {
                 throw new \Exception('No autorizado para aprobar este concurso');
             }
 
@@ -189,13 +208,15 @@ class ApprovalController extends BaseController
 
             // Convertir monto a USD
             $amountUsd = $this->convertToUsd($amount, $contest->moneda);
+            $excludedApprovalUserIds = $this->getApprovalExcludedUserIds($contest, $user->id);
             
             // Construir niveles de aprobación (esto ya incluye los user_id)
             $approvalLevels = $this->buildApprovalLevels(
                 $strategy,
                 $user->customer_company_id,
                 $contest->area_sol,
-                $amountUsd
+                $amountUsd,
+                $excludedApprovalUserIds
             );
 
             if (empty($approvalLevels)) {
@@ -298,10 +319,12 @@ class ApprovalController extends BaseController
                 throw new \Exception('ID del concurso requerido');
             }
 
+            $contest = Concurso::find($contestId);
+            $excludedApprovalUserIds = $this->getApprovalExcludedUserIds($contest);
             $approvals = AdjudicationApproval::getByContest($contestId);
 
             if (!$approvals->isEmpty()) {
-                $this->assignMissingApprovalUsers($approvals, $user->customer_company_id);
+                $this->assignMissingApprovalUsers($approvals, $user->customer_company_id, $excludedApprovalUserIds);
                 $approvals = AdjudicationApproval::getByContest($contestId);
             }
 
@@ -313,7 +336,7 @@ class ApprovalController extends BaseController
             // ya se inició una nueva ronda y la cadena rechazada es de la ronda anterior.
             $isStaleChain = false;
             if (!$approvals->isEmpty() && AdjudicationApproval::isChainRejected($contestId)) {
-                $concurso = Concurso::find($contestId);
+                $concurso = $contest;
 
                 if ($concurso
                     && !$concurso->adjudication_rejected
@@ -352,12 +375,18 @@ class ApprovalController extends BaseController
             } else {
                 // Verificar si el usuario actual puede aprobar (simplemente si su user_id coincide con el nivel pendiente)
                 $pendingApproval = $approvals->where('status', 'pending')->first();
-                $canApprove = $pendingApproval && $pendingApproval->user_id == $user->id;
+                $first = $approvals->first();
+                $isExcludedApprovalUser = $this->isExcludedApprovalUser(
+                    $contest,
+                    $user->id,
+                    $first ? $first->requester_user_id : null
+                );
+                $canApprove = $pendingApproval
+                    && $pendingApproval->user_id == $user->id
+                    && !$isExcludedApprovalUser;
                 
                 // Verificar si el usuario pertenece a la cadena de aprobación (en cualquier nivel)
-                $isChainApprover = $approvals->where('user_id', $user->id)->isNotEmpty();
-                
-                $first = $approvals->first();
+                $isChainApprover = !$isExcludedApprovalUser && $approvals->where('user_id', $user->id)->isNotEmpty();
                 
                 // Obtener historial de cadenas rechazadas anteriores
                 $rejectedHistory = AdjudicationApproval::getRejectedHistory($contestId);
@@ -421,7 +450,20 @@ class ApprovalController extends BaseController
                 throw new \Exception('La cadena de aprobación ya fue rechazada. No se puede aprobar.');
             }
 
-            $this->assignMissingApprovalUsersForContest($contestId, $user->customer_company_id);
+            $contest = Concurso::find($contestId);
+            if (!$contest) {
+                throw new \Exception('Concurso no encontrado');
+            }
+
+            if ($this->isExcludedApprovalUser($contest, $user->id)) {
+                throw new \Exception('El creador o solicitante de la licitacion no puede aprobar la cadena');
+            }
+
+            $this->assignMissingApprovalUsersForContest(
+                $contestId,
+                $user->customer_company_id,
+                $this->getApprovalExcludedUserIds($contest)
+            );
 
             // Buscar el nivel pendiente que corresponde a este usuario
             $approval = AdjudicationApproval::where('contest_id', $contestId)
@@ -432,6 +474,10 @@ class ApprovalController extends BaseController
             
             if (!$approval) {
                 throw new \Exception('Sin permiso para aprobar o no hay niveles pendientes');
+            }
+
+            if ($this->isExcludedApprovalUser($contest, $user->id, $approval->requester_user_id)) {
+                throw new \Exception('El creador o solicitante de la licitacion no puede aprobar la cadena');
             }
 
             // Aprobar
@@ -515,7 +561,20 @@ class ApprovalController extends BaseController
                 throw new \Exception('El motivo del rechazo es obligatorio');
             }
 
-            $this->assignMissingApprovalUsersForContest($contestId, $user->customer_company_id);
+            $contest = Concurso::find($contestId);
+            if (!$contest) {
+                throw new \Exception('Concurso no encontrado');
+            }
+
+            if ($this->isExcludedApprovalUser($contest, $user->id)) {
+                throw new \Exception('El creador o solicitante de la licitacion no puede rechazar la cadena');
+            }
+
+            $this->assignMissingApprovalUsersForContest(
+                $contestId,
+                $user->customer_company_id,
+                $this->getApprovalExcludedUserIds($contest)
+            );
 
             // Buscar el nivel pendiente que corresponde a este usuario
             $approval = AdjudicationApproval::where('contest_id', $contestId)
@@ -526,6 +585,10 @@ class ApprovalController extends BaseController
             
             if (!$approval) {
                 throw new \Exception('No tiene permiso para rechazar esta adjudicación');
+            }
+
+            if ($this->isExcludedApprovalUser($contest, $user->id, $approval->requester_user_id)) {
+                throw new \Exception('El creador o solicitante de la licitacion no puede rechazar la cadena');
             }
 
             $approval->reject($user->id, $reason);
@@ -634,7 +697,7 @@ class ApprovalController extends BaseController
     /**
      * Construir niveles de aprobación con user_id
      */
-    private function buildApprovalLevels($strategy, $customerCompanyId, $requesterArea, $amountUsd)
+    private function buildApprovalLevels($strategy, $customerCompanyId, $requesterArea, $amountUsd, $excludedUserIds = [])
     {
         $levels = [];
         $order = 1;
@@ -644,7 +707,7 @@ class ApprovalController extends BaseController
         $thresholdLevel3 = (float) $strategy->monto_nivel_3;
 
         if ($strategy->jefe_compras && $amountUsd > $thresholdLevel1) {
-            $user = $this->findUserByRoleArea($customerCompanyId, 'Jefe', 'Compras');
+            $user = $this->findUserByRoleArea($customerCompanyId, 'Jefe', 'Compras', $excludedUserIds);
             $levels[] = [
                 'sort_order' => $order++,
                 'level' => 1,
@@ -658,7 +721,7 @@ class ApprovalController extends BaseController
         }
 
         if ($strategy->jefe_solicitante && $amountUsd > $thresholdLevel1 && $requesterArea) {
-            $user = $this->findUserByRoleArea($customerCompanyId, 'Jefe', $requesterArea);
+            $user = $this->findUserByRoleArea($customerCompanyId, 'Jefe', $requesterArea, $excludedUserIds);
             $levels[] = [
                 'sort_order' => $order++,
                 'level' => 1,
@@ -672,7 +735,7 @@ class ApprovalController extends BaseController
         }
 
         if ($strategy->gerente_compras && $amountUsd > $thresholdLevel2) {
-            $user = $this->findUserByRoleArea($customerCompanyId, 'Gerente', 'Compras');
+            $user = $this->findUserByRoleArea($customerCompanyId, 'Gerente', 'Compras', $excludedUserIds);
             $levels[] = [
                 'sort_order' => $order++,
                 'level' => 2,
@@ -686,7 +749,7 @@ class ApprovalController extends BaseController
         }
 
         if ($strategy->gerente_solicitante && $amountUsd > $thresholdLevel2 && $requesterArea) {
-            $user = $this->findUserByRoleArea($customerCompanyId, 'Gerente', $requesterArea);
+            $user = $this->findUserByRoleArea($customerCompanyId, 'Gerente', $requesterArea, $excludedUserIds);
             $levels[] = [
                 'sort_order' => $order++,
                 'level' => 2,
@@ -700,7 +763,7 @@ class ApprovalController extends BaseController
         }
 
         if ($strategy->gerente_general && $amountUsd > $thresholdLevel3) {
-            $user = $this->findUserByRoleArea($customerCompanyId, 'Gerente General');
+            $user = $this->findUserByRoleArea($customerCompanyId, 'Gerente General', null, $excludedUserIds);
             $levels[] = [
                 'sort_order' => $order++,
                 'level' => 3,
@@ -719,9 +782,9 @@ class ApprovalController extends BaseController
     /**
      * Buscar usuario por rol y área - retorna el objeto User completo
      */
-    private function findUserByRoleArea($customerCompanyId, $role, $area = null)
+    private function findUserByRoleArea($customerCompanyId, $role, $area = null, $excludedUserIds = [])
     {
-        return ApprovalUserResolver::findByRoleArea($customerCompanyId, $role, $area);
+        return ApprovalUserResolver::findByRoleArea($customerCompanyId, $role, $area, $excludedUserIds);
     }
 
     private function ensureApprovalLevelsHaveUsers($approvalLevels)
@@ -759,17 +822,41 @@ class ApprovalController extends BaseController
             'Niveles sin usuario: ' . implode(', ', $missingLevels);
     }
 
-    private function assignMissingApprovalUsersForContest($contestId, $customerCompanyId)
+    private function assignMissingApprovalUsersForContest($contestId, $customerCompanyId, $excludedUserIds = [])
     {
         $approvals = AdjudicationApproval::getByContest($contestId);
-        $this->assignMissingApprovalUsers($approvals, $customerCompanyId);
+        $this->assignMissingApprovalUsers($approvals, $customerCompanyId, $excludedUserIds);
     }
 
-    private function assignMissingApprovalUsers($approvals, $customerCompanyId)
+    private function assignMissingApprovalUsers($approvals, $customerCompanyId, $excludedUserIds = [])
     {
         foreach ($approvals as $approval) {
-            ApprovalUserResolver::syncPendingApprovalUser($approval, $customerCompanyId);
+            ApprovalUserResolver::syncPendingApprovalUser($approval, $customerCompanyId, $excludedUserIds);
         }
+    }
+
+    private function getApprovalExcludedUserIds($contest, $requesterUserId = null)
+    {
+        $excludedUserIds = [];
+
+        if ($contest && !empty($contest->id_cliente)) {
+            $excludedUserIds[] = (int) $contest->id_cliente;
+        }
+
+        if (!empty($requesterUserId)) {
+            $excludedUserIds[] = (int) $requesterUserId;
+        }
+
+        return array_values(array_unique(array_filter($excludedUserIds)));
+    }
+
+    private function isExcludedApprovalUser($contest, $userId, $requesterUserId = null)
+    {
+        return in_array(
+            (int) $userId,
+            $this->getApprovalExcludedUserIds($contest, $requesterUserId),
+            true
+        );
     }
 
     /**

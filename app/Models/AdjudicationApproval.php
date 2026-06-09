@@ -77,8 +77,17 @@ class AdjudicationApproval extends Model
         // Obtener el siguiente batch_id para este concurso
         $lastBatch = self::where('contest_id', $contestId)->max('batch_id') ?? 0;
         $newBatchId = $lastBatch + 1;
+        $contest = Concurso::find($contestId);
+        $excludedUserIds = array_values(array_unique(array_filter([
+            (int) $requesterUserId,
+            $contest ? (int) $contest->id_cliente : null
+        ])));
 
         foreach ($approvalLevels as $level) {
+            if (!empty($level['user_id']) && in_array((int) $level['user_id'], $excludedUserIds, true)) {
+                throw new \Exception('El creador o solicitante de la licitacion no puede integrar la cadena de aprobacion');
+            }
+
             $record = self::create([
                 'contest_id' => $contestId,
                 'batch_id' => $newBatchId,

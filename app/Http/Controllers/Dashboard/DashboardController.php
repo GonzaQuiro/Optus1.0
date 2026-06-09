@@ -191,6 +191,12 @@ class DashboardController extends BaseController
                         ->pluck('contest_id');
 
                     foreach ($contestIds as $contestId) {
+                        $concurso = Concurso::find($contestId);
+
+                        if (!$concurso) {
+                            continue;
+                        }
+
                         // Obtener el PRIMER pendiente por sort_order para este concurso
                         $nextPending = AdjudicationApproval::where('contest_id', $contestId)
                             ->where('status', 'pending')
@@ -198,12 +204,16 @@ class DashboardController extends BaseController
                             ->first();
 
                         if ($nextPending) {
-                            ApprovalUserResolver::syncPendingApprovalUser($nextPending, $customercCompanyID);
+                            ApprovalUserResolver::syncPendingApprovalUser($nextPending, $customercCompanyID, $concurso->id_cliente);
                             $nextPending = $nextPending->fresh();
                         }
 
                         // Solo mostrar si el user_id del siguiente pendiente coincide con el usuario actual
-                        if ($nextPending && $nextPending->user_id && $nextPending->user_id == $userId) {
+                        if ($nextPending
+                            && $nextPending->user_id
+                            && $nextPending->user_id == $userId
+                            && (int) $concurso->id_cliente !== (int) $userId
+                            && (int) $nextPending->requester_user_id !== (int) $userId) {
                             $concurso = Concurso::find($contestId);
                             if ($concurso) {
 

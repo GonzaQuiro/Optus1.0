@@ -6394,15 +6394,27 @@ class ConcursoController extends BaseController
     // Helper para estrategia de liberacion 
     private function isUserApprover($contestId, $user)
     {
+        $concurso = Concurso::find($contestId);
+
+        if ($concurso && (int) $concurso->id_cliente === (int) $user->id) {
+            return false;
+        }
+
+        $excludedUserIds = $concurso ? [$concurso->id_cliente] : [];
+
         $pendingApprovals = \App\Models\AdjudicationApproval::where('contest_id', $contestId)
             ->where('status', 'pending')
             ->get();
         
         foreach ($pendingApprovals as $approval) {
-            ApprovalUserResolver::syncPendingApprovalUser($approval, $user->customer_company_id);
+            ApprovalUserResolver::syncPendingApprovalUser($approval, $user->customer_company_id, $excludedUserIds);
             $approval = $approval->fresh();
 
-            if (ApprovalUserResolver::userMatchesApproval($approval, $user)) {
+            if ((int) $approval->requester_user_id === (int) $user->id) {
+                continue;
+            }
+
+            if (ApprovalUserResolver::userMatchesApproval($approval, $user, $excludedUserIds)) {
                 return true;
             }
 

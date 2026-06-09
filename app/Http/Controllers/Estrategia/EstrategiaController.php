@@ -27,9 +27,9 @@ class EstrategiaController extends BaseController
     /**
      * Buscar usuario por rol y área dentro de la empresa
      */
-    private function findUserByRolArea($customerCompanyId, $rol, $area = null)
+    private function findUserByRolArea($customerCompanyId, $rol, $area = null, $excludedUserIds = [])
     {
-        $user = ApprovalUserResolver::findByRoleArea($customerCompanyId, $rol, $area);
+        $user = ApprovalUserResolver::findByRoleArea($customerCompanyId, $rol, $area, $excludedUserIds);
 
         return ApprovalUserResolver::formatUserName($user);
     }
@@ -84,6 +84,7 @@ class EstrategiaController extends BaseController
             $areaSolicitante = null;
             $montoAdjudicacion = null;
             $montoEnDolares = null;
+            $excludedApprovalUserIds = [];
             
             // Obtener el área y moneda del concurso si se pasa el ID
             $concurso = null;
@@ -91,6 +92,10 @@ class EstrategiaController extends BaseController
                 $concurso = Concurso::find($queryParams['concurso_id']);
                 if ($concurso) {
                     $areaSolicitante = $concurso->area_sol;
+                    $excludedApprovalUserIds = array_values(array_unique(array_filter([
+                        (int) $concurso->id_cliente,
+                        (int) $user->id
+                    ])));
                 }
             }
             
@@ -126,7 +131,7 @@ class EstrategiaController extends BaseController
                     $requiereAprobacion = ($montoEnDolares === null) || ($montoEnDolares > $montoNivel1);
                     
                     if ($requiereAprobacion) {
-                        $usuarioJefeCompras = $this->findUserByRolArea($customerCompanyId, 'Jefe', 'Compras');
+                        $usuarioJefeCompras = $this->findUserByRolArea($customerCompanyId, 'Jefe', 'Compras', $excludedApprovalUserIds);
                         $nivelesAprobacion[] = [
                             'orden' => $orden++,
                             'nivel' => 'Nivel 1',
@@ -149,7 +154,7 @@ class EstrategiaController extends BaseController
                             ? 'Jefe de ' . $areaSolicitante 
                             : 'Jefe de Área Solicitante';
                         $usuarioJefeSolicitante = $areaSolicitante 
-                            ? $this->findUserByRolArea($customerCompanyId, 'Jefe', $areaSolicitante)
+                            ? $this->findUserByRolArea($customerCompanyId, 'Jefe', $areaSolicitante, $excludedApprovalUserIds)
                             : null;
                         $nivelesAprobacion[] = [
                             'orden' => $orden++,
@@ -169,7 +174,7 @@ class EstrategiaController extends BaseController
                     $requiereAprobacion = ($montoEnDolares === null) || ($montoEnDolares > $montoNivel2);
                     
                     if ($requiereAprobacion) {
-                        $usuarioGerenteCompras = $this->findUserByRolArea($customerCompanyId, 'Gerente', 'Compras');
+                        $usuarioGerenteCompras = $this->findUserByRolArea($customerCompanyId, 'Gerente', 'Compras', $excludedApprovalUserIds);
                         $nivelesAprobacion[] = [
                             'orden' => $orden++,
                             'nivel' => 'Nivel 2',
@@ -192,7 +197,7 @@ class EstrategiaController extends BaseController
                             ? 'Gerente de ' . $areaSolicitante 
                             : 'Gerente de Área Solicitante';
                         $usuarioGerenteSolicitante = $areaSolicitante 
-                            ? $this->findUserByRolArea($customerCompanyId, 'Gerente', $areaSolicitante)
+                            ? $this->findUserByRolArea($customerCompanyId, 'Gerente', $areaSolicitante, $excludedApprovalUserIds)
                             : null;
                         $nivelesAprobacion[] = [
                             'orden' => $orden++,
@@ -212,7 +217,7 @@ class EstrategiaController extends BaseController
                     $requiereAprobacion = ($montoEnDolares === null) || ($montoEnDolares > $montoNivel3);
                     
                     if ($requiereAprobacion) {
-                        $usuarioGerenteGeneral = $this->findUserByRolArea($customerCompanyId, 'Gerente General');
+                        $usuarioGerenteGeneral = $this->findUserByRolArea($customerCompanyId, 'Gerente General', null, $excludedApprovalUserIds);
                         $nivelesAprobacion[] = [
                             'orden' => $orden++,
                             'nivel' => 'Nivel 3',

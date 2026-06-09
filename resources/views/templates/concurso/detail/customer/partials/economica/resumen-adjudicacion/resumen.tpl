@@ -424,7 +424,7 @@
             <div class="modal-body">
                 <p class="text-center">Por favor, indique el motivo del rechazo:</p>
                 <div class="form-group">
-                    <textarea class="form-control" rows="4" data-bind="value: $root.RejectionReason"
+                    <textarea class="form-control" rows="4" data-bind="value: $root.RejectionReason, valueUpdate: 'input'"
                         placeholder="Escriba el motivo del rechazo (obligatorio)..."
                         style="resize: vertical;"></textarea>
                 </div>

@@ -59,7 +59,8 @@ class Kernel
             'settings' => config('app'),
             'commands' => [
                 'DatesLimitTask'    => \App\Commands\DatesLimitTask::class,
-                'AuctionTask'       => \App\Commands\AuctionTask::class
+                'AuctionTask'       => \App\Commands\AuctionTask::class,
+                'NotifyNewUsersTask' => \App\Commands\NotifyNewUsersTask::class
             ]
         ]);
 

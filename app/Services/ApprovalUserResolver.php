@@ -6,13 +6,14 @@ use App\Models\User;
 
 class ApprovalUserResolver
 {
-    public static function findByRoleArea($customerCompanyId, $role, $area = null)
+    public static function findByRoleArea($customerCompanyId, $role, $area = null, $excludedUserIds = [])
     {
         if (!$customerCompanyId || !$role) {
             return null;
         }
 
         $requested = self::requestedRole($role, $area);
+        $excludedUserIds = self::normalizeExcludedUserIds($excludedUserIds);
         $bestUser = null;
         $bestScore = 0;
 
@@ -21,6 +22,10 @@ class ApprovalUserResolver
             ->get();
 
         foreach ($users as $user) {
+            if (in_array((int) $user->id, $excludedUserIds, true)) {
+                continue;
+            }
+
             $score = self::scoreUser($user, $requested);
 
             if ($score > $bestScore) {
@@ -32,22 +37,27 @@ class ApprovalUserResolver
         return $bestUser;
     }
 
-    public static function findByApproval($customerCompanyId, $approval)
+    public static function findByApproval($customerCompanyId, $approval, $excludedUserIds = [])
     {
         if (!$approval) {
             return null;
         }
 
-        return self::findByRoleArea($customerCompanyId, $approval->role, $approval->area);
+        return self::findByRoleArea(
+            $customerCompanyId,
+            $approval->role,
+            $approval->area,
+            self::excludedUserIdsForApproval($approval, $excludedUserIds)
+        );
     }
 
-    public static function assignApprovalUser($approval, $customerCompanyId)
+    public static function assignApprovalUser($approval, $customerCompanyId, $excludedUserIds = [])
     {
         if (!$approval || $approval->user_id) {
             return null;
         }
 
-        $user = self::findByApproval($customerCompanyId, $approval);
+        $user = self::findByApproval($customerCompanyId, $approval, $excludedUserIds);
 
         if (!$user) {
             return null;
@@ -60,13 +70,13 @@ class ApprovalUserResolver
         return $user;
     }
 
-    public static function syncPendingApprovalUser($approval, $customerCompanyId)
+    public static function syncPendingApprovalUser($approval, $customerCompanyId, $excludedUserIds = [])
     {
         if (!$approval || $approval->status !== 'pending') {
             return null;
         }
 
-        $user = self::findByApproval($customerCompanyId, $approval);
+        $user = self::findByApproval($customerCompanyId, $approval, $excludedUserIds);
 
         if (!$user) {
             if ($approval->user_id || $approval->user_name) {
@@ -87,13 +97,19 @@ class ApprovalUserResolver
         return $user;
     }
 
-    public static function userMatchesApproval($approval, $user)
+    public static function userMatchesApproval($approval, $user, $excludedUserIds = [])
     {
         if (!$approval || !$user) {
             return false;
         }
 
-        $resolvedUser = self::findByApproval($user->customer_company_id, $approval);
+        $excludedUserIds = self::excludedUserIdsForApproval($approval, $excludedUserIds);
+
+        if (in_array((int) $user->id, $excludedUserIds, true)) {
+            return false;
+        }
+
+        $resolvedUser = self::findByApproval($user->customer_company_id, $approval, $excludedUserIds);
 
         return $resolvedUser && (int) $resolvedUser->id === (int) $user->id;
     }
@@ -126,6 +142,40 @@ class ApprovalUserResolver
             'area' => $areaNorm,
             'full_role' => $fullRole,
         ];
+    }
+
+    private static function excludedUserIdsForApproval($approval, $excludedUserIds = [])
+    {
+        $excludedUserIds = self::normalizeExcludedUserIds($excludedUserIds);
+
+        if ($approval && !empty($approval->requester_user_id)) {
+            $excludedUserIds[] = (int) $approval->requester_user_id;
+        }
+
+        return array_values(array_unique($excludedUserIds));
+    }
+
+    private static function normalizeExcludedUserIds($excludedUserIds)
+    {
+        if ($excludedUserIds === null) {
+            return [];
+        }
+
+        if (!is_array($excludedUserIds)) {
+            $excludedUserIds = [$excludedUserIds];
+        }
+
+        $ids = [];
+
+        foreach ($excludedUserIds as $userId) {
+            $userId = (int) $userId;
+
+            if ($userId > 0) {
+                $ids[] = $userId;
+            }
+        }
+
+        return array_values(array_unique($ids));
     }
 
     private static function scoreUser($user, array $requested)
