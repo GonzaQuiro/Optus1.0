@@ -2331,7 +2331,8 @@ class ConcursoController extends BaseController
 
                     
                 } elseif ($is_online) {
-                    $isReadOnly = ($fechasubasta < $fechaActual); // Asegúrate de usar ">" en lugar de ">="
+                    $isReadOnly = $fechasubasta ? ($fechasubasta < $fechaActual) : false;
+                    $isVisible = !$isReadOnly;
                 } else {
                     $isReadOnly = false; // Asume que los demás casos no tienen restricciones.
                 }
@@ -2693,8 +2694,12 @@ class ConcursoController extends BaseController
    private function createOrEditAuction($create, $list, $user, $concurso, $is_copy)
     {
         return array_merge($list, [
-            'InicioSubasta' => $create ? $this->addBusinessHours(Carbon::now(), 72)->format('d-m-Y H:i') : $concurso->inicio_subasta->format('d-m-Y H:i'),
-            'Duracion' => $create && !$is_copy ? null : ($concurso->parsed_duracion[0] . $concurso->parsed_duracion[1]),
+            'InicioSubasta' => $create
+                ? $this->addBusinessHours(Carbon::now(), 72)->format('d-m-Y H:i')
+                : ($concurso->inicio_subasta ? $concurso->inicio_subasta->format('d-m-Y H:i') : null),
+            'Duracion' => $create && !$is_copy
+                ? null
+                : ($concurso->parsed_duracion ? ($concurso->parsed_duracion[0] . $concurso->parsed_duracion[1]) : null),
             'TiempoAdicional' => $create && !$is_copy ? 0 : $concurso->tiempo_adicional,
             'TiposValoresOfertar' => $this->GetTiposValoresOfertar(),
             'TipoValorOfertar' => $create && !$is_copy ? null : $concurso->tipo_valor_ofertar,
@@ -5805,6 +5810,10 @@ class ConcursoController extends BaseController
 
     private function formatDates($date)
     {
+        if (empty($date)) {
+            return null;
+        }
+
         return Carbon::createFromFormat('d-m-Y H:i', $date)->format('Y-m-d H:i:s');
     }
 

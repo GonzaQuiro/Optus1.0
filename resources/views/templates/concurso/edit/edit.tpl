@@ -1653,7 +1653,7 @@
                             });
                         } else {
                             $.unblockUI();
-                            swal('Error', error.message || 'Se produjo un error inesperado.', 'error');
+                            swal('Error', response.message || 'Se produjo un error inesperado.', 'error');
                         }
                     },
                     (error) => {
@@ -1690,8 +1690,9 @@
                             if (!params[3] && response.data && response.data.id) {
                                 self.Entity.Id(response.data.id);
                                 // Actualizar params y URL para futuras guardadas
+                                params[2] = 'edicion';
                                 params[3] = response.data.id;
-                                window.history.replaceState({}, '', '/concursos/' + params[1] + '/edit/' + response.data.id);
+                                window.history.replaceState({}, '', '/concursos/' + params[1] + '/edicion/' + response.data.id);
                             }
                             
                             $.unblockUI();
