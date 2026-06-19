@@ -1248,11 +1248,11 @@ class TechnicalProposalController extends BaseController
         }
 
         // ===== PLANTILLA 1 - Campo adicional =====
-        if ($concurso->listado_equipos_herramientas === 'si') {
+        /*if ($concurso->listado_equipos_herramientas === 'si') {
             $conditional_rules = array_merge($conditional_rules, [
                 'technical_documents.102.filename' => 'required'
             ]);
-        }
+        }*/
 
 
         return validator(

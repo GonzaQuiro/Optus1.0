@@ -2703,16 +2703,16 @@ class ConcursoController extends BaseController
             'TiempoAdicional' => $create && !$is_copy ? 0 : $concurso->tiempo_adicional,
             'TiposValoresOfertar' => $this->GetTiposValoresOfertar(),
             'TipoValorOfertar' => $create && !$is_copy ? null : $concurso->tipo_valor_ofertar,
-            'Chat' => $create && !$is_copy ? 'no' : ($concurso->chat === 'si' ? 'si' : 'no'),
-            'VerNumOferentesParticipan' => $create && !$is_copy ? 'no' : ($concurso->ver_num_oferentes_participan === 'si' ? 'si' : 'no'),
-            'VerOfertaGanadora' => $create && !$is_copy ? 'no' : ($concurso->ver_oferta_ganadora === 'si' ? 'si' : 'no'),
-            'VerRanking' => $create && !$is_copy ? 'no' : ($concurso->ver_ranking === 'si' ? 'si' : 'no'),
-            'VerTiempoRestante' => $create && !$is_copy ? 'no' : ($concurso->ver_tiempo_restante === 'si' ? 'si' : 'no'),
+            'Chat' => $create && !$is_copy ? 'no' : ($concurso->chat ? 'si' : 'no'),
+            'VerNumOferentesParticipan' => $create && !$is_copy ? 'no' : ($concurso->ver_num_oferentes_participan ? 'si' : 'no'),
+            'VerOfertaGanadora' => $create && !$is_copy ? 'no' : ($concurso->ver_oferta_ganadora ? 'si' : 'no'),
+            'VerRanking' => $create && !$is_copy ? 'no' : ($concurso->ver_ranking ? 'si' : 'no'),
+            'VerTiempoRestante' => $create && !$is_copy ? 'no' : ($concurso->ver_tiempo_restante ? 'si' : 'no'),
             'PermitirAnularOferta' => $create && !$is_copy ? 'no' : ($concurso->permitir_anular_oferta === 'si' ? 'si' : 'no'),
             'SubastaVistaCiega' => $create && !$is_copy ? 'no' : ($concurso->subastavistaciega === 'si' ? 'si' : 'no'),
             'PrecioMinimo' => $create && !$is_copy ? null : $concurso->precio_minimo,
             'PrecioMaximo' => $create && !$is_copy ? '' : $concurso->precio_maximo,
-            'SoloOfertasMejores' => $create && !$is_copy ? 'no' : ($concurso->solo_ofertas_mejores === 'si' ? 'si' : 'no'),
+            'SoloOfertasMejores' => $create && !$is_copy ? 'no' : ($concurso->solo_ofertas_mejores ? 'si' : 'no'),
             'UnidadMinima' => $create && !$is_copy ? '' : $concurso->unidad_minima,
             'ImagePath' => filePath(config('app.images_path')),
             'Portrait' => $create && !$is_copy ? null : $concurso->portrait,
@@ -3212,12 +3212,17 @@ class ConcursoController extends BaseController
                     }
                 }
             }
-        } catch (Exception $e) {
-            $connection->rollBack();
+        } catch (\Throwable $e) {
+            if (isset($connection)) {
+                $connection->rollBack();
+            }
+            error_log('[ConcursoController::store] ' . $e->getMessage());
             $success = false;
             $message = $e->getMessage();
-            $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : (method_exists($e, 'getCode') ? $e->getCode() : 500);
-            //$status = 500;
+            $status = method_exists($e, 'getStatusCode') ? (int) $e->getStatusCode() : 500;
+            if ($status < 400 || $status > 599) {
+                $status = 500;
+            }
         }
         $result = [
             'success' => $success,
@@ -3321,51 +3326,85 @@ class ConcursoController extends BaseController
     }
     
 
+    private function normalizeAuctionDecimal($value)
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        if (is_int($value) || is_float($value)) {
+            return $value;
+        }
+
+        $value = str_replace(' ', '', trim((string) $value));
+        $commaPosition = strrpos($value, ',');
+        $dotPosition = strrpos($value, '.');
+
+        if ($commaPosition !== false && $dotPosition !== false) {
+            $value = $commaPosition > $dotPosition
+                ? str_replace(',', '.', str_replace('.', '', $value))
+                : str_replace(',', '', $value);
+        } elseif ($commaPosition !== false) {
+            $value = str_replace(',', '.', $value);
+        }
+
+        return is_numeric($value) ? $value : null;
+    }
+
+    private function normalizeYesNo($value)
+    {
+        return in_array($value, ['si', true, 1, '1'], true) ? 'si' : 'no';
+    }
+
     private function storeAuction($entity, $extra_fields)
     {
-        $duracion_split = $entity->Duracion ? str_split($entity->Duracion, 3) : [];
-        $duracion = count($duracion_split) > 0 ? (int) ($duracion_split[0] * 60) + (int) $duracion_split[1] : 0;
+        $duracionValue = $entity->Duracion ?? null;
+        $duracionDigits = $duracionValue !== null
+            ? preg_replace('/\D+/', '', (string) $duracionValue)
+            : '';
+        $duracion = 0;
+        if ($duracionDigits !== '') {
+            $minutes = (int) substr($duracionDigits, 0, 3);
+            $seconds = strlen($duracionDigits) > 3
+                ? (int) substr($duracionDigits, 3, 2)
+                : 0;
+            $duracion = ($minutes * 60) + $seconds;
+        }
         
         // Determinar valores de precio según tipo de subasta
-        $tipo_subasta = isset($entity->TipoValorOfertar) ? $entity->TipoValorOfertar : null;
+        $tipo_subasta = $entity->TipoValorOfertar ?? null;
         
-        // Para subasta ascendente: precio_maximo muy alto si no se especifica
-        // Para subasta descendente: precio_minimo en 0 si no se especifica
-        $precio_maximo = $entity->PrecioMaximo;
-        $precio_minimo = $entity->PrecioMinimo;
+        // El limite opuesto no aplica y se guarda como NULL.
+        $precio_maximo = $this->normalizeAuctionDecimal($entity->PrecioMaximo ?? null);
+        $precio_minimo = $this->normalizeAuctionDecimal($entity->PrecioMinimo ?? null);
+        $unidad_minima = $this->normalizeAuctionDecimal($entity->UnidadMinima ?? null);
         
         if ($tipo_subasta === 'ascendente') {
-            // Subasta ascendente: si no hay precio máximo, poner un valor muy alto
-            if (empty($precio_maximo) || $precio_maximo == 0) {
-                $precio_maximo = 999999999999.00;
-            }
+            $precio_maximo = null;
         } elseif ($tipo_subasta === 'descendente') {
-            // Subasta descendente: si no hay precio mínimo, poner 0
-            if (empty($precio_minimo)) {
-                $precio_minimo = 0;
-            }
+            $precio_minimo = null;
         }
         
         return array_merge($extra_fields, [
             'inicio_subasta' =>
-                $entity->InicioSubasta ?
+                !empty($entity->InicioSubasta) ?
                 Carbon::createFromFormat('d-m-Y H:i', $entity->InicioSubasta)->format('Y-m-d H:i:s') :
                 null,
             'duracion' => $duracion,
-            'tiempo_adicional' => $entity->TiempoAdicional,
+            'tiempo_adicional' => (int) ($entity->TiempoAdicional ?? 0),
             'plantilla_economicas' => isset($entity->PlantillasEconomica) ? $entity->PlantillasEconomica : null,
             'tipo_valor_ofertar' => $tipo_subasta,
-            'chat' => $entity->Chat,
-            'subastavistaciega' => isset($entity->SubastaVistaCiega) ? $entity->SubastaVistaCiega : 'no',
-            'ver_num_oferentes_participan' => $entity->VerNumOferentesParticipan,
-            'ver_oferta_ganadora' => $entity->VerOfertaGanadora,
-            'ver_ranking' => $entity->VerRanking,
-            'ver_tiempo_restante' => $entity->VerTiempoRestante,
-            'permitir_anular_oferta' => $entity->PermitirAnularOferta,
+            'chat' => $this->normalizeYesNo($entity->Chat ?? 'no'),
+            'subastavistaciega' => $this->normalizeYesNo($entity->SubastaVistaCiega ?? 'no'),
+            'ver_num_oferentes_participan' => $this->normalizeYesNo($entity->VerNumOferentesParticipan ?? 'no'),
+            'ver_oferta_ganadora' => $this->normalizeYesNo($entity->VerOfertaGanadora ?? 'no'),
+            'ver_ranking' => $this->normalizeYesNo($entity->VerRanking ?? 'no'),
+            'ver_tiempo_restante' => $this->normalizeYesNo($entity->VerTiempoRestante ?? 'no'),
+            'permitir_anular_oferta' => $this->normalizeYesNo($entity->PermitirAnularOferta ?? 'no'),
             'precio_maximo' => $precio_maximo,
             'precio_minimo' => $precio_minimo,
-            'solo_ofertas_mejores' => $entity->SoloOfertasMejores,
-            'unidad_minima' => $entity->UnidadMinima,
+            'solo_ofertas_mejores' => $this->normalizeYesNo($entity->SoloOfertasMejores ?? 'no'),
+            'unidad_minima' => $unidad_minima,
             'imagen' => $entity->Portrait->filename,
             'solicitud_compra' => $entity->SolicitudCompra,
             'orden_compra' => $entity->OrdenCompra,
@@ -3584,8 +3623,11 @@ class ConcursoController extends BaseController
                     $concursoId = $params['id'];
                 }
             }
-        } catch (\Exception $e) {
-            $connection->rollBack();
+        } catch (\Throwable $e) {
+            if (isset($connection)) {
+                $connection->rollBack();
+            }
+            error_log('[ConcursoController::storeDraft] ' . $e->getMessage());
             $error = true;
             $message = $e->getMessage();
             $status = 500;
