@@ -450,10 +450,37 @@
             this.id_plantilla = ko.observable(data.id_plantilla);
         }
 
+        var isTechnicalMinimumScoreItem = function(item) {
+            if (!item) {
+                return false;
+            }
+
+            if (item.id == 0) {
+                return true;
+            }
+
+            var atributo = (item.atributo || '').toString();
+            if (atributo.normalize) {
+                atributo = atributo.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            }
+
+            return atributo.toLowerCase() === 'puntaje minimo necesario';
+        }
+
         var TechnicalPayroll = function(data, is_template = false) {
             var self = this;
+            var minimumScoreItem = null;
+
+            if (data && data.length > 0) {
+                data.forEach(item => {
+                    if (!minimumScoreItem && isTechnicalMinimumScoreItem(item)) {
+                        minimumScoreItem = item;
+                    }
+                });
+            }
+
             this.payroll = ko.observableArray();
-            this.puntaje_minimo = ko.observable(is_template ? 0 : data[0].puntaje);
+            this.puntaje_minimo = ko.observable(is_template ? 0 : (minimumScoreItem ? minimumScoreItem.puntaje : 0));
             this.total = ko.computed(() => {
                 var total = 0;
                 self.payroll().forEach(item => {
@@ -474,7 +501,7 @@
             if (data.length > 0) {
                 console.log(data)
                 data.forEach(item => {
-                    if(item.id == 0 || ((item.id_plantilla == 1) && item.id == 1)){
+                    if(isTechnicalMinimumScoreItem(item) || ((item.id_plantilla == 1) && item.id == 1)){
                         return;    
                     }
                     self.payroll.push(new TechnicalPayrollItem(item, is_template));
