@@ -239,28 +239,76 @@ class ConcursoController extends BaseController
         }
     }
 
+    private function monitorConcursoColumns()
+    {
+        return [
+            'concursos.id',
+            'concursos.id_cliente',
+            'concursos.tipo_concurso',
+            'concursos.nombre',
+            'concursos.solicitud_compra',
+            'concursos.area_sol',
+            'concursos.fecha_limite',
+            'concursos.fecha_limite_economicas',
+            'concursos.ficha_tecnica_incluye',
+            'concursos.ficha_tecnica_fecha_limite',
+            'concursos.ficha_tecnica_usuario_evalua',
+            'concursos.inicio_subasta',
+            'concursos.duracion',
+            'concursos.tiempo_adicional',
+            'concursos.finalizacion_consultas',
+            'concursos.chat',
+            'concursos.adjudicacion_items',
+            'concursos.adjudicado',
+            'concursos.adjudicacion_comentario',
+            'concursos.tipo_valor_ofertar',
+            'concursos.aperturasobre',
+            'concursos.subastavistaciega',
+            'concursos.finalizar_si_oferentes_completaron_economicas',
+            'concursos.deleted_at',
+            'concursos.usuario_califica_reputacion',
+        ];
+    }
+
+    private function monitorConcursoRelations()
+    {
+        return [
+            'cliente:id,customer_company_id,first_name,last_name',
+            'cliente.customer_company:id,business_name',
+            'oferentes:id,id_concurso,etapa_actual,is_seleccionado,has_invitacion_aceptada,has_tecnica_presentada,has_economica_presentada,rechazado,evaluacion',
+        ];
+    }
+
+    private function applyMonitorListOptimizations($query)
+    {
+        return $query
+            ->select($this->monitorConcursoColumns())
+            ->with($this->monitorConcursoRelations());
+    }
+
     private function getEvaluacionReputacionConcursos($user)
     {
         if (isAdmin()) {
-            $created = Concurso::all();
+            $created = $this->applyMonitorListOptimizations(Concurso::query())->get();
         } else if ($user->type_id != 7 && $user->type_id != 3 && $user->type_id != 4 && $user->type_id != 2) {
-            $created = $user->customer_company->getAllConcursosByCompany()->get();
+            $created = $this->applyMonitorListOptimizations($user->customer_company->getAllConcursosByCompany())->get();
         } else if ($user->type_id == 3) {
-            $created = $user->customer_company->getAllConcursosByCompany()
-                ->where('id_cliente', $user->id)
+            $created = $this->applyMonitorListOptimizations($user->customer_company->getAllConcursosByCompany()
+                ->where('id_cliente', $user->id))
                 ->get();
         } else {
-            $created = Concurso::where([['ficha_tecnica_usuario_evalua', '=', $user->id]])->get();
+            $created = $this->applyMonitorListOptimizations(Concurso::where([['ficha_tecnica_usuario_evalua', '=', $user->id]]))->get();
 
-            $concursosCalificaReputacion = Concurso::whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])->get();
+            $concursosCalificaReputacion = $this->applyMonitorListOptimizations(Concurso::whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id]))->get();
             $created = $created->merge($concursosCalificaReputacion)->unique('id');
         }
 
         if (isAdmin()) {
             $evaluating = collect();
         } else {
-            $evaluating = $user->concursos_evalua;
-            $concursosCalificaReputacion = Concurso::whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])->get();
+            $evaluating = $this->applyMonitorListOptimizations($user->concursos_evalua())
+                    ->get();
+            $concursosCalificaReputacion = $this->applyMonitorListOptimizations(Concurso::whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id]))->get();
             $evaluating = collect($evaluating)->merge($concursosCalificaReputacion)->unique('id');
         }
 
@@ -385,7 +433,7 @@ class ConcursoController extends BaseController
         } else {
             
             $concurso = $user->customer_company->getAllConcursosByCompany()->find($id)
-                    ?? $user->concursos_evalua->find($id);
+                    ?? $user->concursos_evalua()->where('concursos.id', $id)->first();
 
             if (!$concurso && ($isApprover || $isEvaluator)) {
                 $concurso = $concursoForCheck ?? Concurso::find($id);
@@ -714,19 +762,19 @@ class ConcursoController extends BaseController
             $user = user();
             // CREATED
             if (isAdmin()) {
-                $created = Concurso::all();
+                $created = $this->applyMonitorListOptimizations(Concurso::query())->get();
             } else if ($user->type_id != 7 && $user->type_id != 3 && $user->type_id != 4 && $user->type_id != 2) {
-                $created = $user->customer_company->getAllConcursosByCompany()->get();
+                $created = $this->applyMonitorListOptimizations($user->customer_company->getAllConcursosByCompany())->get();
             } else if ($user->type_id == 3) {
-                $created = $user->customer_company->getAllConcursosByCompany()
-                    ->where('id_cliente', $user->id)
+                $created = $this->applyMonitorListOptimizations($user->customer_company->getAllConcursosByCompany()
+                    ->where('id_cliente', $user->id))
                     ->get();
             } else {
                 // Obtener concursos donde el usuario evalúa técnica
-                $created = Concurso::where([['ficha_tecnica_usuario_evalua', '=', $user->id]])->get();
+                $created = $this->applyMonitorListOptimizations(Concurso::where([['ficha_tecnica_usuario_evalua', '=', $user->id]]))->get();
                 
                 // Agregar concursos donde el usuario califica reputación
-                $concursosCalificaReputacion = Concurso::whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])->get();
+                $concursosCalificaReputacion = $this->applyMonitorListOptimizations(Concurso::whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id]))->get();
                 $created = $created->merge($concursosCalificaReputacion)->unique('id');
             }
 
@@ -734,63 +782,13 @@ class ConcursoController extends BaseController
             if (isAdmin()) {
                 $evaluating = collect();
             } else {
-                $evaluating = $user->concursos_evalua;
+                $evaluating = $this->applyMonitorListOptimizations($user->concursos_evalua())
+                    ->get();
                  // Agregar concursos donde el usuario califica reputación
-                $concursosCalificaReputacion = Concurso::whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])->get();
+                $concursosCalificaReputacion = $this->applyMonitorListOptimizations(Concurso::whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id]))->get();
                 $evaluating = collect($evaluating)->merge($concursosCalificaReputacion)->unique('id');
             }
 
-            // CREATED WITH TRASHED
-            if (isAdmin()) {
-                $created_with_trashed = Concurso::withTrashed()->get();
-            } else if ($user->type_id != 7 && $user->type_id != 3 && $user->type_id != 4 && $user->type_id != 2) {
-                $created_with_trashed = $user->customer_company->getAllConcursosByCompany()->withTrashed()->get();
-            } else if ($user->type_id == 3) {
-                $created_with_trashed = $user->customer_company->getAllConcursosByCompany()
-                    ->where('id_cliente', $user->id)
-                    ->withTrashed()
-                    ->get();
-            } else {
-                $created_with_trashed = Concurso::where([
-                    ['ficha_tecnica_usuario_evalua', '=', $user->id],
-                    ['deleted_at', '!=', null]
-                ])->get();
-
-                // Agregar concursos donde el usuario califica reputación
-                $concursosCalificaReputacion = Concurso::withTrashed()
-                    ->whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])
-                    ->get();
-                $created_with_trashed = $created_with_trashed->merge($concursosCalificaReputacion)->unique('id');
-            }
-
-            // DELETED WITH TRASHED
-            if (isAdmin()) {
-                $deleted_with_trashed = Concurso::where([
-                    ['deleted_at', '!=', null]
-                ])->get();
-            } else if ($user->type_id != 7 && $user->type_id != 3 && $user->type_id != 4 && $user->type_id != 2) {
-                $deleted_with_trashed = $user->customer_company->getAllConcursosByCompany()->withTrashed()->get();
-            } else if ($user->type_id == 3) {
-                $deleted_with_trashed = $user->customer_company->getAllConcursosByCompany()
-                    ->where('id_cliente', $user->id)
-                    ->withTrashed()
-                    ->get();
-            } else {
-                $deleted_with_trashed = Concurso::where([
-                    ['ficha_tecnica_usuario_evalua', '=', $user->id],
-                    ['deleted_at', '!=', null]
-                ])->get();
-
-                // Agregar concursos donde el usuario califica reputación
-                $concursosCalificaReputacion = Concurso::where([['deleted_at', '!=', null]])
-                    ->whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])
-                    ->get();
-                $deleted_with_trashed = $deleted_with_trashed->merge($concursosCalificaReputacion)->unique('id');
-            }
-
-
-
-            
 //Check if Knockout has passed filters
                 if ($filters) {
                     $searchTerm = $filters->searchTerm ?? null;
@@ -818,26 +816,6 @@ class ConcursoController extends BaseController
                                 !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||
                                 !!stristr($item->cliente->full_name, trim($searchTerm)) ||
                                 !!stristr($item->solicitud_compra, trim($searchTerm)) ||
-                                !!stristr($item->area_sol, trim($searchTerm));
-                        });
-                        
-                        $created_with_trashed = $created_with_trashed->filter(function ($item) use ($searchTerm) {
-                            return 
-                                !!stristr((string)$item->id, trim($searchTerm)) ||
-                                !!stristr($item->nombre, trim($searchTerm)) ||
-                                !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||  
-                                !!stristr($item->cliente->full_name, trim($searchTerm)) ||
-                                !!stristr($item->solicitud_compra, trim($searchTerm)) ||  
-                                !!stristr($item->area_sol, trim($searchTerm));
-                        });
-
-                        $deleted_with_trashed = $deleted_with_trashed->filter(function ($item) use ($searchTerm) {
-                            return
-                                !!stristr((string)$item->id, trim($searchTerm)) ||
-                                !!stristr($item->nombre, trim($searchTerm)) ||
-                                !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||  
-                                !!stristr($item->cliente->full_name, trim($searchTerm)) ||
-                                !!stristr($item->solicitud_compra, trim($searchTerm)) ||  
                                 !!stristr($item->area_sol, trim($searchTerm));
                         });
                     }
@@ -1247,19 +1225,19 @@ class ConcursoController extends BaseController
         }
             // CANCELADOS
                 $concursos = collect();
-               if ($user->type_id == 7) {
-                    $concursos = Concurso::where([
+                if ($user->type_id == 7) {
+                    $concursos = $this->applyMonitorListOptimizations(Concurso::withTrashed()->where([
                         ['deleted_at', '!=', null],
                         ['ficha_tecnica_usuario_evalua', '=', $user->id]
-                    ])->get();
+                    ]))->get();
                 } else if ($user->type_id == 3) {
-                    $concursos = $user->customer_company->getAllConcursosByCompany()
+                    $concursos = $this->applyMonitorListOptimizations($user->customer_company->getAllConcursosByCompany()
                         ->where('id_cliente', $user->id)
-                        ->onlyTrashed()
+                        ->onlyTrashed())
                         ->get();
                 } else {
-                    $concursos = $user->customer_company->getAllConcursosByCompany()
-                        ->onlyTrashed()
+                    $concursos = $this->applyMonitorListOptimizations($user->customer_company->getAllConcursosByCompany()
+                        ->onlyTrashed())
                         ->get();
                 }
 
@@ -1682,7 +1660,7 @@ class ConcursoController extends BaseController
                 $concurso = Concurso::find($params['id']);
             } else {
                 $concurso = $user->customer_company->getAllConcursosByCompany()->find($params['id']);
-                $concurso = $concurso ?? $user->concursos_evalua->find($params['id']);
+                $concurso = $concurso ?? $user->concursos_evalua()->where('concursos.id', $params['id'])->first();
 
                 // Si no lo encuentra, verificar si el usuario califica reputación en este concurso
                 if (!$concurso) {
