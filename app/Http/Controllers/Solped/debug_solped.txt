@@ -110338,3 +110338,172 @@ Lista:Array
 
 === listDoFilter FIN ===
 
+=== listDoFilter INICIO ===
+Usuario: ID=7, type_id=3, customer_company=1
+Solpeds creados (type_id=3): 7
+Solpeds con borrados incluidos: 7
+Solpeds eliminados (with trashed): 7
+Solpeds en preparación: 0
+Solpeds esperando revision (incluyendo -2): 0
+Solpeds revisadas (incluyendo -2): 2
+Solped ID: 81, etapa: en-analisis, estado: revisada - ANALISIS (revisadas)
+Solped ID: 82, etapa: en-preparacion, estado: revisada - ANALISIS (revisadas)
+Solpeds aceptadas/aprobadas: 5
+Solped ID: 77, etapa: aceptada, estado: licitando - ACEPTADAS
+Solped ID: 78, etapa: aceptada, estado: licitando - ACEPTADAS
+Solped ID: 79, etapa: aceptada, estado: licitando - ACEPTADAS
+Solped ID: 80, etapa: aceptada, estado: licitando - ACEPTADAS
+Solped ID: 83, etapa: aceptada, estado: licitando - ACEPTADAS
+Solpeds devueltas: 0
+Solpeds rechazadas: 0
+Solpeds adjudicadas: 0
+Solpeds finalizadas/canceladas: 0
+Ejecución correcta
+Lista:Array
+(
+    [ListaSolpedsEnPreparacion] => Array
+        (
+        )
+
+    [ListaSolpedsEnAnalisis] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 81
+                    [Nombre] => Prueba solped
+                    [Solicitante] => pepe diaz
+                    [CompradorSugerido] => Ucoca Cola
+                    [AreaSolicitante] => Administración
+                    [CodigoInterno] => 
+                    [Urgencia] => Normal
+                    [Estado] => revisada
+                    [FechaEntrega] => 08-05-2026
+                    [Etapa] => en-analisis
+                    [FueRevisado] => 1
+                )
+
+            [1] => Array
+                (
+                    [Id] => 82
+                    [Nombre] => dfsafadsfdsa
+                    [Solicitante] => pepe diaz
+                    [CompradorSugerido] => Ucoca Cola
+                    [AreaSolicitante] => Administración
+                    [CodigoInterno] => 
+                    [Urgencia] => Normal
+                    [Estado] => revisada
+                    [FechaEntrega] => 07-05-2026
+                    [Etapa] => en-preparacion
+                    [FueRevisado] => 1
+                )
+
+        )
+
+    [ListaSolpedsAceptadas] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 77
+                    [Nombre] => Compra de notebook
+                    [Solicitante] => pepe diaz
+                    [CompradorSugerido] => Ucoca Cola
+                    [AreaSolicitante] => Administración
+                    [CodigoInterno] => 
+                    [Urgencia] => Normal
+                    [Estado] => licitando
+                    [FechaEntrega] => 08-05-2026
+                    [Etapa] => aceptada
+                    [FueAceptada] => 1
+                    [FechaAceptacion] => 24-04-2026 09:21:35
+                )
+
+            [1] => Array
+                (
+                    [Id] => 78
+                    [Nombre] => Compra urgencia ECIPSA
+                    [Solicitante] => pepe diaz
+                    [CompradorSugerido] => Ucoca Cola
+                    [AreaSolicitante] => Administración
+                    [CodigoInterno] => 
+                    [Urgencia] => Urgencia
+                    [Estado] => licitando
+                    [FechaEntrega] => 07-05-2026
+                    [Etapa] => aceptada
+                    [FueAceptada] => 1
+                    [FechaAceptacion] => 27-04-2026 15:23:42
+                )
+
+            [2] => Array
+                (
+                    [Id] => 79
+                    [Nombre] => fsdfsa
+                    [Solicitante] => pepe diaz
+                    [CompradorSugerido] => 
+                    [AreaSolicitante] => Administración
+                    [CodigoInterno] => 
+                    [Urgencia] => Urgencia
+                    [Estado] => licitando
+                    [FechaEntrega] => 07-05-2026
+                    [Etapa] => aceptada
+                    [FueAceptada] => 1
+                    [FechaAceptacion] => 27-04-2026 15:35:13
+                )
+
+            [3] => Array
+                (
+                    [Id] => 80
+                    [Nombre] => Compra de remitos Empresa QX
+                    [Solicitante] => pepe diaz
+                    [CompradorSugerido] => Ucoca Cola
+                    [AreaSolicitante] => Administración
+                    [CodigoInterno] => 
+                    [Urgencia] => Normal
+                    [Estado] => licitando
+                    [FechaEntrega] => 09-05-2026
+                    [Etapa] => aceptada
+                    [FueAceptada] => 1
+                    [FechaAceptacion] => 27-04-2026 17:20:50
+                )
+
+            [4] => Array
+                (
+                    [Id] => 83
+                    [Nombre] => fdsfsd
+                    [Solicitante] => pepe diaz
+                    [CompradorSugerido] => Ucoca Cola
+                    [AreaSolicitante] => Administración
+                    [CodigoInterno] => 
+                    [Urgencia] => Normal
+                    [Estado] => licitando
+                    [FechaEntrega] => 28-05-2026
+                    [Etapa] => aceptada
+                    [FueAceptada] => 1
+                    [FechaAceptacion] => 15-05-2026 10:43:46
+                )
+
+        )
+
+    [ListaSolpedsDevueltas] => Array
+        (
+        )
+
+    [ListaSolpedsRechazadas] => Array
+        (
+        )
+
+    [ListaSolpedsAdjudicadas] => Array
+        (
+        )
+
+    [ListaSolpedsCanceladas] => Array
+        (
+        )
+
+    [DEBUG] => Array
+        (
+        )
+
+)
+
+=== listDoFilter FIN ===
+

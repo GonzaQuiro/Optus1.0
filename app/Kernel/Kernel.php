@@ -60,7 +60,8 @@ class Kernel
             'commands' => [
                 'DatesLimitTask'    => \App\Commands\DatesLimitTask::class,
                 'AuctionTask'       => \App\Commands\AuctionTask::class,
-                'NotifyNewUsersTask' => \App\Commands\NotifyNewUsersTask::class
+                'NotifyNewUsersTask' => \App\Commands\NotifyNewUsersTask::class,
+                'OffererBulkImportTask' => \App\Commands\OffererBulkImportTask::class
             ]
         ]);
 

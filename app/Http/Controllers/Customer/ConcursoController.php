@@ -3954,7 +3954,11 @@ class ConcursoController extends BaseController
     public function getTechnicalEvaluations($concurso)
     {
         $oferenteProposalstech = [];
-        $oferentes = $concurso->oferentes->where('has_invitacion_aceptada', true);
+        $oferentes = $concurso->oferentes
+            ->filter(function ($oferente) {
+                return $oferente->has_invitacion_aceptada || $oferente->is_tecnica_declinada;
+            })
+            ->values();
         $plantilla = $concurso->plantilla_tecnica ? $concurso->plantilla_tecnica->parsed_items : [];
         $cant_oferentes = count($oferentes);
         foreach ($oferentes as $index => $oferente) {
@@ -4018,8 +4022,8 @@ class ConcursoController extends BaseController
                     'oferente_id' => $oferente->id,
                     'revisada' => $techProposal ? $techProposal->is_revisada : null,
                     'comentario_nueva_roda' => $techProposal ? $techProposal->comentario_nueva_ronda : null,
-                    'motivoDeclination' => $etapaDeclinated ? $oferente->reasonDeclination : null,
-                    'fechaDeclinacion' => $etapaDeclinated ? $oferente->fecha_declination->format('d-m-Y') : null
+                    'motivoDeclination' => $etapaDeclinated ? ($oferente->reasonDeclination ?: 'Sin motivo informado') : null,
+                    'fechaDeclinacion' => $etapaDeclinated && $oferente->fecha_declination ? $oferente->fecha_declination->format('d-m-Y') : null
                 ];
             }
 
