@@ -2917,6 +2917,7 @@ class ConcursoController extends BaseController
         $message = null;
         $status = 200;
         $error = false;
+        $notificationPayload = null;
 
         $create = (bool) !(isset($params['id']));
 
@@ -3157,7 +3158,7 @@ class ConcursoController extends BaseController
 
 
 
-                            $emailService = new EmailService();
+                            $notificationRecipients = [];
 
 
                             //Enviamos el mail a los oferentes que se envio Invitación
@@ -3167,6 +3168,9 @@ class ConcursoController extends BaseController
                                 $recipients = $oferente->company
                                     ? $oferente->company->users()->pluck('email')->filter()->unique()->values()->toArray()
                                     : [];
+                                if (!empty($recipients)) {
+                                    $notificationRecipients = array_merge($notificationRecipients, $recipients);
+                                }
                                 if (empty($recipients)) {
                                     continue; // no hay a quién enviar, seguimos con el próximo oferente
                                 }
@@ -3267,14 +3271,17 @@ class ConcursoController extends BaseController
                                         $oferente->refresh();
                                     }
                                 }
-                                $html = $this->fetch($template, $htmlBody);
-                                $result = $emailService->send(
-                                    $html,
-                                    $subject,
-                                    $recipients,
-                                    ""
-                                );
                             }
+
+                            $htmlBody['company_name'] = 'Proveedor';
+                            $notificationPayload = [
+                                'html' => $this->fetch($template, $htmlBody),
+                                'subject' => $subject,
+                                'recipients' => array_values(array_unique(array_filter($notificationRecipients)))
+                            ];
+                            $result = [
+                                'success' => true
+                            ];
                         }
                     }
 
@@ -3282,8 +3289,31 @@ class ConcursoController extends BaseController
                         $connection->commit();
                         $message = 'Concurso guardado con éxito.';
                         $success = true;
+                        if ($notificationPayload && !empty($notificationPayload['recipients'])) {
+                            try {
+                                $emailService = new EmailService();
+                                $notificationResult = $emailService->sendBcc(
+                                    $notificationPayload['html'],
+                                    $notificationPayload['subject'],
+                                    $notificationPayload['recipients'],
+                                    ""
+                                );
+                                if (!$notificationResult['success']) {
+                                    error_log(
+                                        '[ConcursoController::store] Error al enviar notificaciones de concurso '
+                                        . $concurso->id . ': ' . $notificationResult['message']
+                                    );
+                                }
+                            } catch (\Throwable $e) {
+                                error_log(
+                                    '[ConcursoController::store] Excepcion al enviar notificaciones de concurso '
+                                    . $concurso->id . ': ' . $e->getMessage()
+                                );
+                            }
+                        }
                         // Enviar email de confirmación al usuario que editó
-                        $user = user();
+                        try {
+                            $user = user();
                         $templateUsuario = rootPath(config('app.templates_path')) . '/email/edition-confirmation-client.tpl';
                         $htmlUser = $this->fetch($templateUsuario, [
                             'user' => $user,
@@ -3293,6 +3323,13 @@ class ConcursoController extends BaseController
                         ]);
                         $emailService = new EmailService();
                         $emailService->send($htmlUser, 'Confirmación de Edición de Concurso', [$user->email], "");
+
+                        } catch (\Throwable $e) {
+                            error_log(
+                                '[ConcursoController::store] Excepcion al enviar confirmacion de edicion de concurso '
+                                . $concurso->id . ': ' . $e->getMessage()
+                            );
+                        }
 
                     } else {
                         $connection->rollBack();

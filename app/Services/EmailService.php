@@ -185,7 +185,7 @@ class EmailService
         }
         
         // Set Recipient
-        $this->mail->ClearAddresses();
+        $this->mail->clearAllRecipients();
         foreach ($email_to as $email) {
             $this->mail->addAddress($email);
         }
@@ -211,6 +211,101 @@ class EmailService
         }
 
         return $result;
+    }
+
+    public function sendBcc($message, $subject, $email_to, $alias, $withCC = false, $chunkSize = 80)
+    {
+        $emails = $this->normalizeEmailList($email_to);
+        $chunkSize = max(1, (int) $chunkSize);
+
+        if (empty($emails)) {
+            return [
+                'success' => true,
+                'message' => 'No hay destinatarios validos para enviar.',
+                'sent' => 0,
+                'failed' => 0
+            ];
+        }
+
+        $result = [
+            'success' => true,
+            'message' => 'Mensaje enviado con exito.',
+            'sent' => 0,
+            'failed' => 0
+        ];
+
+        $customer_company_id = isset($_SESSION['customer_company_id']) ? $_SESSION['customer_company_id'] : null;
+        foreach (array_chunk($emails, $chunkSize) as $chunk) {
+            $chunkResult = $customer_company_id == 7
+                ? $this->sendMailTelecentro($message, $subject, $chunk, $alias, true)
+                : $this->sendBccChunk($message, $subject, $chunk, $alias, $withCC);
+
+            if ($chunkResult['success']) {
+                $result['sent'] += count($chunk);
+                continue;
+            }
+
+            $result['success'] = false;
+            $result['failed'] += count($chunk);
+            $result['message'] = $chunkResult['message'];
+        }
+
+        return $result;
+    }
+
+    private function sendBccChunk($message, $subject, $email_to, $alias, $withCC = false)
+    {
+        $result = [
+            'success' => false,
+            'message' => ''
+        ];
+
+        $this->mail->clearAllRecipients();
+        foreach ($email_to as $email) {
+            $this->mail->addBCC($email);
+        }
+        if ($withCC) {
+            $this->mail->addCC(env('MAIL_CC'));
+        }
+
+        $this->mail->Subject = $subject;
+        $this->mail->msgHTML($message);
+        $this->mail->AltBody = strip_tags($message);
+
+        try {
+            if ($this->mail->send()) {
+                $result['message'] = 'Mensaje enviado con exito.';
+                $result['success'] = true;
+            } else {
+                $result['message'] = $this->mail->ErrorInfo;
+                $result['success'] = false;
+            }
+        } catch (\Exception $e) {
+            $result['success'] = false;
+            $result['message'] = $e->getMessage();
+        }
+
+        return $result;
+    }
+
+    private function normalizeEmailList($email_to)
+    {
+        if ($email_to instanceof \Traversable) {
+            $emails = iterator_to_array($email_to);
+        } else {
+            $emails = is_array($email_to) ? $email_to : [$email_to];
+        }
+        $valid = [];
+
+        foreach ($emails as $email) {
+            $email = trim((string) $email);
+            if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                continue;
+            }
+            $valid[strtolower($email)] = $email;
+        }
+
+        return array_values($valid);
     }
 
     public function sendMultiple($emails)
@@ -283,7 +378,7 @@ class EmailService
         }
         return null;
     }
-    private function sendMailTelecentro($message, $subject, $email_to, $alias)
+    private function sendMailTelecentro($message, $subject, $email_to, $alias, $useBcc = false)
     {
         // CONFIGURAR LAS VARIABLES CON LOS DATOS DE TU APLICACIÓN DE AZURE
         $tenantId     = env('TENANT_MAILER_TLC');
@@ -363,10 +458,20 @@ class EmailService
             "message" => [
                 "subject"      => $subject,
                 "body"         => ["contentType" => "HTML", "content" => $message],
-                "toRecipients" => $toRecipients,
+                "toRecipients" => $useBcc
+                    ? [[
+                        "emailAddress" => [
+                            "address" => $senderEmail
+                        ]
+                    ]]
+                    : $toRecipients,
             ],
             "saveToSentItems" => true,
         ];
+
+        if ($useBcc) {
+            $emailBody["message"]["bccRecipients"] = $toRecipients;
+        }
 
         if (!empty($attachments)) {
             $emailBody['message']['attachments'] = $attachments;
