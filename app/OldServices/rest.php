@@ -138,7 +138,7 @@ class Rest {
         $datetime = date('Y-m-d H:i:s');
         $strsql = 
             "UPDATE users 
-                SET validity_date = DATE_ADD('" . $datetime . "', INTERVAL 20 MINUTE) 
+                SET validity_date = DATE_ADD('" . $datetime . "', INTERVAL 60 MINUTE)
                     WHERE token = '$UserToken'";
 
         $query = $this->_conn->prepare($strsql);
