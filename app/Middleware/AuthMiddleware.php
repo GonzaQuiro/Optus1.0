@@ -91,7 +91,7 @@ class AuthMiddleware
         $user = user();
         try {
             $user->update([
-                'validity_date' => Carbon::now()->addMinutes(20)->format('Y-m-d H:i:s')
+                'validity_date' => Carbon::now()->addMinutes(60)->format('Y-m-d H:i:s')
             ]);
             return true;
         } catch (\Exception $e) {
