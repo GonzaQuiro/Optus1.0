@@ -267,6 +267,11 @@ class CompanyController extends BaseController
     {
         $results = [];
         $user = user();
+        $associatedOffererIds = collect();
+
+        if ($role === 'offerer' && !isAdmin() && $user && $user->customer_company) {
+            $associatedOffererIds = $user->customer_company->associated_offerers->pluck('id');
+        }
 
         foreach ($companies as $company) {
             $results[] = [
@@ -277,7 +282,7 @@ class CompanyController extends BaseController
                 'EstadoDescripcion' => $company->status->description,
                 'IsAssociated' =>
                 $role === 'offerer' && !isAdmin() ?
-                $user->customer_company->associated_offerers->where('id', $company->id)->count() > 0 :
+                $associatedOffererIds->contains($company->id) :
                 false
             ];
         }
@@ -353,14 +358,21 @@ class CompanyController extends BaseController
                 // Oferentes Asociados / No Asociados / Todos
                 switch ($filters->Associated) {
                     case 1:
-                        $companies = $companies->whereHas('associated_customers', function ($query) use ($user) {
-                            $query->where('customer_id', $user->customer_company->id);
-                        });
+                        if (!$user || !$user->customer_company) {
+                            // Un usuario sin empresa cliente no tiene asociaciones que listar.
+                            $companies = $companies->whereRaw('1 = 0');
+                        } else {
+                            $companies = $companies->whereHas('associated_customers', function ($query) use ($user) {
+                                $query->where('customer_id', $user->customer_company->id);
+                            });
+                        }
                         break;
                     case 2:
-                        $companies = $companies->whereDoesntHave('associated_customers', function ($query) use ($user) {
-                            $query->where('customer_id', $user->customer_company->id);
-                        });
+                        if ($user && $user->customer_company) {
+                            $companies = $companies->whereDoesntHave('associated_customers', function ($query) use ($user) {
+                                $query->where('customer_id', $user->customer_company->id);
+                            });
+                        }
                         break;
                 }
             }
@@ -460,8 +472,11 @@ class CompanyController extends BaseController
                     break;
                 default:
                     $type_description = 'Proveedores';
-                    $companies = isAdmin() ? OffererCompany::all() : $user->customer_company->associated_offerers;
-                    $associated = isAdmin() ? null : $user->customer_company->associated_offerers->count();
+                    $customerCompany = $user ? $user->customer_company : null;
+                    $companies = isAdmin()
+                        ? OffererCompany::all()
+                        : ($customerCompany ? $customerCompany->associated_offerers : collect());
+                    $associated = isAdmin() ? null : $companies->count();
                     break;
             }
 
